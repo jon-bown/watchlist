@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
+
+    <edu.utap.watchlist.components.SegmentedControl
+        android:id="@+id/movies_tv_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        >
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
+            android:checked="true"/>
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
+            android:checked="false"/>
+    </edu.utap.watchlist.components.SegmentedControl>
+
+
+    <edu.utap.watchlist.components.SegmentedControl
+        android:id="@+id/group_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        >
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
+            android:checked="true"/>
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
+            android:checked="false"/>
+    </edu.utap.watchlist.components.SegmentedControl>
 
     <TextView
         android:id="@+id/text_home"
@@ -19,4 +47,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
