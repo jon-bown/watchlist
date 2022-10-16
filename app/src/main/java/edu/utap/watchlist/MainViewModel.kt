@@ -15,13 +15,15 @@ import edu.utap.watchlist.api.*
 import edu.utap.watchlist.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.internal.notifyAll
+import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel : ViewModel() {
     private var displayName = MutableLiveData("Uninitialized")
     private var email = MutableLiveData("Uninitialized")
     private var uid = MutableLiveData("Uninitialized")
     private var user: FirebaseUser? = null
-
+    private var movieMode = AtomicBoolean(true)
 
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
@@ -35,54 +37,94 @@ class MainViewModel : ViewModel() {
     var fetchDone : MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
-        // XXX one-liner to kick off the app
         netRefresh()
     }
 
-
-
-
     fun netRefresh() {
         // This is where the network request is initiated.
-        fetchPopularMovies()
+        fetchPopular()
     }
 
-    fun fetchPopularTV() {
+    //POPULAR
+    fun fetchPopular() {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            var list = repository.fetchPopularTV()
-            if(list.isNotEmpty()){
-                fetchDone.postValue(true)
-                mediaItems.postValue(MediaItems(list, movieList = null).mediaList)
 
+            if(movieMode.get()){
+                var list = repository.fetchPopularMovies()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                }
+            }
+            else {
+                var list = repository.fetchPopularTV()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(list, movieList = null).mediaList)
+
+                }
             }
         }
     }
 
-
-    fun fetchPopularMovies() {
+    //LATEST
+    fun fetchNowPlaying() {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            var list = repository.fetchPopularMovies()
-            if(list.isNotEmpty()){
-                fetchDone.postValue(true)
-                mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+            if(movieMode.get()){
+                var list = repository.fetchPlayingMovies()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                }
             }
+            else {
+                var list = repository.fetchPlayingTV()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                }
+            }
+
+        }
+    }
+
+
+    //TOP RATED
+    fun fetchTopRated() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            // Update LiveData from IO dispatcher, use postValue
+            if(movieMode.get()){
+                var list = repository.fetchTopRatedMovies()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                }
+            }
+            else {
+                var list = repository.fetchTopRatedTV()
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                }
+            }
+
         }
     }
 
 
 
     // Observations
-
-
-
     fun observeFetchDone(): LiveData<Boolean> {
         return fetchDone
     }
@@ -91,6 +133,22 @@ class MainViewModel : ViewModel() {
     fun observeMedia(): LiveData<List<MediaItem>> {
         return mediaItems
     }
+
+    fun updateMediaMode(value: Boolean, type: String) {
+        movieMode.set(value)
+        if(type == "popular"){
+            fetchPopular()
+            //mediaItems.notifyAll()
+        }
+        else if(type == "nowPlaying"){
+            fetchNowPlaying()
+        }
+        else if(type == "topRated"){
+            fetchTopRated()
+        }
+
+    }
+
 
     private fun userLogout() {
         displayName.postValue("No user")

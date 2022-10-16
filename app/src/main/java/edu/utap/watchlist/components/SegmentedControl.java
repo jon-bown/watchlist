@@ -33,6 +33,7 @@ public class SegmentedControl
 	private void init() {
 		// Set background
 		setBackgroundResource(R.drawable.segmented_control_bg );
+
 	}
 
     /**

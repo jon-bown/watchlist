@@ -15,62 +15,54 @@ interface MovieDBApi {
     }
     //////MOVIES/////////
     // Get Movie Details
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/movie/{movie}")
+    @GET("/3/movie/{movie}?api_key=${apikey.KEY}")
     suspend fun getMovieDetails(@Path("movie") movie: String) : Movie
 
     //Get Upcoming
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("3/movie/upcoming")
+    @GET("3/movie/upcoming?api_key=${apikey.KEY}")
     suspend fun getMoviesUpcoming() : MovieListResponse
 
     //Get Now Playing
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/movie/now_playing")
+    @GET("/3/movie/now_playing?api_key=${apikey.KEY}")
     suspend fun getMoviesNowPlaying() : MovieListResponse
 
     //Get Top Rated
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/movie/top_rated")
+    @GET("/3/movie/top_rated?api_key=${apikey.KEY}")
     suspend fun getMoviesTopRated() : MovieListResponse
 
     //Get Latest
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/movie/latest")
-    suspend fun getMoviesLatest() : MovieListResponse
+    @GET("/3/movie/latest?api_key=${apikey.KEY}")
+    suspend fun getMoviesLatest() : Movie
 
     //Get Popular
-    //@Headers("api_key: ${apikey.KEY}")
     @GET("/3/movie/popular?api_key=${apikey.KEY}")
     suspend fun getMoviesPopular() : MovieListResponse
 
     //////TV/////////
 
     // Get TV Details
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/tv/{tv}")
+    @GET("/3/tv/{tv}?api_key=${apikey.KEY}")
     suspend fun getTVDetails(@Path("tv") tv: String): TVShow
 
+    //Get TV Airing Today
+    @GET("3/tv/airing_today?api_key=${apikey.KEY}")
+    suspend fun getTVAiring() : TVListResponse
 
     //Get Upcoming
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("3/tv/upcoming")
+    @GET("3/tv/upcoming?api_key=${apikey.KEY}")
     suspend fun getTVUpcoming() : TVListResponse
 
-    //Get Now Playing
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/tv/now_playing")
+    //Get On Air
+    @GET("/3/tv/on_the_air?api_key=${apikey.KEY}")
     suspend fun getTVNowPlaying() : TVListResponse
 
     //Get Top Rated
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/tv/top_rated")
+    @GET("/3/tv/top_rated?api_key=${apikey.KEY}")
     suspend fun getTVTopRated() : TVListResponse
 
     //Get Latest
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/tv/latest")
-    suspend fun getTVLatest() : TVListResponse
+    @GET("/3/tv/latest?api_key=${apikey.KEY}")
+    suspend fun getTVLatest() : TVShow
 
     //Get Popular
     @GET("/3/tv/popular?api_key=${apikey.KEY}")

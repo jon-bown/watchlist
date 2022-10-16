@@ -25,7 +25,7 @@ class MediaAdapter: RecyclerView.Adapter<MediaAdapter.VH>() {
 
         override fun onBindViewHolder(holder: VH, position: Int) {
             val binding = holder.binding
-                media[position].let{
+            media[position].let{
                     binding.mediaRow.text = it.title
                     //binding.quoteText.text = it.quote
                     //binding.charActText.text = it.characterActor
