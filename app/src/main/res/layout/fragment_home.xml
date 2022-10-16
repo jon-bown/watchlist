@@ -28,11 +28,18 @@
         android:orientation="horizontal"
         android:layout_margin="8dp"
         >
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/trending" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
             android:checked="true"/>
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/hot" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
             android:checked="false"/>
     </edu.utap.watchlist.components.SegmentedControl>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mainList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
 
     <TextView
         android:id="@+id/text_home"
