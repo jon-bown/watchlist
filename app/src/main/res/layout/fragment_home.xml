@@ -10,14 +10,23 @@
     <edu.utap.watchlist.components.SegmentedControl
         android:id="@+id/movies_tv_control"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal"
         android:layout_margin="8dp"
+        android:layout_gravity="top"
+
         >
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
-            android:checked="true"/>
+        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1"
+            android:text="Movies"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:checked="true"
+            android:textAlignment="center"
+            />
         <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
-            android:checked="false"/>
+            android:checked="false"
+            android:textAlignment="center"/>
     </edu.utap.watchlist.components.SegmentedControl>
 
 
@@ -28,30 +37,28 @@
         android:orientation="horizontal"
         android:layout_margin="8dp"
         >
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/trending" android:text="Movies"  android:layout_height="match_parent" android:layout_width="wrap_content"
-            android:checked="true"/>
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/hot" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
-            android:checked="false"/>
+        <edu.utap.watchlist.components.SegmentedControlButton
+            android:id="@+id/trending"
+            android:text="Movies"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:checked="true"
+            android:textAlignment="center"/>
+        <edu.utap.watchlist.components.SegmentedControlButton
+            android:id="@+id/hot" android:text="TV"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:checked="false"
+            android:textAlignment="center"/>
     </edu.utap.watchlist.components.SegmentedControl>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </LinearLayout>

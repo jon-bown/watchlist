@@ -2,10 +2,7 @@ package edu.utap.watchlist.api
 
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.internal.addHeaderLenient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -52,7 +49,7 @@ interface MovieDBApi {
     // Get TV Details
     @Headers("api_key: ${apikey.KEY}")
     @GET("/3/tv/{tv}")
-    suspend fun getTVDetails(@Path("tv") tv: String): TV
+    suspend fun getTVDetails(@Path("tv") tv: String): TVShow
 
 
     //Get Upcoming
@@ -76,8 +73,7 @@ interface MovieDBApi {
     suspend fun getTVLatest() : TVListResponse
 
     //Get Popular
-    @Headers("api_key: ${apikey.KEY}")
-    @GET("/3/tv/popular")
+    @GET("/3/tv/popular?api_key=${apikey.KEY}")
     suspend fun getTVPopular() : TVListResponse
 
 
@@ -86,8 +82,8 @@ interface MovieDBApi {
 
 
 
-    data class TVResponse(val data: TV)
-    data class TVListResponse(val results: List<TV>)
+    data class TVResponse(val data: TVShow)
+    data class TVListResponse(val results: List<TVShow>)
 
 
 

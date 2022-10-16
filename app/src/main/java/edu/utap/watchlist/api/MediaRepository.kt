@@ -6,6 +6,10 @@ class MediaRepository(private val api: MovieDBApi) {
         return api.getMoviesPopular().results
     }
 
+    suspend fun fetchPopularTV(): List<TVShow> {
+        return api.getTVPopular().results
+    }
+
 
 
 }
