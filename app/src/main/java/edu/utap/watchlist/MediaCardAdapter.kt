@@ -16,7 +16,17 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
     private var media = mutableListOf<MediaItem>()
 
     inner class VH(val binding: MediaCardBinding)
-        : RecyclerView.ViewHolder(binding.root)
+        : RecyclerView.ViewHolder(binding.root) {
+        init {
+            //XXX Write me.
+            binding.root.setOnClickListener {
+
+                //open media item fragment
+            }
+
+        }
+        }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaCardAdapter.VH {
         val binding = MediaCardBinding.inflate(
@@ -30,6 +40,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
 
     override fun onBindViewHolder(holder: MediaCardAdapter.VH, position: Int) {
         val binding = holder.binding
+
         media[position].let{
             binding.TV.text = it.title
             //set image

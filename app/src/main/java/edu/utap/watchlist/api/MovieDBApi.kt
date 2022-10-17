@@ -1,5 +1,6 @@
 package edu.utap.watchlist.api
 
+import edu.utap.watchlist.MainActivity
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,60 +13,62 @@ import retrofit2.http.Path
 interface MovieDBApi {
     object apikey {
         const val KEY = "9bcd9c1a6267ef7c56f11da1295bf749"
+        const val LANG = "en-US"
+        const val ADULT = "false"
     }
     //////MOVIES/////////
     // Get Movie Details
-    @GET("/3/movie/{movie}?api_key=${apikey.KEY}")
+    @GET("/3/movie/{movie}?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMovieDetails(@Path("movie") movie: String) : Movie
 
     //Get Upcoming
-    @GET("3/movie/upcoming?api_key=${apikey.KEY}")
+    @GET("3/movie/upcoming?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMoviesUpcoming() : MovieListResponse
 
     //Get Now Playing
-    @GET("/3/movie/now_playing?api_key=${apikey.KEY}")
+    @GET("/3/movie/now_playing?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMoviesNowPlaying() : MovieListResponse
 
     //Get Top Rated
-    @GET("/3/movie/top_rated?api_key=${apikey.KEY}")
+    @GET("/3/movie/top_rated?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMoviesTopRated() : MovieListResponse
 
     //Get Latest
-    @GET("/3/movie/latest?api_key=${apikey.KEY}")
+    @GET("/3/movie/latest?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMoviesLatest() : Movie
 
     //Get Popular
-    @GET("/3/movie/popular?api_key=${apikey.KEY}")
+    @GET("/3/movie/popular?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getMoviesPopular() : MovieListResponse
 
     //////TV/////////
 
     // Get TV Details
-    @GET("/3/tv/{tv}?api_key=${apikey.KEY}")
+    @GET("/3/tv/{tv}?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVDetails(@Path("tv") tv: String): TVShow
 
     //Get TV Airing Today
-    @GET("3/tv/airing_today?api_key=${apikey.KEY}")
+    @GET("3/tv/airing_today?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVAiring() : TVListResponse
 
     //Get Upcoming
-    @GET("3/tv/upcoming?api_key=${apikey.KEY}")
+    @GET("3/tv/upcoming?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVUpcoming() : TVListResponse
 
     //Get On Air
-    @GET("/3/tv/on_the_air?api_key=${apikey.KEY}")
+    @GET("/3/tv/on_the_air?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVNowPlaying() : TVListResponse
 
     //Get Top Rated
-    @GET("/3/tv/top_rated?api_key=${apikey.KEY}")
+    @GET("/3/tv/top_rated?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVTopRated() : TVListResponse
 
     //Get Latest
-    @GET("/3/tv/latest?api_key=${apikey.KEY}")
+    @GET("/3/tv/latest?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVLatest() : TVShow
 
     //Get Popular
-    @GET("/3/tv/popular?api_key=${apikey.KEY}")
+    @GET("/3/tv/popular?api_key=${apikey.KEY}&language=${apikey.LANG}")
     suspend fun getTVPopular() : TVListResponse
 
 
@@ -78,7 +81,12 @@ interface MovieDBApi {
     data class TVListResponse(val results: List<TVShow>)
 
 
+    //SEARCH
+    @GET("/3/search/movie?api_key=${apikey.KEY}&language=${apikey.LANG}&query={query}&include_adult=${apikey.ADULT}")
+    suspend fun searchMovies(@Path("query") query: String) : List<Movie>
 
+    @GET("/3/search/tv?api_key=${apikey.KEY}&language=${apikey.LANG}&query={query}&include_adult=${apikey.ADULT}")
+    suspend fun searchTVShows(@Path("query") query: String) : List<TVShow>
 
     companion object {
 
