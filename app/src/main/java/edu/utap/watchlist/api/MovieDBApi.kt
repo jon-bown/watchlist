@@ -9,6 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MovieDBApi {
     object apikey {
@@ -82,11 +83,11 @@ interface MovieDBApi {
 
 
     //SEARCH
-    @GET("/3/search/movie?api_key=${apikey.KEY}&language=${apikey.LANG}&query={query}&include_adult=${apikey.ADULT}")
-    suspend fun searchMovies(@Path("query") query: String) : List<Movie>
+    @GET("/3/search/movie?api_key=${apikey.KEY}&language=${apikey.LANG}&include_adult=${apikey.ADULT}")
+    suspend fun searchMovies(@Query("query") query: String) : MovieListResponse
 
-    @GET("/3/search/tv?api_key=${apikey.KEY}&language=${apikey.LANG}&query={query}&include_adult=${apikey.ADULT}")
-    suspend fun searchTVShows(@Path("query") query: String) : List<TVShow>
+    @GET("/3/search/tv?api_key=${apikey.KEY}&language=${apikey.LANG}&include_adult=${apikey.ADULT}")
+    suspend fun searchTVShows(@Query("query") query: String) : TVListResponse
 
     companion object {
 

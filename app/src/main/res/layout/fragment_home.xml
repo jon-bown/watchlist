@@ -60,14 +60,40 @@
             android:checked="false"
             android:textAlignment="center"/>
     </edu.utap.watchlist.components.SegmentedControl>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mainList"
+    <TextView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Popular" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Now Playing" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/secondList"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Top Rated" />
+
+
 
 </LinearLayout>

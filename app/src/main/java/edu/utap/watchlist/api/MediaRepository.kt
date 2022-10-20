@@ -38,4 +38,14 @@ class MediaRepository(private val api: MovieDBApi) {
         return api.getTVNowPlaying().results
     }
 
+
+
+    suspend fun fetchSearchMovies(query: String): List<Movie>{
+        return api.searchMovies(query).results
+    }
+
+    suspend fun fetchSearchTV(query: String): List<TVShow>{
+        return api.searchTVShows(query).results
+    }
+
 }

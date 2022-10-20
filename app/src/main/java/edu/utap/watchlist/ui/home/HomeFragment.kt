@@ -10,8 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MediaCardAdapter
 import edu.utap.watchlist.R
@@ -40,9 +42,16 @@ class HomeFragment : Fragment() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
         this.adapter = MediaCardAdapter(viewModel)
+
+
+        //Linear
         val manager = LinearLayoutManager(context)
-        manager.orientation = LinearLayoutManager.VERTICAL
+        manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.mainList.layoutManager = LinearLayoutManager(activity)
+
+        //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
+        //manager.orientation =
+        binding.mainList.layoutManager = manager
         binding.mainList.adapter = adapter
         initRecyclerViewDividers(binding.mainList)
 

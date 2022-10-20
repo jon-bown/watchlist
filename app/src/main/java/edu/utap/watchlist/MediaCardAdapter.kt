@@ -1,14 +1,19 @@
 package edu.utap.watchlist
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaCardBinding
+import androidx.fragment.app.commit
+import edu.utap.watchlist.ui.media.MediaItemView
 
 class MediaCardAdapter(private val viewModel: MainViewModel)
     : RecyclerView.Adapter<MediaCardAdapter.VH>()  {
@@ -22,6 +27,14 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
             binding.root.setOnClickListener {
 
                 //open media item fragment
+                val intent = Intent(binding.root.context, MediaItemView::class.java).also {
+                    //pass media item view
+
+                }
+
+                //launch activity from result launcher
+                binding.root.context.startActivity(intent)
+
             }
 
         }
@@ -42,9 +55,12 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
         val binding = holder.binding
 
         media[position].let{
-            binding.TV.text = it.title
+            //binding.TV.text = it.title
             //set image
-            viewModel.netFetchImage(binding.mediaImage, it.imageURL)
+            if(it.imageURL != null){
+                viewModel.netFetchImage(binding.mediaImage, it.imageURL!!)
+            }
+
         }
     }
 

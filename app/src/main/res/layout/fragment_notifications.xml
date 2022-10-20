@@ -39,7 +39,9 @@
             />
         <edu.utap.watchlist.components.SegmentedControlButton
             android:id="@+id/search_tv"
-            android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
+            android:text="TV"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
             android:checked="false"
             android:textAlignment="center"/>
     </edu.utap.watchlist.components.SegmentedControl>

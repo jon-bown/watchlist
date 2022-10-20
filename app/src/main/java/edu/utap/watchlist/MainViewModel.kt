@@ -29,6 +29,17 @@ class MainViewModel : ViewModel() {
     private val repository = MediaRepository(movieApi)
     private val mediaItems = MutableLiveData<List<MediaItem>>()
 
+    //User Lists
+
+
+
+    //Media Items
+
+    private val popularMediaItems = MutableLiveData<List<MediaItem>>()
+    private val nowPlayingMediaItems = MutableLiveData<List<MediaItem>>()
+    private val topRatedMediaItems = MutableLiveData<List<MediaItem>>()
+
+
     //Initial guess for width and height
     var width = 350
     var height = 500
@@ -124,6 +135,37 @@ class MainViewModel : ViewModel() {
 
 
 
+
+    fun fetchSearchResults(query: String) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            // Update LiveData from IO dispatcher, use postValue
+            if(movieMode.get()){
+                var list = repository.fetchSearchMovies(query)
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                }
+            }
+            else {
+                var list = repository.fetchSearchTV(query)
+                if(list.isNotEmpty()){
+                    fetchDone.postValue(true)
+                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                }
+            }
+
+        }
+    }
+
+    fun clearMediaItems() {
+        mediaItems.postValue(emptyList())
+    }
+
+
+
     // Observations
     fun observeFetchDone(): LiveData<Boolean> {
         return fetchDone
@@ -147,6 +189,10 @@ class MainViewModel : ViewModel() {
             fetchTopRated()
         }
 
+    }
+
+    fun updateMediaType(value: Boolean){
+        movieMode.set(value)
     }
 
 
@@ -237,6 +283,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun netFetchImage(imageView: ImageView, imagePath: String) {
-        Glide.fetch(randomPiscumURL(imagePath), safePiscumURL(imagePath), imageView)
+        Glide.fetch(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
     }
 }

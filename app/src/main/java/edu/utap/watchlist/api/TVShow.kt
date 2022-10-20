@@ -18,5 +18,5 @@ data class TVShow (
     @SerializedName("number_of_seasons")
     val numberOfSeasons: Int,
     @SerializedName("poster_path")
-    val posterPath: String
+    val posterPath: String?
                 )

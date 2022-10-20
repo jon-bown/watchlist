@@ -74,4 +74,8 @@ dependencies {
     // Glide for images
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+
+    //Firestore
+    implementation platform("com.google.firebase:firebase-bom:31.0.0")
 }
