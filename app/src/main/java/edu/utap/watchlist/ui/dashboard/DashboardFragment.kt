@@ -11,14 +11,19 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
 
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
+
+    private val viewModel: MainViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -29,8 +34,7 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -52,7 +56,7 @@ class DashboardFragment : Fragment() {
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setHint("Enter List Name")
         input.inputType = InputType.TYPE_CLASS_TEXT
-        input.setPadding(6)
+        //input.setPadding(6)
 
 
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog_rounded)

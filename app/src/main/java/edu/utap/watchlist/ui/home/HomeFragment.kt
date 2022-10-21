@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,13 +23,16 @@ import edu.utap.watchlist.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private var listDisplayType: String = "popular"
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var adapter: MediaCardAdapter
+    private lateinit var popularAdapter: MediaCardAdapter
+    private lateinit var nowPlayingAdapter: MediaCardAdapter
+    private lateinit var topRatedAdapter: MediaCardAdapter
+
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
@@ -41,28 +45,83 @@ class HomeFragment : Fragment() {
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.adapter = MediaCardAdapter(viewModel)
+        this.popularAdapter = MediaCardAdapter(viewModel)
+        this.nowPlayingAdapter = MediaCardAdapter(viewModel)
+        this.topRatedAdapter = MediaCardAdapter(viewModel)
 
+    }
+
+    private fun notifiyAdaptersChanged() {
+        popularAdapter.notifyDataSetChanged()
+        nowPlayingAdapter.notifyDataSetChanged()
+        topRatedAdapter.notifyDataSetChanged()
+    }
+
+
+    fun initPopularList() {
 
         //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
-        binding.mainList.layoutManager = LinearLayoutManager(activity)
+        binding.popularList.layoutManager = LinearLayoutManager(activity)
 
         //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
         //manager.orientation =
-        binding.mainList.layoutManager = manager
-        binding.mainList.adapter = adapter
-        initRecyclerViewDividers(binding.mainList)
+        binding.popularList.layoutManager = manager
+        binding.popularList.adapter = popularAdapter
+        initRecyclerViewDividers(binding.popularList)
 
         // Live data lets us display the latest list, whatever it is
         // NB: owner is viewLifecycleOwner
-        viewModel.observeMedia().observe(viewLifecycleOwner,
+        viewModel.observePopularMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
-                adapter.submitMediaList(movieList)
-                adapter.notifyDataSetChanged()
+                popularAdapter.submitMediaList(movieList)
+                popularAdapter.notifyDataSetChanged()
 
             })
+    }
+
+
+    fun initNowPlayingList() {
+
+        //Linear
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.nowPlayingList.layoutManager = LinearLayoutManager(activity)
+
+        binding.nowPlayingList.layoutManager = manager
+        binding.nowPlayingList.adapter = nowPlayingAdapter
+        initRecyclerViewDividers(binding.nowPlayingList)
+
+        viewModel.observeNowPlayingMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                nowPlayingAdapter.submitMediaList(movieList)
+                nowPlayingAdapter.notifyDataSetChanged()
+
+            })
+
+
+    }
+
+    fun initTopRatedList() {
+
+        //Linear
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.topRatedList.layoutManager = LinearLayoutManager(activity)
+
+        binding.topRatedList.layoutManager = manager
+        binding.topRatedList.adapter = topRatedAdapter
+        initRecyclerViewDividers(binding.nowPlayingList)
+
+        viewModel.observeTopRatedMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                topRatedAdapter.submitMediaList(movieList)
+                topRatedAdapter.notifyDataSetChanged()
+
+            })
+
+
 
     }
 
@@ -71,19 +130,22 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
 
-
-
-
         initMainSelector()
         initSubSelector()
+
+        //Start Lists
         initAdapter()
+        initPopularList()
+        initNowPlayingList()
+        initTopRatedList()
+
+
+
 
 
         return root
@@ -100,16 +162,18 @@ class HomeFragment : Fragment() {
             binding.moviesTvControl.check(R.id.opt_1)
             binding.opt2.setBackgroundColor(Color.TRANSPARENT)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.updateMediaMode(true, listDisplayType)
-            adapter.notifyDataSetChanged()
+            viewModel.updateMediaType(true)
+            viewModel.netRefresh()
+
 
         }
         binding.opt2.setOnClickListener {
             binding.moviesTvControl.check(R.id.opt_2)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             binding.opt1.setBackgroundColor(Color.TRANSPARENT)
-            viewModel.updateMediaMode(false, listDisplayType)
-            adapter.notifyDataSetChanged()
+            viewModel.updateMediaType(false)
+            viewModel.netRefresh()
+            popularAdapter.notifyDataSetChanged()
 
         }
         binding.moviesTvControl.check(R.id.opt_1)
@@ -126,24 +190,24 @@ class HomeFragment : Fragment() {
             listDisplayType = "popular"
             resetSelectorBackgroundColor()
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.fetchPopular()
-            adapter.notifyDataSetChanged()
+            viewModel.netRefresh()
+            notifiyAdaptersChanged()
         }
         binding.nowPlaying.setOnClickListener {
             binding.listType.check(R.id.nowPlaying)
             listDisplayType = "nowPlaying"
             resetSelectorBackgroundColor()
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.fetchNowPlaying()
-            adapter.notifyDataSetChanged()
+            viewModel.netRefresh()
+            notifiyAdaptersChanged()
         }
         binding.topRated.setOnClickListener {
             binding.listType.check(R.id.topRated)
             listDisplayType = "topRated"
             resetSelectorBackgroundColor()
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.fetchTopRated()
-            adapter.notifyDataSetChanged()
+            viewModel.netRefresh()
+            notifiyAdaptersChanged()
         }
         binding.listType.check(R.id.popular)
         binding.popular.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))

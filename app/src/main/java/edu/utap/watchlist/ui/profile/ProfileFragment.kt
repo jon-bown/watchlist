@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
@@ -16,7 +17,7 @@ import edu.utap.watchlist.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private var _binding: FragmentProfileBinding? = null
 
     // This property is only valid between onCreateView and
@@ -34,26 +35,23 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 
         if(savedInstanceState == null) {
             binding.displayNameET.text.clear()
         }
         // XXX Write me. Set data to display in UI
-        viewModel.observeDisplayName().observe(this){
+        viewModel.observeDisplayName().observe(viewLifecycleOwner){
             binding.userName.text = it
         }
 
-        viewModel.observeEmail().observe(this){
+        viewModel.observeEmail().observe(viewLifecycleOwner){
             binding.userEmail.text = it
         }
 
-        viewModel.observeUid().observe(this){
+        viewModel.observeUid().observe(viewLifecycleOwner){
             binding.userUid.text = it
         }
 

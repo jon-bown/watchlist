@@ -28,16 +28,25 @@ class MainViewModel : ViewModel() {
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
     private val mediaItems = MutableLiveData<List<MediaItem>>()
-
     //User Lists
 
 
 
     //Media Items
-
     private val popularMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observePopularMediaItems(): LiveData<List<MediaItem>> {
+        return popularMediaItems
+    }
     private val nowPlayingMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeNowPlayingMediaItems(): LiveData<List<MediaItem>> {
+        return nowPlayingMediaItems
+    }
     private val topRatedMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeTopRatedMediaItems(): LiveData<List<MediaItem>> {
+        return topRatedMediaItems
+    }
+
+
 
 
     //Initial guess for width and height
@@ -54,6 +63,8 @@ class MainViewModel : ViewModel() {
     fun netRefresh() {
         // This is where the network request is initiated.
         fetchPopular()
+        fetchNowPlaying()
+        fetchTopRated()
     }
 
     //POPULAR
@@ -68,14 +79,14 @@ class MainViewModel : ViewModel() {
                 var list = repository.fetchPopularMovies()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                    popularMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
                 var list = repository.fetchPopularTV()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(list, movieList = null).mediaList)
+                    popularMediaItems.postValue(MediaItems(list, movieList = null).mediaList)
 
                 }
             }
@@ -93,14 +104,14 @@ class MainViewModel : ViewModel() {
                 var list = repository.fetchPlayingMovies()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                    nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
                 var list = repository.fetchPlayingTV()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                    nowPlayingMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
                 }
             }
 
@@ -119,14 +130,14 @@ class MainViewModel : ViewModel() {
                 var list = repository.fetchTopRatedMovies()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                    topRatedMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
                 var list = repository.fetchTopRatedTV()
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                    topRatedMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
                 }
             }
 
