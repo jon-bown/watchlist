@@ -14,11 +14,11 @@
 
 
 
-    <style name="MaterialAlertDialog_rounded" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="MaterialAlertDialog_rounded" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
     </style>
 
-    <style name="DialogCorners">
+    <style name="DialogCorners" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>

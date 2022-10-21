@@ -1,6 +1,5 @@
 package edu.utap.watchlist.ui.dashboard
 
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
@@ -8,16 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
+
 
 class DashboardFragment : Fragment() {
 
@@ -56,12 +54,30 @@ class DashboardFragment : Fragment() {
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setHint("Enter List Name")
         input.inputType = InputType.TYPE_CLASS_TEXT
-        //input.setPadding(6)
+
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        input.layoutParams = lp
+
+//        val param = input.layoutParams as ViewGroup.MarginLayoutParams
+//        param.setMargins(10,3,5,3)
+//        input.layoutParams = param
+//        //input.setPadding(6)
+
+        val title = TextView(binding.root.context)
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        title.text = "New List"
+        title.textSize = 20F
+        title.maxLines = 1
+        input.inputType = InputType.TYPE_CLASS_TEXT
 
 
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog_rounded)
-            .setTitle("New List")
+            //.setCustomTitle(title)
             .setView(input)
+            .setTitle("New List")
             .setPositiveButton("Add", DialogInterface.OnClickListener { dialog, which ->
                 // Here you get get input text from the Edittext
                 var m_Text = input.text.toString()
@@ -70,31 +86,6 @@ class DashboardFragment : Fragment() {
                 dialog.cancel() })
             .create().show()
 
-
-
-//
-//
-//        val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(binding.root.context, )
-//        builder.setTitle("New List")
-//
-//
-//
-//        // Set up the input
-//        val input = EditText(binding.root.context)
-//        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-//        input.setHint("Enter List Name")
-//        input.inputType = InputType.TYPE_CLASS_TEXT
-//        builder.setView(input)
-//
-//        // Set up the buttons
-//        builder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-//            // Here you get get input text from the Edittext
-//            var m_Text = input.text.toString()
-//        })
-//        builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
-//            dialog.cancel() })
-//
-//        builder.show()
     }
 
     override fun onDestroyView() {

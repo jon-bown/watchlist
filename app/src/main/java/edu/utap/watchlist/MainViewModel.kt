@@ -19,9 +19,9 @@ import okhttp3.internal.notifyAll
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel : ViewModel() {
-    private var displayName = MutableLiveData("Uninitialized")
-    private var email = MutableLiveData("Uninitialized")
-    private var uid = MutableLiveData("Uninitialized")
+    private var displayName = MutableLiveData("")
+    private var email = MutableLiveData("")
+    private var uid = MutableLiveData("")
     private var user: FirebaseUser? = null
     private var movieMode = AtomicBoolean(true)
 
