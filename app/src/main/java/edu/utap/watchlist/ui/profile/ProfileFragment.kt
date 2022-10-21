@@ -3,22 +3,20 @@ package edu.utap.watchlist.ui.profile
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.activity.viewModels
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.AuthInit
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
+import edu.utap.watchlist.api.Countries
+import edu.utap.watchlist.api.Languages
 import edu.utap.watchlist.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -71,6 +69,16 @@ class ProfileFragment : Fragment() {
             showDialog()
             //
         }
+
+
+        binding.adultSelector.setOnCheckedChangeListener { compoundButton, b ->
+            Log.d("Change Adult", b.toString())
+            viewModel.changeAdultMode(b)
+        }
+
+        initLanguageSpinner()
+        initCountrySpinner()
+
         return root
     }
 
@@ -114,6 +122,48 @@ class ProfileFragment : Fragment() {
                 dialog.cancel() })
             .create().show()
 
+    }
+
+
+    private fun initLanguageSpinner(){
+
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            binding.root.context,
+            android.R.layout.simple_spinner_dropdown_item, Languages.numbersMap.keys.toTypedArray())
+
+//        restaurantTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.languageSpinner.adapter = adapter
+
+        binding.languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                Log.d("Selected Language", position.toString())
+            }
+
+        }
+    }
+
+    private fun initCountrySpinner() {
+        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+            binding.root.context,
+            android.R.layout.simple_spinner_dropdown_item, Countries.countryList.toTypedArray())
+
+//        restaurantTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.countrySpinner.adapter = adapter
+
+        binding.countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                Log.d("Selected Country", position.toString())
+            }
+
+        }
     }
 
     override fun onDestroyView() {

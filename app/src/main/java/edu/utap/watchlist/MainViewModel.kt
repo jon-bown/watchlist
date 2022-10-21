@@ -24,6 +24,11 @@ class MainViewModel : ViewModel() {
     private var uid = MutableLiveData("")
     private var user: FirebaseUser? = null
     private var movieMode = AtomicBoolean(true)
+    //settings
+    private var adultMode = AtomicBoolean(false)
+    private var countrySetting = MutableLiveData("")
+    private var languageSetting = MutableLiveData("")
+
 
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
@@ -43,6 +48,7 @@ class MainViewModel : ViewModel() {
     }
     private val topRatedMediaItems = MutableLiveData<List<MediaItem>>()
     fun observeTopRatedMediaItems(): LiveData<List<MediaItem>> {
+
         return topRatedMediaItems
     }
 
@@ -260,6 +266,14 @@ class MainViewModel : ViewModel() {
             // ...
         }
     }
+
+
+    /////////SETTINGS////////
+    fun changeAdultMode(newValue: Boolean){
+        this.adultMode.set(newValue)
+        //push change to firebase
+    }
+
 
 
 

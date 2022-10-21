@@ -112,11 +112,12 @@
             android:text="Country Preference"
             android:textSize="20sp"
             />
-        <Button
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/countrySelector"
-            android:text="US"
+            android:layout_marginRight="8dp"
+            android:id="@+id/country_spinner"
+
             />
     </LinearLayout>
 
@@ -134,11 +135,11 @@
             android:text="Language"
             android:textSize="20sp"
             />
-        <Button
+        <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/languageSelector"
-            android:text="en-US"
+            android:id="@+id/language_spinner"
+            android:layout_marginRight="8dp"
             />
     </LinearLayout>
 
@@ -206,6 +207,19 @@
     <Space
         android:layout_width="match_parent"
         android:layout_height="30dp" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Data Sources"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+        />
+
 
 </LinearLayout>
 </ScrollView>
