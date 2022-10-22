@@ -13,7 +13,6 @@ import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaCardBinding
 import edu.utap.watchlist.ui.media.MediaItemView
-import edu.utap.watchlist.ui.mediaitem.MediaFragment
 
 
 class MediaCardAdapter(private val viewModel: MainViewModel, private val owner: LifecycleOwner)

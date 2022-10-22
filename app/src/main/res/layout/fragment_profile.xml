@@ -226,14 +226,25 @@
         android:orientation="horizontal"
         android:layout_margin="8dp"
         android:background="@drawable/bottom_border"
+        android:gravity="center"
         >
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/justwatch"
+            android:tag="https://www.justwatch.com"
+            android:onClick="openBrowser"/>
+        <Space
+            android:layout_width="30dp"
+            android:layout_height="match_parent" />
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/tmdb_400x400"
+            android:tag="https://www.themoviedb.org"
+            android:onClick="openBrowser"/>
     </LinearLayout>
 
 

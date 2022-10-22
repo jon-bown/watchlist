@@ -304,6 +304,7 @@ class MainViewModel : ViewModel() {
     /////////SETTINGS////////
     fun changeAdultMode(newValue: Boolean){
         adultMode.value = newValue
+        userDB.setAdultMode(newValue)
         //push change to firebase
     }
 

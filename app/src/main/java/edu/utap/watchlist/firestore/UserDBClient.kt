@@ -82,4 +82,62 @@ class UserDBClient {
     }
 
 
+    suspend fun getWatchLists(): List<WatchList> {
+        Log.d("ADULT MODE", "1")
+        val TAG = "INIT_USER"
+        val docRef = db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
+        val document = docRef.get().await()
+        if (document != null) {
+            Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+            userLists = document.data!!.get("lists") as List<WatchList>
+        } else {
+            Log.d(TAG, "No such document")
+            createDocument()
+
+        }
+        return userLists
+    }
+
+
+
+
+
+    fun setAdultMode(mode: Boolean) {
+        db.collection("users")
+            .document("dM2OT8ycb53ZqDTo6Lvd")
+            .update(mapOf(
+                "adult" to mode
+        ))
+    }
+
+    fun setLanguage(language: String) {
+        db.collection("users")
+            .document("dM2OT8ycb53ZqDTo6Lvd")
+            .update(mapOf(
+                "language" to language
+            ))
+    }
+
+    fun setCountry(country: String) {
+        db.collection("users")
+            .document("dM2OT8ycb53ZqDTo6Lvd")
+            .update(mapOf(
+                "country" to country
+            ))
+    }
+
+    private fun createDocument() {
+        val newUser = hashMapOf(
+            "adult" to false,
+            "language" to "en",
+            "country" to "US"
+        )
+
+        db.collection("cities").document(user!!.uid)
+            .set(newUser)
+            .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
+    }
+
+
 }

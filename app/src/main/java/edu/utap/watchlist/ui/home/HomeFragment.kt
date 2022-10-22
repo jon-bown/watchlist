@@ -23,7 +23,6 @@ import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentHomeBinding
 import edu.utap.watchlist.R
-import edu.utap.watchlist.ui.mediaitem.MediaFragment
 
 
 class HomeFragment : Fragment() {

@@ -1,18 +1,22 @@
 package edu.utap.watchlist
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.utap.firebaseauth.AuthInit
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -53,4 +57,18 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         AuthInit(viewModel, signInLauncher)
     }
+
+    fun openBrowser(view: View) {
+        //Get url from tag
+        val url = view.getTag() as String
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.addCategory(Intent.CATEGORY_BROWSABLE)
+
+        //pass the url to intent data
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+    }
+
+
 }
