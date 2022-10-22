@@ -1,18 +1,12 @@
-package edu.utap.watchlist
+package edu.utap.watchlist.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.activity.viewModels
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaCardBinding
-import androidx.fragment.app.commit
 import edu.utap.watchlist.ui.media.MediaItemView
 
 class MediaCardAdapter(private val viewModel: MainViewModel)
@@ -41,7 +35,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
         }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaCardAdapter.VH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val binding = MediaCardBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false)
@@ -51,7 +45,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
     }
 
 
-    override fun onBindViewHolder(holder: MediaCardAdapter.VH, position: Int) {
+    override fun onBindViewHolder(holder: VH, position: Int) {
         val binding = holder.binding
 
         media[position].let{

@@ -1,30 +1,20 @@
 package edu.utap.watchlist.ui.notifications
 
-import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
-import edu.utap.watchlist.MainActivity
-import edu.utap.watchlist.MediaAdapter
-import edu.utap.watchlist.MediaCardAdapter
+import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.FragmentNotificationsBinding
 

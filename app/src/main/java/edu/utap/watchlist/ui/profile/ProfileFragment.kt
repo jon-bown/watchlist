@@ -22,11 +22,17 @@ import edu.utap.watchlist.databinding.FragmentProfileBinding
 class ProfileFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
+
+
+
     private var _binding: FragmentProfileBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var countrySpinnerAdapter: ArrayAdapter<String>
+    private lateinit var languageSpinnerAdapter: ArrayAdapter<String>
 
     private val signInLauncher =
         registerForActivityResult(FirebaseAuthUIActivityResultContract()) {
@@ -43,8 +49,10 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        if(savedInstanceState == null) {
+        initSpinnerAdapters()
 
+        if(savedInstanceState == null) {
+            viewModel.populateUserData()
         }
         // XXX Write me. Set data to display in UI
         viewModel.observeDisplayName().observe(viewLifecycleOwner){
@@ -55,21 +63,39 @@ class ProfileFragment : Fragment() {
             binding.userEmail.text = it
         }
 
+        viewModel.observeCountrySetting().observe(viewLifecycleOwner){
+            //set selected country setting
+           val spinnerPosition = countrySpinnerAdapter.getPosition(it)
+            binding.countrySpinner.setSelection(spinnerPosition)
+        }
+
+        viewModel.observeLanguageSetting().observe(viewLifecycleOwner){ lang ->
+            //binding.languageSpinner.selected
+            //Set selected langugage setting
+        val languageKey = Languages.numbersMap.filter { lang == it.value }.keys.first()
+//
+            val spinnerPosition = languageSpinnerAdapter.getPosition(languageKey)
+           binding.languageSpinner.setSelection(spinnerPosition)
+
+        }
+
+        viewModel.observeAdultMode().observe(viewLifecycleOwner){
+            binding.adultSelector.isChecked = it
+        }
+
         binding.logoutBut.setOnClickListener {
             // XXX Write me.
             viewModel.signOut()
             AuthInit(viewModel, signInLauncher)
         }
-//        binding.loginBut.setOnClickListener {
-//            // XXX Write me.
-//            AuthInit(viewModel, signInLauncher)
-//        }
+
         binding.setDisplayName.setOnClickListener {
             // XXX Write me.
             showDialog()
             //
         }
 
+        binding.adultSelector.isChecked = viewModel.observeAdultMode().value as Boolean
 
         binding.adultSelector.setOnCheckedChangeListener { compoundButton, b ->
             Log.d("Change Adult", b.toString())
@@ -124,15 +150,24 @@ class ProfileFragment : Fragment() {
 
     }
 
-
-    private fun initLanguageSpinner(){
-
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+    fun initSpinnerAdapters() {
+        languageSpinnerAdapter = ArrayAdapter<String>(
             binding.root.context,
             android.R.layout.simple_spinner_dropdown_item, Languages.numbersMap.keys.toTypedArray())
 
-//        restaurantTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.languageSpinner.adapter = adapter
+        countrySpinnerAdapter = ArrayAdapter<String>(
+            binding.root.context,
+            android.R.layout.simple_spinner_dropdown_item, Countries.countriesMap.keys.toTypedArray())
+
+    }
+
+
+    private fun initLanguageSpinner(){
+
+
+        binding.languageSpinner.adapter = languageSpinnerAdapter
+
+        Log.d("SETTING", viewModel.observeLanguageSetting().value.toString())
 
         binding.languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -147,12 +182,12 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initCountrySpinner() {
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            binding.root.context,
-            android.R.layout.simple_spinner_dropdown_item, Countries.countryList.toTypedArray())
+
 
 //        restaurantTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.countrySpinner.adapter = adapter
+        binding.countrySpinner.adapter = countrySpinnerAdapter
+
+
 
         binding.countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {

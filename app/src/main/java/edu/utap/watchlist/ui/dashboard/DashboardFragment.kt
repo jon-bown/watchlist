@@ -11,8 +11,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
 
@@ -26,6 +31,23 @@ class DashboardFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var watchListAdapter: MediaAdapter
+
+    private fun initAdapter() {
+        //addListToAdapter()
+        //this.adapter = MediaAdapter()
+        this.watchListAdapter = MediaAdapter()
+    }
+
+
+
+    private fun initRecyclerViewDividers(rv: RecyclerView) {
+        // Let's have dividers between list items
+        val dividerItemDecoration = DividerItemDecoration(
+            rv.context, LinearLayoutManager.VERTICAL )
+        rv.addItemDecoration(dividerItemDecoration)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +64,8 @@ class DashboardFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             showDialog()
         }
-
+        initAdapter()
+        initWatchLists()
 
         return root
     }
@@ -85,6 +108,24 @@ class DashboardFragment : Fragment() {
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
                 dialog.cancel() })
             .create().show()
+
+    }
+
+
+    private fun initWatchLists() {
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.VERTICAL
+
+        binding.myWatchLists.layoutManager = manager
+        binding.myWatchLists.adapter = watchListAdapter
+        initRecyclerViewDividers(binding.myWatchLists)
+
+        viewModel.observeNowPlayingMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                watchListAdapter.submitMediaList(movieList)
+                watchListAdapter.notifyDataSetChanged()
+
+            })
 
     }
 

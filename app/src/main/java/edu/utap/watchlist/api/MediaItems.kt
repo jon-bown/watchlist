@@ -1,5 +1,7 @@
 package edu.utap.watchlist.api
 
+
+//List of MediaItem all in one single category
 class MediaItems(var tvList: List<TVShow>?, var movieList: List<Movie>?) {
 
     var mediaList =  listOf<MediaItem>()

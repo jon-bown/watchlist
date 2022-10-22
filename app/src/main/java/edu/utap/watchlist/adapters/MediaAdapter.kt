@@ -1,4 +1,4 @@
-package edu.utap.watchlist
+package edu.utap.watchlist.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

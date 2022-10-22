@@ -12,28 +12,44 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import edu.utap.watchlist.api.*
+import edu.utap.watchlist.firestore.UserDBClient
 import edu.utap.watchlist.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.internal.notifyAll
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel : ViewModel() {
+
+
+
     private var displayName = MutableLiveData("")
     private var email = MutableLiveData("")
     private var uid = MutableLiveData("")
     private var user: FirebaseUser? = null
     private var movieMode = AtomicBoolean(true)
     //settings
-    private var adultMode = AtomicBoolean(false)
-    private var countrySetting = MutableLiveData("")
+    private var adultMode = MutableLiveData(false)
+    fun observeAdultMode(): LiveData<Boolean> {
+        return adultMode
+    }
+    private var countrySetting = MutableLiveData("All")
+    fun observeCountrySetting(): LiveData<String> {
+        return countrySetting
+    }
     private var languageSetting = MutableLiveData("")
+    fun observeLanguageSetting(): LiveData<String> {
+        return languageSetting
+    }
 
 
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
     private val mediaItems = MutableLiveData<List<MediaItem>>()
     //User Lists
+
+
+    //Firebase
+    private var userDB = UserDBClient()
 
 
 
@@ -50,6 +66,10 @@ class MainViewModel : ViewModel() {
     fun observeTopRatedMediaItems(): LiveData<List<MediaItem>> {
 
         return topRatedMediaItems
+    }
+    private val userLists = MutableLiveData<List<WatchList>>()
+    fun observeUserLists(): LiveData<List<WatchList>> {
+        return userLists
     }
 
 
@@ -222,12 +242,14 @@ class MainViewModel : ViewModel() {
     fun updateUser() {
         // XXX Write me. Update user data in view model
         user = FirebaseAuth.getInstance().currentUser
+
         if(user == null) {
             displayName.postValue("No user")
             email.postValue("No email, no active user")
             uid.postValue("No uid, no active user")
         }
         else {
+            populateUserData()
             displayName.value = user?.displayName
             email.value = user?.email
             uid.value = user?.uid
@@ -257,6 +279,10 @@ class MainViewModel : ViewModel() {
             // Successfully signed in
             Log.d("SIGN IN GOOD", "COULD SIGN IN")
             user = FirebaseAuth.getInstance().currentUser
+
+            populateUserData()
+
+            //
             // ...
         } else {
             Log.d("SIGN IN ERROR", "COULDNT SIGN IN")
@@ -270,7 +296,7 @@ class MainViewModel : ViewModel() {
 
     /////////SETTINGS////////
     fun changeAdultMode(newValue: Boolean){
-        this.adultMode.set(newValue)
+        adultMode.value = newValue
         //push change to firebase
     }
 
@@ -310,4 +336,21 @@ class MainViewModel : ViewModel() {
     fun netFetchImage(imageView: ImageView, imagePath: String) {
         Glide.fetch(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
     }
+
+
+    ///////USER DATA//////////
+
+    fun populateUserData() {
+
+        val TAG = "VIEWMODEL"
+        adultMode.value = userDB.getAdultMode()
+        languageSetting.value = userDB.getLanguage()
+        countrySetting.value = userDB.getCountry()
+        //Lists
+
+        Log.d("POPULATE_L", userDB.getLanguage())
+        Log.d("POPULATE_C", userDB.getCountry())
+    }
+
+
 }
