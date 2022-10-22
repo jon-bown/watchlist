@@ -72,10 +72,13 @@ class ProfileFragment : Fragment() {
         viewModel.observeLanguageSetting().observe(viewLifecycleOwner){ lang ->
             //binding.languageSpinner.selected
             //Set selected langugage setting
-        val languageKey = Languages.numbersMap.filter { lang == it.value }.keys.first()
+            val languageKey = Languages.numbersMap.filter { lang == it.value }.keys
+            if(languageKey.isNotEmpty()){
+                val spinnerPosition = languageSpinnerAdapter.getPosition(languageKey.first())
+                binding.languageSpinner.setSelection(spinnerPosition)
+            }
 //
-            val spinnerPosition = languageSpinnerAdapter.getPosition(languageKey)
-           binding.languageSpinner.setSelection(spinnerPosition)
+
 
         }
 
@@ -84,7 +87,6 @@ class ProfileFragment : Fragment() {
         }
 
         binding.logoutBut.setOnClickListener {
-            // XXX Write me.
             viewModel.signOut()
             AuthInit(viewModel, signInLauncher)
         }
@@ -175,7 +177,8 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("Selected Language", position.toString())
+                Log.d("Selected Language", languageSpinnerAdapter.getItem(position).toString())
+                viewModel.changeLanguageSetting(languageSpinnerAdapter.getItem(position).toString())
             }
 
         }
@@ -195,7 +198,8 @@ class ProfileFragment : Fragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("Selected Country", position.toString())
+                Log.d("Selected Country", countrySpinnerAdapter.getItem(position).toString())
+                viewModel.changeCountrySetting(countrySpinnerAdapter.getItem(position).toString())
             }
 
         }

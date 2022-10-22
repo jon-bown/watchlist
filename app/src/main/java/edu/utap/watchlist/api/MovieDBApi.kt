@@ -25,7 +25,7 @@ interface MovieDBApi {
 
     // Movie Providers
     @GET("/3/movie/{movie}/watch/providers?api_key=${apikey.KEY}")
-    suspend fun getMovieProviders(@Path("movie") movie: String) : ProviderResponse
+    suspend fun getMovieProviders(@Path("movie") movie: String) : RegionMap
 
     //Similar
     @GET("/3/movie/{movie}/similar?api_key=${apikey.KEY}")
@@ -70,22 +70,21 @@ interface MovieDBApi {
 
     // Get TV Details
     @GET("/3/tv/{tv}?api_key=${apikey.KEY}")
-    suspend fun getTVDetails(@Path("tv") tv: String, @Query("language") lang: String,
-                             @Query("include_adult") adult: String): TVShow
+    suspend fun getTVDetails(@Path("tv") tv: String, @Query("language") lang: String): TVShow
 
 
     //TV Providers
     @GET("/3/tv/{tv}/watch/providers?api_key=${apikey.KEY}")
-    suspend fun getTVProviders(@Path("tv") tv: String) : ProviderResponse
+    suspend fun getTVProviders(@Path("tv") tv: String) : RegionMap
 
     //Similar
     @GET("/3/tv/{tv}/similar?api_key=${apikey.KEY}")
-    suspend fun getSimilarTV(@Path("tv") tv: String, @Query("language") lang: String, @Query("include_adult") adult: String) : MovieListResponse
+    suspend fun getSimilarTV(@Path("tv") tv: String, @Query("language") lang: String, @Query("include_adult") adult: String) : TVListResponse
 
 
     //Recommended
     @GET("/3/tv/{tv}/recommendations?api_key=${apikey.KEY}")
-    suspend fun getRecommendedTV(@Path("tv") tv: String, @Query("language") lang: String, @Query("include_adult") adult: String) : MovieListResponse
+    suspend fun getRecommendedTV(@Path("tv") tv: String, @Query("language") lang: String, @Query("include_adult") adult: String) : TVListResponse
 
 
     //Get TV Airing Today
@@ -114,11 +113,11 @@ interface MovieDBApi {
 
     //Trending today
     @GET("/3/trending/tv/day?api_key=${apikey.KEY}")
-    suspend fun getTVTrendingToday(@Query("language") lang: String, @Query("include_adult") adult: String) : MovieListResponse
+    suspend fun getTVTrendingToday(@Query("language") lang: String, @Query("include_adult") adult: String) : TVListResponse
 
     //Trending this week
     @GET("/3/trending/tv/week?api_key=${apikey.KEY}")
-    suspend fun getTVTrendingWeek(@Query("language") lang: String, @Query("include_adult") adult: String) : MovieListResponse
+    suspend fun getTVTrendingWeek(@Query("language") lang: String, @Query("include_adult") adult: String) : TVListResponse
 
 
 
@@ -130,7 +129,8 @@ interface MovieDBApi {
     data class TVResponse(val data: TVShow)
     data class TVListResponse(val results: List<TVShow>)
 
-    data class ProviderResponse(val results: List<RegionContainer>)
+    //data class ProviderResponse(val results: List<RegionContainer>)
+    data class RegionMap(val results: Map<String, RegionContainer>)
 
 
     //SEARCH

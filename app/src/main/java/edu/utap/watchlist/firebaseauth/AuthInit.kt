@@ -50,7 +50,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
         } else {
             Log.d(TAG, "XXX user ${user.displayName} email ${user.email}")
             viewModel.updateUser()
-            viewModel.populateUserData()
         }
     }
 }

@@ -1,18 +1,36 @@
 package edu.utap.watchlist.adapters
 
+import android.R
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaCardBinding
 import edu.utap.watchlist.ui.media.MediaItemView
+import edu.utap.watchlist.ui.mediaitem.MediaFragment
 
-class MediaCardAdapter(private val viewModel: MainViewModel)
+
+class MediaCardAdapter(private val viewModel: MainViewModel, private val owner: LifecycleOwner)
     : RecyclerView.Adapter<MediaCardAdapter.VH>()  {
 
+    companion object keys {
+        const val TYPE = "mediaType"
+        const val ID = "mediaID"
+        const val LANG = "language"
+        const val COUNTRY = "country"
+
+    }
+
     private var media = mutableListOf<MediaItem>()
+    private var languageSetting = ""
+
+
 
     inner class VH(val binding: MediaCardBinding)
         : RecyclerView.ViewHolder(binding.root) {
@@ -20,15 +38,19 @@ class MediaCardAdapter(private val viewModel: MainViewModel)
             //XXX Write me.
             binding.root.setOnClickListener {
 
-                //open media item fragment
-                val intent = Intent(binding.root.context, MediaItemView::class.java).also {
-                    //pass media item view
+
+                val intent = Intent(binding.root.context, MediaItemView::class.java).also { tent ->
+                    tent.putExtra(keys.TYPE, media[adapterPosition].mediaType)
+                    tent.putExtra(keys.ID, media[adapterPosition].id.toString())
+
+                    tent.putExtra(keys.LANG, viewModel.observeLanguageSetting().value)
+
+                    tent.putExtra(keys.COUNTRY, viewModel.observeCountrySetting().value)
 
                 }
-
                 //launch activity from result launcher
                 binding.root.context.startActivity(intent)
-
+                //clickListener(media[adapterPosition])
             }
 
         }

@@ -2,19 +2,29 @@ package edu.utap.watchlist.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.adapters.MediaCardAdapter
-import edu.utap.watchlist.R
+import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentHomeBinding
+import edu.utap.watchlist.R
+import edu.utap.watchlist.ui.mediaitem.MediaFragment
+
 
 class HomeFragment : Fragment() {
 
@@ -38,12 +48,18 @@ class HomeFragment : Fragment() {
     }
 
 
+    private fun initMediaView(item: MediaItem) {
+
+
+    }
+
+
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.popularAdapter = MediaCardAdapter(viewModel)
-        this.nowPlayingAdapter = MediaCardAdapter(viewModel)
-        this.topRatedAdapter = MediaCardAdapter(viewModel)
+        this.popularAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
+        this.nowPlayingAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
+        this.topRatedAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
 
     }
 
@@ -131,6 +147,11 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
 
+
+        if(savedInstanceState == null) {
+            viewModel.populateUserData()
+        }
+
         initMainSelector()
         initSubSelector()
 
@@ -214,6 +235,7 @@ class HomeFragment : Fragment() {
 
 
     }
+
 
 
     private fun resetSelectorBackgroundColor(){

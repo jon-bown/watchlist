@@ -25,20 +25,40 @@ class MainViewModel : ViewModel() {
     private var displayName = MutableLiveData("")
     private var email = MutableLiveData("")
     private var uid = MutableLiveData("")
-    private var user: FirebaseUser? = null
     private var movieMode = AtomicBoolean(true)
+    fun getMediaMode(): Boolean {
+        return movieMode.get()
+    }
     //settings
     private var adultMode = MutableLiveData(false)
     fun observeAdultMode(): LiveData<Boolean> {
         return adultMode
     }
+
     private var countrySetting = MutableLiveData("All")
+    private var countrySet = ""
+    fun getCountry(): String {
+        return countrySet
+    }
     fun observeCountrySetting(): LiveData<String> {
         return countrySetting
     }
+    fun changeCountrySetting(newValue: String) {
+        countrySetting.value = newValue
+        countrySet = newValue
+    }
+
     private var languageSetting = MutableLiveData("")
+    private var languageSet = ""
+    fun getLanguage(): String {
+        return languageSet
+    }
     fun observeLanguageSetting(): LiveData<String> {
         return languageSetting
+    }
+    fun changeLanguageSetting(newValue: String) {
+        languageSetting.value = newValue
+        languageSet = newValue
     }
 
 
@@ -102,14 +122,14 @@ class MainViewModel : ViewModel() {
             // Update LiveData from IO dispatcher, use postValue
 
             if(movieMode.get()){
-                var list = repository.fetchPopularMovies()
+                var list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     popularMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchPopularTV()
+                var list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     popularMediaItems.postValue(MediaItems(list, movieList = null).mediaList)
@@ -127,14 +147,14 @@ class MainViewModel : ViewModel() {
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchPlayingMovies()
+                var list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchPlayingTV()
+                var list = repository.fetchPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     nowPlayingMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -153,14 +173,14 @@ class MainViewModel : ViewModel() {
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchTopRatedMovies()
+                var list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     topRatedMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchTopRatedTV()
+                var list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     topRatedMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -180,14 +200,14 @@ class MainViewModel : ViewModel() {
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchSearchMovies(query)
+                var list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchSearchTV(query)
+                var list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -241,19 +261,8 @@ class MainViewModel : ViewModel() {
 
     fun updateUser() {
         // XXX Write me. Update user data in view model
-        user = FirebaseAuth.getInstance().currentUser
 
-        if(user == null) {
-            displayName.postValue("No user")
-            email.postValue("No email, no active user")
-            uid.postValue("No uid, no active user")
-        }
-        else {
-            populateUserData()
-            displayName.value = user?.displayName
-            email.value = user?.email
-            uid.value = user?.uid
-        }
+        populateUserData()
 
     }
 
@@ -269,7 +278,7 @@ class MainViewModel : ViewModel() {
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
         userLogout()
-        user = null
+        //userDB.signOut
     }
 
 
@@ -278,8 +287,6 @@ class MainViewModel : ViewModel() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             Log.d("SIGN IN GOOD", "COULD SIGN IN")
-            user = FirebaseAuth.getInstance().currentUser
-
             populateUserData()
 
             //
@@ -343,13 +350,25 @@ class MainViewModel : ViewModel() {
     fun populateUserData() {
 
         val TAG = "VIEWMODEL"
-        adultMode.value = userDB.getAdultMode()
-        languageSetting.value = userDB.getLanguage()
-        countrySetting.value = userDB.getCountry()
+        //languageSetting.postValue(userDB.getLanguage())
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            languageSetting.postValue(userDB.getLanguage())
+            countrySetting.postValue(userDB.getCountry())
+            adultMode.postValue(userDB.getAdultMode())
+            fetchDone.postValue(true)
+        }
+
+
+//        displayName.postValue(userDB.displayName)
+//        email.value = userDB.email
+//        uid.value = userDB.uid
         //Lists
 
-        Log.d("POPULATE_L", userDB.getLanguage())
-        Log.d("POPULATE_C", userDB.getCountry())
+        Log.d("POPULATE_L", languageSetting.value!!)
+        Log.d("POPULATE_C", countrySetting.value!!)
     }
 
 
