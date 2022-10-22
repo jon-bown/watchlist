@@ -6,27 +6,11 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
-
-    <fragment
-        android:id="@+id/OneMediaFragment"
-        android:name="edu.utap.watchlist.ui.mediaitem.MediaFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_media">
-    </fragment>
-
-
-
     <fragment
         android:id="@+id/navigation_home"
         android:name="edu.utap.watchlist.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
-    <action
-        android:id="@+id/action_home_to_OneMediaFragment"
-        app:destination="@id/OneMediaFragment"
-        app:enterAnim="@android:anim/fade_in"
-        app:exitAnim="@android:anim/fade_out">
-    </action>
 
     <fragment
         android:id="@+id/navigation_dashboard"

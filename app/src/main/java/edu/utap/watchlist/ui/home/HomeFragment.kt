@@ -132,9 +132,6 @@ class HomeFragment : Fragment() {
                 topRatedAdapter.notifyDataSetChanged()
 
             })
-
-
-
     }
 
     override fun onCreateView(
@@ -153,7 +150,6 @@ class HomeFragment : Fragment() {
         }
 
         initMainSelector()
-        initSubSelector()
 
         //Start Lists
         initAdapter()
@@ -201,57 +197,8 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun initSubSelector() {
-        binding.popular.setOnClickListener {
-            binding.listType.check(R.id.popular)
-            listDisplayType = "popular"
-            resetSelectorBackgroundColor()
-            it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.netRefresh()
-            notifiyAdaptersChanged()
-        }
-        binding.nowPlaying.setOnClickListener {
-            binding.listType.check(R.id.nowPlaying)
-            listDisplayType = "nowPlaying"
-            resetSelectorBackgroundColor()
-            it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.netRefresh()
-            notifiyAdaptersChanged()
-        }
-        binding.topRated.setOnClickListener {
-            binding.listType.check(R.id.topRated)
-            listDisplayType = "topRated"
-            resetSelectorBackgroundColor()
-            it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.netRefresh()
-            notifiyAdaptersChanged()
-        }
-        binding.listType.check(R.id.popular)
-        binding.popular.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        binding.listType.setOnCheckedChangeListener { radioGroup, i ->
-            binding.listType.check(i)
-        }
 
 
 
-    }
 
-
-
-    private fun resetSelectorBackgroundColor(){
-        binding.nowPlaying.setBackgroundColor(Color.TRANSPARENT)
-        binding.popular.setBackgroundColor(Color.TRANSPARENT)
-        binding.topRated.setBackgroundColor(Color.TRANSPARENT)
-
-        //update current selection
-        if(listDisplayType == "nowPlaying"){
-            binding.nowPlaying.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        }
-        else if(listDisplayType == "popular"){
-            binding.popular.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        }
-        else if(listDisplayType == "topRated"){
-            binding.topRated.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        }
-    }
 }

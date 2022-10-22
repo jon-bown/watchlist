@@ -40,36 +40,6 @@
     </edu.utap.watchlist.components.SegmentedControl>
 
 
-    <edu.utap.watchlist.components.SegmentedControl
-        android:id="@+id/listType"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
-        android:layout_margin="8dp"
-        >
-        <edu.utap.watchlist.components.SegmentedControlButton
-            android:id="@+id/popular"
-            android:text="Popular"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:checked="true"
-            android:textAlignment="center"/>
-        <edu.utap.watchlist.components.SegmentedControlButton
-            android:id="@+id/nowPlaying"
-            android:text="Now Playing"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:checked="false"
-            android:textAlignment="center"
-            />
-        <edu.utap.watchlist.components.SegmentedControlButton
-            android:id="@+id/topRated"
-            android:text="Top Rated"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:checked="false"
-            android:textAlignment="center"/>
-    </edu.utap.watchlist.components.SegmentedControl>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
