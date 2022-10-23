@@ -3,11 +3,14 @@ package edu.utap.watchlist
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -68,6 +71,16 @@ class MainActivity : AppCompatActivity() {
         //pass the url to intent data
         intent.data = Uri.parse(url)
         startActivity(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == android.R.id.home) {
+            //findNavController().popBackStack()
+            Log.d("BACK BUTTON", "HELLO")
+            findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
+        }
+        return true
     }
 
 

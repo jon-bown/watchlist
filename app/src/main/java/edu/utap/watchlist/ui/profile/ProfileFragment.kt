@@ -5,11 +5,16 @@ import android.os.Bundle
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.AuthInit
@@ -54,6 +59,28 @@ class ProfileFragment : Fragment() {
         if(savedInstanceState == null) {
             viewModel.populateUserData()
         }
+
+        binding.languageContainer.setOnClickListener {
+            val bundle = bundleOf("type" to "language")
+            findNavController().navigate(R.id.navigation_stringList, bundle)
+
+
+
+//            parentFragmentManager.commit {
+//                add(R.id.nav_host_fragment_activity_main, SelectionList.newInstance("language"), "Favorites")
+//                addToBackStack(null)
+//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//            }
+            //findNavController().navigate()
+            //findNavController().navigate(R.id.navigation_stringList, null, SelectionList.newInstance("language"))
+        }
+
+
+        binding.countryContainer.setOnClickListener {
+            val bundle = bundleOf("type" to "country")
+            findNavController().navigate(R.id.navigation_stringList, bundle)
+        }
+
         // XXX Write me. Set data to display in UI
         viewModel.observeDisplayName().observe(viewLifecycleOwner){
             binding.userName.text = it
@@ -206,6 +233,7 @@ class ProfileFragment : Fragment() {
 
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
