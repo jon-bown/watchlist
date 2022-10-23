@@ -21,7 +21,12 @@ class MediaAdapter(private val viewModel: MainViewModel): RecyclerView.Adapter<M
                 init {
                     binding.root.setOnClickListener {
                         val intent = Intent(binding.root.context, MediaItemView::class.java).also { tent ->
-                            tent.putExtra(MediaCardAdapter.TYPE, media[adapterPosition].mediaType)
+                            if(viewModel.getMediaMode()){
+                                tent.putExtra(MediaCardAdapter.TYPE, "Movie")
+                            }
+                            else {
+                                tent.putExtra(MediaCardAdapter.TYPE, "TV")
+                            }
                             tent.putExtra(MediaCardAdapter.ID, media[adapterPosition].id.toString())
 
                             tent.putExtra(MediaCardAdapter.LANG, viewModel.observeLanguageSetting().value)

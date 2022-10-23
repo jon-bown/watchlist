@@ -1,4 +1,4 @@
-package edu.utap.watchlist.ui.notifications
+package edu.utap.watchlist.ui.search
 
 import android.graphics.Color
 import android.os.Bundle
@@ -18,7 +18,7 @@ import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.FragmentNotificationsBinding
 
-class NotificationsFragment : Fragment() {
+class SearchFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
 

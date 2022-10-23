@@ -73,7 +73,16 @@ class SelectionList : Fragment() {
         _binding = FragmentSelectionListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        this.adapter = StringListAdapter()
+
+        //pass on click listener
+        if(args.type == "country"){
+            this.adapter = StringListAdapter(::onCountrySelectionMadeListener)
+        }
+        else {
+            this.adapter = StringListAdapter(::onLanguageSelectionMadeListener)
+        }
+
+
 
 
         //Linear
@@ -86,12 +95,22 @@ class SelectionList : Fragment() {
         initRecyclerViewDividers(binding.selectionList)
 
         if(args.type == "country"){
-            adapter.submitList(Countries.countriesMap.keys.toMutableList())
-            adapter.notifyDataSetChanged()
+            viewModel.observeCountrySetting().observe(viewLifecycleOwner) { country ->
+                val countryKey = Countries.countriesMap.filter { country == it.value }.keys
+                if(countryKey.isNotEmpty()){
+                    adapter.submitList(Countries.countriesMap.keys.toMutableList(), countryKey.first())
+                    adapter.notifyDataSetChanged()
+                }
+            }
         }
         else {
-            adapter.submitList(Languages.languageMap.keys.toMutableList())
-            adapter.notifyDataSetChanged()
+            viewModel.observeLanguageSetting().observe(viewLifecycleOwner) { lang ->
+                val languageKey = Languages.languageMap.filter { lang == it.value }.keys
+                if(languageKey.isNotEmpty()){
+                    adapter.submitList(Languages.languageMap.keys.toMutableList(), languageKey.first())
+                    adapter.notifyDataSetChanged()
+                }
+            }
         }
 
         return root
@@ -99,6 +118,14 @@ class SelectionList : Fragment() {
 
 
     //set on click listener for the adapter
+
+    private fun onCountrySelectionMadeListener(selection: String) {
+
+        this.viewModel.changeCountrySetting(Countries.countriesMap[selection]!!)
+    }
+    private fun onLanguageSelectionMadeListener(selection: String) {
+        this.viewModel.changeLanguageSetting(Languages.languageMap[selection]!!)
+    }
 
 
     companion object {

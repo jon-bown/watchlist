@@ -90,22 +90,20 @@ class ProfileFragment : Fragment() {
             binding.userEmail.text = it
         }
 
-        viewModel.observeCountrySetting().observe(viewLifecycleOwner){
+        viewModel.observeCountrySetting().observe(viewLifecycleOwner){ country ->
             //set selected country setting
-           val spinnerPosition = countrySpinnerAdapter.getPosition(it)
-            binding.countrySpinner.setSelection(spinnerPosition)
+            val countryKey = Countries.countriesMap.filter { country == it.value }.keys
+            if(countryKey.isNotEmpty()){
+                binding.countrySelection.text = countryKey.first()
+            }
         }
 
         viewModel.observeLanguageSetting().observe(viewLifecycleOwner){ lang ->
-            //binding.languageSpinner.selected
             //Set selected langugage setting
             val languageKey = Languages.languageMap.filter { lang == it.value }.keys
             if(languageKey.isNotEmpty()){
-                val spinnerPosition = languageSpinnerAdapter.getPosition(languageKey.first())
-                binding.languageSpinner.setSelection(spinnerPosition)
+                binding.languageSelection.text = languageKey.first()
             }
-//
-
 
         }
 
@@ -131,8 +129,6 @@ class ProfileFragment : Fragment() {
             viewModel.changeAdultMode(b)
         }
 
-        initLanguageSpinner()
-        initCountrySpinner()
 
         return root
     }
@@ -191,48 +187,6 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun initLanguageSpinner(){
-
-
-        binding.languageSpinner.adapter = languageSpinnerAdapter
-
-        Log.d("SETTING", viewModel.observeLanguageSetting().value.toString())
-
-        binding.languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("Selected Language", languageSpinnerAdapter.getItem(position).toString())
-//                val newLangKey = Languages.languageMap[languageSpinnerAdapter.getItem(position).toString()]
-//                viewModel.changeLanguageSetting(newLangKey!!)
-            }
-
-        }
-    }
-
-    private fun initCountrySpinner() {
-
-
-//        restaurantTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.countrySpinner.adapter = countrySpinnerAdapter
-
-
-
-        binding.countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Log.d("Selected Country", countrySpinnerAdapter.getItem(position).toString())
-                val newCountryKey = Countries.countriesMap[countrySpinnerAdapter.getItem(position).toString()]
-                viewModel.changeCountrySetting(newCountryKey!!)
-            }
-
-        }
-    }
 
 
     override fun onDestroyView() {

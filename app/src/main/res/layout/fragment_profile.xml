@@ -90,10 +90,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:text="Settings"
-        android:textSize="30sp"
-        android:textAlignment="center"
+        android:textSize="25sp"
+        android:textAlignment="viewStart"
         android:textStyle="bold"
         android:layout_margin="8dp"
         />
@@ -114,13 +113,19 @@
             android:text="Country"
             android:textSize="20sp"
             />
-        <Spinner
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/country_spinner"
-            android:layout_weight="0.5"
-
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:id="@+id/countrySelection"
+            android:textAlignment="viewEnd"
             />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_marginLeft="8dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -137,14 +142,21 @@
             android:layout_height="wrap_content"
             android:text="Language"
             android:textSize="20sp"
-
+            android:textAlignment="viewStart"
             />
-        <Spinner
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/language_spinner"
-            android:layout_marginRight="4dp"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:id="@+id/languageSelection"
+            android:textAlignment="viewEnd"
             />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+            android:layout_marginLeft="8dp"/>
     </LinearLayout>
 
     <LinearLayout

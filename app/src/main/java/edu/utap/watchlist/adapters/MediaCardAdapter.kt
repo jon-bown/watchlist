@@ -39,7 +39,13 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val owner: 
 
 
                 val intent = Intent(binding.root.context, MediaItemView::class.java).also { tent ->
-                    tent.putExtra(keys.TYPE, media[adapterPosition].mediaType)
+                    if(viewModel.getMediaMode()){
+                        tent.putExtra(keys.TYPE, "Movie")
+                    }
+                    else {
+                        tent.putExtra(keys.TYPE, "TV")
+                    }
+
                     tent.putExtra(keys.ID, media[adapterPosition].id.toString())
 
                     tent.putExtra(keys.LANG, viewModel.observeLanguageSetting().value)
