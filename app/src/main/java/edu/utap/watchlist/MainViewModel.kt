@@ -45,6 +45,7 @@ class MainViewModel : ViewModel() {
     }
     fun changeCountrySetting(newValue: String) {
         countrySetting.value = newValue
+        userDB.setCountry(newValue)
         countrySet = newValue
     }
 
@@ -58,6 +59,7 @@ class MainViewModel : ViewModel() {
     }
     fun changeLanguageSetting(newValue: String) {
         languageSetting.value = newValue
+        userDB.setLanguage(newValue)
         languageSet = newValue
     }
 

@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
         viewModel.observeLanguageSetting().observe(viewLifecycleOwner){ lang ->
             //binding.languageSpinner.selected
             //Set selected langugage setting
-            val languageKey = Languages.numbersMap.filter { lang == it.value }.keys
+            val languageKey = Languages.languageMap.filter { lang == it.value }.keys
             if(languageKey.isNotEmpty()){
                 val spinnerPosition = languageSpinnerAdapter.getPosition(languageKey.first())
                 binding.languageSpinner.setSelection(spinnerPosition)
@@ -155,7 +155,7 @@ class ProfileFragment : Fragment() {
     fun initSpinnerAdapters() {
         languageSpinnerAdapter = ArrayAdapter<String>(
             binding.root.context,
-            android.R.layout.simple_spinner_dropdown_item, Languages.numbersMap.keys.toTypedArray())
+            android.R.layout.simple_spinner_dropdown_item, Languages.languageMap.keys.toTypedArray())
 
         countrySpinnerAdapter = ArrayAdapter<String>(
             binding.root.context,
@@ -178,7 +178,8 @@ class ProfileFragment : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 Log.d("Selected Language", languageSpinnerAdapter.getItem(position).toString())
-                viewModel.changeLanguageSetting(languageSpinnerAdapter.getItem(position).toString())
+//                val newLangKey = Languages.languageMap[languageSpinnerAdapter.getItem(position).toString()]
+//                viewModel.changeLanguageSetting(newLangKey!!)
             }
 
         }
@@ -199,7 +200,8 @@ class ProfileFragment : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 Log.d("Selected Country", countrySpinnerAdapter.getItem(position).toString())
-                viewModel.changeCountrySetting(countrySpinnerAdapter.getItem(position).toString())
+                val newCountryKey = Countries.countriesMap[countrySpinnerAdapter.getItem(position).toString()]
+                viewModel.changeCountrySetting(newCountryKey!!)
             }
 
         }
