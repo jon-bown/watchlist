@@ -56,9 +56,9 @@ class HomeFragment : Fragment() {
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.popularAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
-        this.nowPlayingAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
-        this.topRatedAdapter = MediaCardAdapter(viewModel, viewLifecycleOwner)
+        this.popularAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        this.nowPlayingAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        this.topRatedAdapter = MediaCardAdapter(viewModel, ::openMediaView)
 
     }
 
@@ -68,9 +68,16 @@ class HomeFragment : Fragment() {
         topRatedAdapter.notifyDataSetChanged()
     }
 
+    fun openMediaView(item: MediaItem) {
+        viewModel.setUpCurrentMediaData(item)
+
+
+        findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
+                NavOptions.Builder().setLaunchSingleTop(true).build())
+    }
+
 
     fun initPopularList() {
-
         //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL

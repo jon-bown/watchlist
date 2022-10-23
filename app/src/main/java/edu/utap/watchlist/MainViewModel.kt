@@ -68,10 +68,77 @@ class MainViewModel : ViewModel() {
     private val repository = MediaRepository(movieApi)
     private val mediaItems = MutableLiveData<List<MediaItem>>()
     //User Lists
-
+    private val watchLists = MutableLiveData<List<WatchList>>()
+    fun observeWatchLists(): LiveData<List<WatchList>> {
+        return watchLists
+    }
+    fun addNewWatchList(name: String){
+        var currentLists = mutableListOf<WatchList>()
+        if(watchLists.value != null) {
+            currentLists.addAll(watchLists.value!!)
+        }
+        TODO("Add error if list already exists")
+        currentLists.add(WatchList(name, mutableListOf<MediaItem>()))
+        watchLists.postValue(currentLists)
+    }
+    fun addToWatchList() {
+        TODO("Add media item to watch list")
+    }
 
     //Firebase
     private var userDB = UserDBClient()
+
+
+
+
+    //Specific media item
+    private val currentMediaItem = MutableLiveData<MediaItem>()
+    fun observeCurrentMediaItem(): LiveData<MediaItem> {
+        return currentMediaItem
+    }
+
+    private val currentMovie = MutableLiveData<Movie>()
+    fun observeCurrentMovie(): LiveData<Movie> {
+        return currentMovie
+    }
+    private val currentTV = MutableLiveData<TVShow>()
+    fun observeCurrentTV(): LiveData<TVShow> {
+        return currentTV
+    }
+
+    fun setUpCurrentMediaData(item: MediaItem) {
+        // This is where the network request is initiated.
+        currentMediaItem.value = item
+        if(item.type == "MOVIE"){
+            fetchCurrentMovie()
+        }
+        else {
+            fetchCurrentTV()
+        }
+    }
+
+    fun fetchCurrentMovie() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            currentMovie.postValue(repository.fetchMovieDetails(currentMediaItem.value!!.id.toString(),
+                "${languageSetting.value}-${countrySetting.value}"))
+            fetchDone.postValue(true)
+        }
+    }
+
+    fun fetchCurrentTV() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            currentTV.postValue(repository.fetchTVDetails(currentMediaItem.value!!.id.toString(),
+                "${languageSetting.value}-${countrySetting.value}"))
+            fetchDone.postValue(true)
+        }
+    }
+
 
 
 
@@ -346,6 +413,11 @@ class MainViewModel : ViewModel() {
     fun netFetchImage(imageView: ImageView, imagePath: String) {
         Glide.fetch(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
     }
+
+    fun netFetchBackdropImage(imageView: ImageView, imagePath: String) {
+        Glide.fetchBackdrop(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
+    }
+
 
 
     ///////USER DATA//////////

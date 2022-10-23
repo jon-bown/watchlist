@@ -19,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
+import edu.utap.watchlist.adapters.StringListAdapter
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
 
 
@@ -32,12 +33,12 @@ class DashboardFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var watchListAdapter: MediaAdapter
+    private lateinit var watchListAdapter: StringListAdapter
 
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.watchListAdapter = MediaAdapter(viewModel)
+        this.watchListAdapter = StringListAdapter()
     }
 
 
@@ -103,7 +104,10 @@ class DashboardFragment : Fragment() {
             .setTitle("New List")
             .setPositiveButton("Add", DialogInterface.OnClickListener { dialog, which ->
                 // Here you get get input text from the Edittext
-                var m_Text = input.text.toString()
+                var listName = input.text.toString()
+                //save watchlist
+                viewModel.addNewWatchList(listName)
+
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
                 dialog.cancel() })
@@ -120,13 +124,22 @@ class DashboardFragment : Fragment() {
         binding.myWatchLists.adapter = watchListAdapter
         initRecyclerViewDividers(binding.myWatchLists)
 
-        viewModel.observeNowPlayingMediaItems().observe(viewLifecycleOwner,
+        viewModel.observeWatchLists().observe(viewLifecycleOwner,
             Observer { movieList ->
-                watchListAdapter.submitMediaList(movieList)
+                val listNames = movieList.map{
+                    it.name
+                }
+                watchListAdapter.submitList(listNames)
                 watchListAdapter.notifyDataSetChanged()
 
             })
 
+    }
+
+    //passed to adapter
+    private fun onWatchListClickListener() {
+        //open singlewatchlistview fragment
+        TODO("Open single watchlist view")
     }
 
     override fun onDestroyView() {

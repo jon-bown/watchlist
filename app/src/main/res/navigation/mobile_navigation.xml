@@ -10,7 +10,17 @@
         android:id="@+id/navigation_home"
         android:name="edu.utap.watchlist.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_media"
+            app:destination="@id/navigation_media"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/navigation_media"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -44,7 +54,18 @@
         android:id="@+id/navigation_notifications"
         android:name="edu.utap.watchlist.ui.search.SearchFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications">
+        <action
+            android:id="@+id/action_search_to_media"
+            app:destination="@id/navigation_media"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/navigation_media"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
 
     <fragment
         android:id="@+id/navigation_profile"
@@ -79,6 +100,45 @@
             android:name="type"
             app:argType="string"
             android:defaultValue="" />
+
+    </fragment>
+
+
+
+
+
+    <fragment
+        android:id="@+id/navigation_media"
+        android:name="edu.utap.watchlist.ui.media.MediaItemViewFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_media_item_view">
+        <action
+            android:id="@+id/action_media_to_watchlist"
+            app:destination="@id/navigation_selectionList"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim">
+
+        </action>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_selectionList"
+        android:name="edu.utap.watchlist.ui.watchlist.WatchListCheckView"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_watch_list_check_view">
+        <action
+            android:id="@+id/action_watchlist_to_media"
+            app:destination="@id/navigation_media"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/navigation_media"
+            app:popUpToInclusive="true"/>
+
 
     </fragment>
 

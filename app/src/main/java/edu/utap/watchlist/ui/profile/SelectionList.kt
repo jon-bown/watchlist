@@ -1,29 +1,20 @@
 package edu.utap.watchlist.ui.profile
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavArgs
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
-import edu.utap.watchlist.R
-import edu.utap.watchlist.adapters.MediaAdapter
-import edu.utap.watchlist.adapters.StringListAdapter
+import edu.utap.watchlist.adapters.StringListSelectionAdapter
 import edu.utap.watchlist.api.Countries
 import edu.utap.watchlist.api.Languages
-import edu.utap.watchlist.databinding.FragmentHomeBinding
-import edu.utap.watchlist.databinding.FragmentNotificationsBinding
 import edu.utap.watchlist.databinding.FragmentSelectionListBinding
-import io.grpc.NameResolver.Args
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +32,7 @@ class SelectionList : Fragment() {
 
     private var _binding: FragmentSelectionListBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: StringListAdapter
+    private lateinit var adapter: StringListSelectionAdapter
 
     private val args: SelectionListArgs by navArgs()
 
@@ -76,10 +67,10 @@ class SelectionList : Fragment() {
 
         //pass on click listener
         if(args.type == "country"){
-            this.adapter = StringListAdapter(::onCountrySelectionMadeListener)
+            this.adapter = StringListSelectionAdapter(::onCountrySelectionMadeListener)
         }
         else {
-            this.adapter = StringListAdapter(::onLanguageSelectionMadeListener)
+            this.adapter = StringListSelectionAdapter(::onLanguageSelectionMadeListener)
         }
 
 

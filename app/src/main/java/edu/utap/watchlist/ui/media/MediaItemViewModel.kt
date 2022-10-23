@@ -18,57 +18,14 @@ class MediaItemViewModel: ViewModel() {
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
     var fetchDone : MutableLiveData<Boolean> = MutableLiveData(false)
-    private val currentMovie = MutableLiveData<Movie>()
-    fun observeCurrentMovie(): LiveData<Movie> {
-        return currentMovie
-    }
-    private val currentTV = MutableLiveData<TVShow>()
-    fun observeCurrentTV(): LiveData<TVShow> {
-        return currentTV
-    }
-    private val mediaType = MutableLiveData("")
-    private val mediaID = MutableLiveData("")
+
+
+
     private val languageSetting = MutableLiveData("")
     private val countrySetting = MutableLiveData("")
 
 
 
-    fun setUpData(type: String, id: String, language: String, country: String) {
-        // This is where the network request is initiated.
-        mediaType.value = type
-        mediaID.value = id
-        languageSetting.value = language
-        countrySetting.value = country
-
-        if(mediaType.value == "Movie"){
-            fetchCurrentMovie()
-        }
-        else {
-            fetchCurrentTV()
-        }
-    }
-
-    fun fetchCurrentMovie() {
-        viewModelScope.launch(
-            context = viewModelScope.coroutineContext
-                    + Dispatchers.IO
-        ) {
-                currentMovie.postValue(repository.fetchMovieDetails(mediaID.value!!,
-                    "${languageSetting}-${countrySetting}"))
-                fetchDone.postValue(true)
-        }
-    }
-
-    fun fetchCurrentTV() {
-        viewModelScope.launch(
-            context = viewModelScope.coroutineContext
-                    + Dispatchers.IO
-        ) {
-            currentTV.postValue(repository.fetchTVDetails(mediaID.value!!,
-                "${languageSetting}-${countrySetting}"))
-            fetchDone.postValue(true)
-        }
-    }
 
 
 

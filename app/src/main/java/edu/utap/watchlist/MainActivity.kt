@@ -7,10 +7,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -79,6 +79,9 @@ class MainActivity : AppCompatActivity() {
             //findNavController().popBackStack()
             Log.d("BACK BUTTON", "HELLO")
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
+            //if backstack is zero
+            findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
+
         }
         return true
     }

@@ -10,12 +10,14 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
+import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentNotificationsBinding
 
 class SearchFragment : Fragment() {
@@ -40,6 +42,11 @@ class SearchFragment : Fragment() {
         rv.addItemDecoration(dividerItemDecoration)
     }
 
+    fun openMediaView(item: MediaItem) {
+        viewModel.setUpCurrentMediaData(item)
+        findNavController().navigate(R.id.navigation_media)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +58,7 @@ class SearchFragment : Fragment() {
         val root: View = binding.root
 
 
-        this.adapter = MediaAdapter(viewModel)
+        this.adapter = MediaAdapter(::openMediaView)
 
         //Linear
         val manager = LinearLayoutManager(context)

@@ -5,62 +5,38 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.api.MediaItem
-import edu.utap.watchlist.databinding.MediaCardBinding
+import edu.utap.watchlist.databinding.MediaRowBinding
 
-
-class MediaCardAdapter(private val viewModel: MainViewModel, private val clickListener: (item: MediaItem)->Unit)
-    : RecyclerView.Adapter<MediaCardAdapter.VH>()  {
-
-    companion object keys {
-        const val TYPE = "mediaType"
-        const val ID = "mediaID"
-        const val LANG = "language"
-        const val COUNTRY = "country"
-
-    }
-
+class MediaWatchListItemAdapter(private val viewModel: MainViewModel, private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<MediaWatchListItemAdapter.VH>() {
+    // Adapter does not have its own copy of list, it just observes
     private var media = mutableListOf<MediaItem>()
-    private var languageSetting = ""
 
 
-
-    inner class VH(val binding: MediaCardBinding)
+    // ViewHolder pattern minimizes calls to findViewById
+    inner class VH(val binding: MediaRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
         init {
-
             binding.root.setOnClickListener {
-
-
-                //launch activity from result launcher
-                //findNavController()
-
                 clickListener(media[adapterPosition])
             }
-
         }
-        }
-
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = MediaCardBinding.inflate(
+        val binding = MediaRowBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false)
-        val holder = VH(binding)
-
-        return holder
+        return VH(binding)
     }
 
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val binding = holder.binding
-
         media[position].let{
-            //binding.TV.text = it.title
-            //set image
-            if(it.imageURL != null){
-                viewModel.netFetchImage(binding.mediaImage, it.imageURL!!)
-            }
-
+            binding.mediaRow.text = it.title
+            //binding.quoteText.text = it.quote
+            //binding.charActText.text = it.characterActor
+            //binding.movieText.text = it.movie
         }
     }
 
@@ -73,6 +49,4 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val clickLi
 
 
     override fun getItemCount() = media.size
-
-
 }
