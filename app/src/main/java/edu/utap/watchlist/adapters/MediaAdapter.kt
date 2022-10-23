@@ -1,19 +1,39 @@
 package edu.utap.watchlist.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaRowBinding
+import edu.utap.watchlist.ui.media.MediaItemView
 
-class MediaAdapter: RecyclerView.Adapter<MediaAdapter.VH>() {
+//Used for search results
+class MediaAdapter(private val viewModel: MainViewModel): RecyclerView.Adapter<MediaAdapter.VH>() {
      // Adapter does not have its own copy of list, it just observes
         private var media = mutableListOf<MediaItem>()
 
 
         // ViewHolder pattern minimizes calls to findViewById
         inner class VH(val binding: MediaRowBinding)
-            : RecyclerView.ViewHolder(binding.root)
+            : RecyclerView.ViewHolder(binding.root) {
+                init {
+                    binding.root.setOnClickListener {
+                        val intent = Intent(binding.root.context, MediaItemView::class.java).also { tent ->
+                            tent.putExtra(MediaCardAdapter.TYPE, media[adapterPosition].mediaType)
+                            tent.putExtra(MediaCardAdapter.ID, media[adapterPosition].id.toString())
+
+                            tent.putExtra(MediaCardAdapter.LANG, viewModel.observeLanguageSetting().value)
+
+                            tent.putExtra(MediaCardAdapter.COUNTRY, viewModel.observeCountrySetting().value)
+
+                        }
+                        //launch activity from result launcher
+                        binding.root.context.startActivity(intent)
+                    }
+                }
+            }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
             val binding = MediaRowBinding.inflate(

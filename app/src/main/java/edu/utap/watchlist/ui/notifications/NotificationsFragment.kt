@@ -51,7 +51,7 @@ class NotificationsFragment : Fragment() {
         val root: View = binding.root
 
 
-        this.adapter = MediaAdapter()
+        this.adapter = MediaAdapter(viewModel)
 
         //Linear
         val manager = LinearLayoutManager(context)

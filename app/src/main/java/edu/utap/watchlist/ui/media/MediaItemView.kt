@@ -44,8 +44,12 @@ class MediaItemView : AppCompatActivity() {
         if(type == "Movie"){
             viewModel.observeCurrentMovie().observe(this) {
                 binding.movieTitleText.text = it.title
-                Log.d("BACKDROP_PATH", it.backdropPath)
-                viewModel.netFetchImage(binding.backdrop, it.backdropPath)
+                if(it.backdropPath != null){
+                    Log.d("BACKDROP_PATH", it.backdropPath)
+
+                    viewModel.netFetchImage(binding.backdrop, it.backdropPath)
+                }
+
                 //set other properties
             }
         }

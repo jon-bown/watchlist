@@ -37,7 +37,7 @@ class DashboardFragment : Fragment() {
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.watchListAdapter = MediaAdapter()
+        this.watchListAdapter = MediaAdapter(viewModel)
     }
 
 

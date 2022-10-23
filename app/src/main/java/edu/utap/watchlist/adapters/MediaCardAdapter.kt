@@ -34,7 +34,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val owner: 
     inner class VH(val binding: MediaCardBinding)
         : RecyclerView.ViewHolder(binding.root) {
         init {
-            //XXX Write me.
+
             binding.root.setOnClickListener {
 
 
@@ -45,6 +45,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val owner: 
                     tent.putExtra(keys.LANG, viewModel.observeLanguageSetting().value)
 
                     tent.putExtra(keys.COUNTRY, viewModel.observeCountrySetting().value)
+
 
                 }
                 //launch activity from result launcher
