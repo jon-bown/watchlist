@@ -28,9 +28,19 @@ class UserDBClient {
     init {
         if(user != null){
             docName = user!!.uid
+            email = user!!.email!!
+            displayName = user!!.displayName!!
         }
 
     }
+
+    fun getEmail(): String {
+        return email
+    }
+    fun getUserName(): String {
+        return displayName
+    }
+
 
     suspend fun getLanguage(): String {
         Log.d("GET LANGUAGE", "1")

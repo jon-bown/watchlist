@@ -7,7 +7,7 @@ import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaRowBinding
 
-class MediaWatchListItemAdapter(private val viewModel: MainViewModel, private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<MediaWatchListItemAdapter.VH>() {
+class MediaWatchListItemAdapter(private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<MediaWatchListItemAdapter.VH>() {
     // Adapter does not have its own copy of list, it just observes
     private var media = mutableListOf<MediaItem>()
 

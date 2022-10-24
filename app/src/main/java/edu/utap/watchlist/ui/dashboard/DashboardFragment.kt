@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +24,7 @@ import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.StringListAdapter
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
+import edu.utap.watchlist.ui.media.MediaItemViewFragmentDirections
 
 
 class DashboardFragment : Fragment() {
@@ -38,9 +42,17 @@ class DashboardFragment : Fragment() {
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.watchListAdapter = StringListAdapter()
+        this.watchListAdapter = StringListAdapter(::openWatchLists, false)
     }
 
+
+    private fun openWatchLists(items: List<String>, selection: String) {
+        //set current list in viewModel
+        viewModel.setCurrentWatchList(selection)
+        findNavController().navigate(
+            DashboardFragmentDirections.actionWatchlistsToWatchlist(),
+            NavOptions.Builder().setLaunchSingleTop(true).build())
+    }
 
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
@@ -129,7 +141,7 @@ class DashboardFragment : Fragment() {
                 val listNames = movieList.map{
                     it.name
                 }
-                watchListAdapter.submitList(listNames)
+                watchListAdapter.submitList(listNames, emptyList())
                 watchListAdapter.notifyDataSetChanged()
 
             })

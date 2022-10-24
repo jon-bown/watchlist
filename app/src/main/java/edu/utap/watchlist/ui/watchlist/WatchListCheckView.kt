@@ -5,7 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
+import edu.utap.watchlist.adapters.StringListAdapter
+import edu.utap.watchlist.adapters.StringListSelectionAdapter
+import edu.utap.watchlist.api.Languages
+import edu.utap.watchlist.databinding.FragmentSelectionListBinding
+import edu.utap.watchlist.databinding.FragmentWatchListCheckViewBinding
+import edu.utap.watchlist.ui.profile.SelectionListArgs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +35,22 @@ class WatchListCheckView : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentWatchListCheckViewBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: StringListAdapter
+
+    private val args: SelectionListArgs by navArgs()
+
+    private val viewModel: MainViewModel by activityViewModels()
+
+    private fun initRecyclerViewDividers(rv: RecyclerView) {
+        // Let's have dividers between list items
+        val dividerItemDecoration = DividerItemDecoration(
+            rv.context, LinearLayoutManager.VERTICAL )
+        rv.addItemDecoration(dividerItemDecoration)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,7 +64,39 @@ class WatchListCheckView : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_watch_list_check_view, container, false)
+
+
+        _binding = FragmentWatchListCheckViewBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        this.adapter = StringListAdapter(::collectSelectedLists, true)
+
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.VERTICAL
+        binding.selectionList.layoutManager = LinearLayoutManager(activity)
+
+        binding.selectionList.layoutManager = manager
+        binding.selectionList.adapter = adapter
+        initRecyclerViewDividers(binding.selectionList)
+
+
+        viewModel.observeWatchLists().observe(viewLifecycleOwner) { lists ->
+
+                //Need all lists where this current item belongs
+                adapter.submitList(lists.map{ it.name}, viewModel.getWatchlistNamesThatContain())
+                adapter.notifyDataSetChanged()
+
+        }
+
+
+        return root
+    }
+
+    private fun collectSelectedLists(items: List<String>, selection: String) {
+        for(list in items) {
+            viewModel.addToWatchList(list)
+        }
+
     }
 
     companion object {

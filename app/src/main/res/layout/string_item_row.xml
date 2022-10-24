@@ -13,18 +13,24 @@
         android:textSize="25sp"
         android:layout_margin="8dp"
         android:textColor="@color/black"
-        android:textAlignment="viewStart">
+        android:textAlignment="viewStart"
+        android:layout_weight="1">
     </TextView>
 
-    <Space
-        android:layout_width="30dp"
-        android:layout_height="match_parent" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/checkMark"
         android:layout_margin="2dp"
+        android:layout_gravity="right"
+        android:layout_weight="1"
         />
 
 

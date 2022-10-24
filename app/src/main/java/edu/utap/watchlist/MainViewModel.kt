@@ -36,38 +36,46 @@ class MainViewModel : ViewModel() {
     }
 
     private var countrySetting = MutableLiveData("All")
-    private var countrySet = ""
-    fun getCountry(): String {
-        return countrySet
-    }
     fun observeCountrySetting(): LiveData<String> {
         return countrySetting
     }
     fun changeCountrySetting(newValue: String) {
         countrySetting.value = newValue
         userDB.setCountry(newValue)
-        countrySet = newValue
     }
 
     private var languageSetting = MutableLiveData("")
-    private var languageSet = ""
-    fun getLanguage(): String {
-        return languageSet
-    }
+
     fun observeLanguageSetting(): LiveData<String> {
         return languageSetting
     }
     fun changeLanguageSetting(newValue: String) {
         languageSetting.value = newValue
         userDB.setLanguage(newValue)
-        languageSet = newValue
     }
+
 
 
     private val movieApi = MovieDBApi.create()
     private val repository = MediaRepository(movieApi)
     private val mediaItems = MutableLiveData<List<MediaItem>>()
     //User Lists
+
+    //Current List
+    private val currentWatchList = MutableLiveData<WatchList>()
+    fun setCurrentWatchList(name: String){
+        //if name in watchlists throw a toast
+        val lists = watchLists.value!!.filter{
+            //name is unique
+            it.name == name
+        }
+        currentWatchList.value = lists.first()
+    }
+    fun observeCurrentWatchList(): LiveData<WatchList>{
+        return currentWatchList
+    }
+
+    //User watchlists
     private val watchLists = MutableLiveData<List<WatchList>>()
     fun observeWatchLists(): LiveData<List<WatchList>> {
         return watchLists
@@ -77,12 +85,42 @@ class MainViewModel : ViewModel() {
         if(watchLists.value != null) {
             currentLists.addAll(watchLists.value!!)
         }
-        TODO("Add error if list already exists")
+        //error if list already exists
         currentLists.add(WatchList(name, mutableListOf<MediaItem>()))
         watchLists.postValue(currentLists)
     }
-    fun addToWatchList() {
-        TODO("Add media item to watch list")
+
+    fun addToWatchList(name: String) {
+        //possibly need some error handling here
+        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        val newList = mutableListOf<MediaItem>()
+        if(listWithName.items != null){
+            newList.addAll(listWithName.items!!.toList())
+        }
+
+        newList.add(currentMediaItem.value!!)
+
+        val currentWatchLists = watchLists.value
+        val mutableWatchLists = currentWatchLists!!.toMutableList()
+        mutableWatchLists.remove(listWithName)
+        mutableWatchLists.add(WatchList(name, newList))
+        watchLists.postValue(mutableWatchLists)
+    }
+
+    fun getWatchlistNamesThatContain(): List<String> {
+        val id = currentMediaItem.value!!.id
+        if(this.watchLists.value != null){
+            val names = this.watchLists.value!!.filter { wlist ->
+                id in wlist.items!!.map{it.id}
+            }
+                .map{ wlist ->
+                wlist.name }
+                return names
+            }
+        else{
+            return emptyList()
+
+        }
     }
 
     //Firebase
@@ -430,6 +468,8 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+            email.postValue(userDB.getEmail())
+            displayName.postValue(userDB.getUserName())
             languageSetting.postValue(userDB.getLanguage())
             countrySetting.postValue(userDB.getCountry())
             adultMode.postValue(userDB.getAdultMode())
