@@ -11,13 +11,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
-import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
-import edu.utap.watchlist.adapters.StringListAdapter
-import edu.utap.watchlist.adapters.WatchListAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
-import edu.utap.watchlist.databinding.FragmentWatchListCheckViewBinding
 import edu.utap.watchlist.ui.profile.SelectionListArgs
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,7 +35,6 @@ class SingleWatchListView : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: MediaWatchListItemAdapter
 
-    private val args: SelectionListArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels()
 

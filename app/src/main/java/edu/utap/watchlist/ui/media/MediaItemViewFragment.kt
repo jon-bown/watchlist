@@ -8,10 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
+import edu.utap.watchlist.adapters.MediaCardAdapter
+import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
+import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
 import edu.utap.watchlist.databinding.FragmentProfileBinding
 import edu.utap.watchlist.ui.home.HomeFragmentDirections
@@ -40,6 +47,15 @@ class MediaItemViewFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
+    private lateinit var adapter: MediaCardAdapter
+
+    private fun initRecyclerViewDividers(rv: RecyclerView) {
+        // Let's have dividers between list items
+        val dividerItemDecoration = DividerItemDecoration(
+            rv.context, LinearLayoutManager.VERTICAL )
+        rv.addItemDecoration(dividerItemDecoration)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,6 +71,7 @@ class MediaItemViewFragment : Fragment() {
 
         binding.backdrop.setImageBitmap(null);
         //weird issue with leftover images
+        adapter = MediaCardAdapter(viewModel, ::openMediaView)
 
 
 
@@ -87,8 +104,48 @@ class MediaItemViewFragment : Fragment() {
             //findNavController().navigate(R.id.navigation_stringList, bundle)
         }
 
+
+
+        //init items
+        initSimilarList()
+
         return root
     }
+
+    //Set up lists
+
+    fun initSimilarList() {
+        //Linear
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.similarItemList.layoutManager = manager
+        //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
+        //manager.orientation =
+        binding.similarItemList.layoutManager = manager
+        binding.similarItemList.adapter = adapter
+
+        // Live data lets us display the latest list, whatever it is
+        // NB: owner is viewLifecycleOwner
+        viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                adapter.submitMediaList(movieList)
+                adapter.notifyDataSetChanged()
+
+            })
+    }
+
+
+
+    fun openMediaView(item: MediaItem) {
+        viewModel.setUpCurrentMediaData(item)
+
+
+
+        findNavController().navigate(R.id.navigation_media)
+    }
+
+
+
 
     override fun onDestroy() {
         super.onDestroy()

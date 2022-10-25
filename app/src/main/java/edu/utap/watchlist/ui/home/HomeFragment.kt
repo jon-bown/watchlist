@@ -4,14 +4,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -19,10 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentHomeBinding
-import edu.utap.watchlist.R
 
 
 class HomeFragment : Fragment() {
@@ -35,8 +31,12 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var popularAdapter: MediaCardAdapter
+    private var currentPopularPage = 1
     private lateinit var nowPlayingAdapter: MediaCardAdapter
+    private var currentNowPlayingPage = 1
     private lateinit var topRatedAdapter: MediaCardAdapter
+    private var currentTopRatedPage = 1
+
 
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
@@ -47,10 +47,6 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun initMediaView(item: MediaItem) {
-
-
-    }
 
 
     private fun initAdapter() {
@@ -77,6 +73,7 @@ class HomeFragment : Fragment() {
     }
 
 
+
     fun initPopularList() {
         //Linear
         val manager = LinearLayoutManager(context)
@@ -97,6 +94,36 @@ class HomeFragment : Fragment() {
                 popularAdapter.notifyDataSetChanged()
 
             })
+        initScrollListener()
+
+
+
+
+    }
+
+    //add observer to reset this
+    private var isLoading = false
+
+    private fun initScrollListener() {
+        binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentPopularPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() ==
+                            (viewModel.observePopularMediaItems().value!!.size - 1)) {
+                            //bottom of list!
+                            Log.d("SCROLLING", "LOAD")
+                            //loadMore()
+                            isLoading = true
+                            currentPopularPage+=1
+                        }
+                    }
+
+                }
+            }
+        })
     }
 
 

@@ -153,6 +153,7 @@ class MainViewModel : ViewModel() {
         else {
             fetchCurrentTV()
         }
+        fetchSimilar()
     }
 
     fun fetchCurrentMovie() {
@@ -174,6 +175,33 @@ class MainViewModel : ViewModel() {
             currentTV.postValue(repository.fetchTVDetails(currentMediaItem.value!!.id.toString(),
                 "${languageSetting.value}-${countrySetting.value}"))
             fetchDone.postValue(true)
+        }
+    }
+
+
+    //Similar
+    private val similarMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeSimilarMediaItems(): LiveData<List<MediaItem>> {
+        return similarMediaItems
+    }
+    fun fetchSimilar() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(currentMediaItem.value!!.type == "MOVIE"){
+                val movieList = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
+                similarMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
+                fetchDone.postValue(true)
+            }
+            else {
+                val tvList = repository.fetchSimilarTV(currentMediaItem.value!!.id.toString(),
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
+                similarMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
+
         }
     }
 
@@ -215,6 +243,7 @@ class MainViewModel : ViewModel() {
 
     fun netRefresh() {
         // This is where the network request is initiated.
+        //page = 1
         fetchPopular()
         fetchNowPlaying()
         fetchTopRated()
