@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/backdrop"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitXY"
+           />
 
         </LinearLayout>
         <Space

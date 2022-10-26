@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.api.MediaItem
@@ -34,6 +35,8 @@ class SearchFragment : Fragment() {
 
     // https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
     // https://stackoverflow.com/questions/7789514/how-to-get-activitys-windowtoken-without-view
+
+
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
@@ -86,6 +89,7 @@ class SearchFragment : Fragment() {
 
         //setup search
         binding.mediaSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     Log.d("HELLO","HELLO SEARCH")
 
@@ -100,6 +104,11 @@ class SearchFragment : Fragment() {
                     }
                     else{
                         //make toast
+                        //hide keyboard
+                        val activity = activity as MainActivity
+                        activity.hideKeyboard()
+                        binding.mediaSearchView.onActionViewCollapsed()
+                        binding.mediaSearchView.isFocusable = false
                         viewModel.clearMediaItems()
                     }
                     return true

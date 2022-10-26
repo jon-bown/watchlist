@@ -36,6 +36,7 @@ class HomeFragment : Fragment() {
     private var currentNowPlayingPage = 1
     private lateinit var topRatedAdapter: MediaCardAdapter
     private var currentTopRatedPage = 1
+    private var isLoading = false
 
 
 
@@ -94,30 +95,31 @@ class HomeFragment : Fragment() {
                 popularAdapter.notifyDataSetChanged()
 
             })
-        initScrollListener()
-
-
-
-
+        initPopularScrollListener()
     }
 
-    //add observer to reset this
-    private var isLoading = false
 
-    private fun initScrollListener() {
+    private fun setLoadingListener() {
+        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
+            isLoading = false
+        }
+    }
+
+
+
+    private fun initPopularScrollListener() {
         binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
                 if (!isLoading) {
                     if(currentPopularPage < 10) {
-                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() ==
-                            (viewModel.observePopularMediaItems().value!!.size - 1)) {
-                            //bottom of list!
-                            Log.d("SCROLLING", "LOAD")
-                            //loadMore()
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observePopularMediaItems().value!!.size - 5)) {
                             isLoading = true
                             currentPopularPage+=1
+                            viewModel.fetchPopular(currentPopularPage)
+
                         }
                     }
 
@@ -189,11 +191,7 @@ class HomeFragment : Fragment() {
         initPopularList()
         initNowPlayingList()
         initTopRatedList()
-
-
-
-
-
+        setLoadingListener()
         return root
     }
 
@@ -230,7 +228,7 @@ class HomeFragment : Fragment() {
     }
 
 
-
+    //SCROLLING LISTENERS
 
 
 

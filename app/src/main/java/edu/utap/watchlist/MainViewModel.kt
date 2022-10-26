@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import edu.utap.watchlist.api.*
 import edu.utap.watchlist.firestore.UserDBClient
 import edu.utap.watchlist.glide.Glide
@@ -119,7 +118,6 @@ class MainViewModel : ViewModel() {
             }
         else{
             return emptyList()
-
         }
     }
 
@@ -153,7 +151,7 @@ class MainViewModel : ViewModel() {
         else {
             fetchCurrentTV()
         }
-        fetchSimilar()
+        fetchSimilar(1)
     }
 
     fun fetchCurrentMovie() {
@@ -184,20 +182,20 @@ class MainViewModel : ViewModel() {
     fun observeSimilarMediaItems(): LiveData<List<MediaItem>> {
         return similarMediaItems
     }
-    fun fetchSimilar() {
+    fun fetchSimilar(page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             if(currentMediaItem.value!!.type == "MOVIE"){
                 val movieList = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
                 similarMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
                 fetchDone.postValue(true)
             }
             else {
                 val tvList = repository.fetchSimilarTV(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
                 similarMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
                 fetchDone.postValue(true)
             }
@@ -244,13 +242,13 @@ class MainViewModel : ViewModel() {
     fun netRefresh() {
         // This is where the network request is initiated.
         //page = 1
-        fetchPopular()
-        fetchNowPlaying()
-        fetchTopRated()
+        fetchPopular(1)
+        fetchNowPlaying(1)
+        fetchTopRated(1)
     }
 
     //POPULAR
-    fun fetchPopular() {
+    fun fetchPopular(page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
@@ -258,14 +256,21 @@ class MainViewModel : ViewModel() {
             // Update LiveData from IO dispatcher, use postValue
 
             if(movieMode.get()){
-                var list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    popularMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                    if(page == 1){
+                        popularMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
+                    }
+                    else {
+                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list).mediaList)
+                        popularMediaItems.postValue(popList)
+                    }
+
                 }
             }
             else {
-                var list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     popularMediaItems.postValue(MediaItems(list, movieList = null).mediaList)
@@ -276,21 +281,21 @@ class MainViewModel : ViewModel() {
     }
 
     //LATEST
-    fun fetchNowPlaying() {
+    fun fetchNowPlaying(page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     nowPlayingMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -302,21 +307,21 @@ class MainViewModel : ViewModel() {
 
 
     //TOP RATED
-    fun fetchTopRated() {
+    fun fetchTopRated(page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     topRatedMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     topRatedMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -329,21 +334,21 @@ class MainViewModel : ViewModel() {
 
 
 
-    fun fetchSearchResults(query: String) {
+    fun fetchSearchResults(query: String, page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
             if(movieMode.get()){
-                var list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
                 }
             }
             else {
-                var list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!)
+                var list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -372,14 +377,14 @@ class MainViewModel : ViewModel() {
     fun updateMediaMode(value: Boolean, type: String) {
         movieMode.set(value)
         if(type == "popular"){
-            fetchPopular()
+            fetchPopular(1)
             //mediaItems.notifyAll()
         }
         else if(type == "nowPlaying"){
-            fetchNowPlaying()
+            fetchNowPlaying(1)
         }
         else if(type == "topRated"){
-            fetchTopRated()
+            fetchTopRated(1)
         }
 
     }

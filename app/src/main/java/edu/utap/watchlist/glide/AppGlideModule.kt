@@ -26,7 +26,7 @@ object Glide {
         // Options like CenterCrop are possible, but I like this one best
         .fitCenter()
         // A placeholder image for when the network is slow
-        .placeholder(R.drawable.ic_baseline_cloud_24)
+        .placeholder(R.drawable.large_movie_poster)
         // Rounded corners are so lovely.
         .transform(RoundedCorners(20))
         // If we can't fetch, give the user an indication  maybe it should
@@ -36,7 +36,7 @@ object Glide {
     private var glideBackdropOptions: RequestOptions = RequestOptions()
         .fitCenter()
         // A placeholder image for when the network is slow
-        .placeholder(R.drawable.ic_baseline_cloud_24)
+        .placeholder(R.drawable.movie_back_wide)
         // Rounded corners are so lovely.
         .transform(RoundedCorners(20))
         // If we can't fetch, give the user an indication  maybe it should

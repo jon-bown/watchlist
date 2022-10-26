@@ -19,43 +19,43 @@ class MediaRepository(private val api: MovieDBApi) {
         return regionList[region]!!
     }
 
-    suspend fun fetchSimilarMovies(movie: String, language: String, adult: Boolean): List<Movie> {
-        return api.getSimilarMovies(movie, language, adult.toString()).results
+    suspend fun fetchSimilarMovies(movie: String, language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getSimilarMovies(movie, language, adult.toString(), page).results
     }
 
-    suspend fun fetchRecommendedMovies(movie: String, language: String, adult: Boolean): List<Movie> {
-        return api.getRecommendedMovies(movie, language, adult.toString()).results
+    suspend fun fetchRecommendedMovies(movie: String, language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getRecommendedMovies(movie, language, adult.toString(), page).results
     }
 
-    suspend fun fetchUpcomingMovies(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesUpcoming(language, adult.toString()).results
-    }
-
-
-    suspend fun fetchMoviesTrendingToday(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesTrendingToday(language, adult.toString()).results
-    }
-
-    suspend fun fetchMoviesTrendingWeek(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesTrendingWeek(language, adult.toString()).results
-    }
-
-    suspend fun fetchPopularMovies(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesPopular(language, adult.toString()).results
+    suspend fun fetchUpcomingMovies(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesUpcoming(language, adult.toString(), page).results
     }
 
 
-    suspend fun fetchTopRatedMovies(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesTopRated(language, adult.toString()).results
+    suspend fun fetchMoviesTrendingToday(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesTrendingToday(language, adult.toString(), page).results
+    }
+
+    suspend fun fetchMoviesTrendingWeek(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesTrendingWeek(language, adult.toString(), page).results
+    }
+
+    suspend fun fetchPopularMovies(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesPopular(language, adult.toString(), page).results
     }
 
 
-    suspend fun fetchPlayingMovies(language: String, adult: Boolean): List<Movie> {
-        return api.getMoviesNowPlaying(language, adult.toString()).results
+    suspend fun fetchTopRatedMovies(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesTopRated(language, adult.toString(), page).results
     }
 
-    suspend fun fetchSearchMovies(query: String, language: String, adult: Boolean): List<Movie>{
-        return api.searchMovies(query, language, adult.toString()).results
+
+    suspend fun fetchPlayingMovies(language: String, adult: Boolean, page: Int): List<Movie> {
+        return api.getMoviesNowPlaying(language, adult.toString(), page).results
+    }
+
+    suspend fun fetchSearchMovies(query: String, language: String, adult: Boolean, page: Int): List<Movie>{
+        return api.searchMovies(query, language, adult.toString(), page).results
     }
 
     //////////TV//////////////
@@ -73,24 +73,24 @@ class MediaRepository(private val api: MovieDBApi) {
 
 
 
-    suspend fun fetchSimilarTV(tv: String, language: String, adult: Boolean): List<TVShow> {
-        return api.getSimilarTV(tv, language, adult.toString()).results
+    suspend fun fetchSimilarTV(tv: String, language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getSimilarTV(tv, language, adult.toString(), page).results
     }
 
-    suspend fun fetchRecommendedTV(tv: String, language: String, adult: Boolean): List<TVShow> {
-        return api.getRecommendedTV(tv, language, adult.toString()).results
+    suspend fun fetchRecommendedTV(tv: String, language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getRecommendedTV(tv, language, adult.toString(), page).results
     }
 
-    suspend fun fetchTVTrendingToday(language: String, adult: Boolean): List<TVShow> {
-        return api.getTVTrendingToday(language, adult.toString()).results
+    suspend fun fetchTVTrendingToday(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVTrendingToday(language, adult.toString(), page).results
     }
 
-    suspend fun fetchTVTrendingWeek(language: String, adult: Boolean): List<TVShow> {
-        return api.getTVTrendingWeek(language, adult.toString()).results
+    suspend fun fetchTVTrendingWeek(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVTrendingWeek(language, adult.toString(), page).results
     }
 
-    suspend fun fetchPopularTV(language: String, adult: Boolean): List<TVShow> {
-        return api.getTVPopular(language, adult.toString()).results
+    suspend fun fetchPopularTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVPopular(language, adult.toString(), page).results
     }
 
 
@@ -103,16 +103,16 @@ class MediaRepository(private val api: MovieDBApi) {
 //    }
 
 
-    suspend fun fetchTopRatedTV(language: String, adult: Boolean): List<TVShow> {
-        return api.getTVTopRated(language, adult.toString()).results
+    suspend fun fetchTopRatedTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVTopRated(language, adult.toString(), page).results
     }
 
-    suspend fun fetchPlayingTV(language: String, adult: Boolean): List<TVShow> {
-        return api.getTVNowPlaying(language, adult.toString()).results
+    suspend fun fetchPlayingTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVNowPlaying(language, adult.toString(), page).results
     }
 
-    suspend fun fetchSearchTV(query: String, language: String, adult: Boolean): List<TVShow>{
-        return api.searchTVShows(query, language, adult.toString()).results
+    suspend fun fetchSearchTV(query: String, language: String, adult: Boolean, page: Int): List<TVShow>{
+        return api.searchTVShows(query, language, adult.toString(), page).results
     }
 
 }

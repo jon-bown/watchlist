@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 class UserDBClient {
 
@@ -52,7 +53,7 @@ class UserDBClient {
             language = document.data!!.get("language").toString()
         } else {
             Log.d(TAG, "No such document")
-            language = "en"
+            createDocument()
         }
         return language
     }
@@ -70,7 +71,7 @@ class UserDBClient {
             country = document.data!!.get("country").toString()
         } else {
             Log.d(TAG, "No such document")
-            country = "US"
+            createDocument()
         }
         return country
     }
@@ -86,7 +87,7 @@ class UserDBClient {
             adultMode = document.data!!.get("adult") as Boolean
         } else {
             Log.d(TAG, "No such document")
-            adultMode = false
+            createDocument()
         }
         return adultMode
     }
@@ -139,11 +140,11 @@ class UserDBClient {
     private fun createDocument() {
         val newUser = hashMapOf(
             "adult" to false,
-            "language" to "en",
+            "language" to Locale.getDefault().getLanguage() ,
             "country" to "US"
         )
 
-        db.collection("cities").document(user!!.uid)
+        db.collection("users").document(user!!.uid)
             .set(newUser)
             .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
