@@ -30,7 +30,7 @@
         android:id="@+id/arrow"
         android:layout_margin="2dp"
         android:layout_gravity="right"
-        android:layout_weight="1"
+        android:layout_weight="0.3"
         android:src="@drawable/ic_baseline_arrow_forward_ios_24"
         />
 

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -20,11 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import edu.utap.firebaseauth.MainViewModel
-import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
-import edu.utap.watchlist.adapters.StringListAdapter
+import edu.utap.watchlist.adapters.WatchListAdapter
 import edu.utap.watchlist.databinding.FragmentDashboardBinding
-import edu.utap.watchlist.ui.media.MediaItemViewFragmentDirections
 
 
 class DashboardFragment : Fragment() {
@@ -37,16 +34,16 @@ class DashboardFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var watchListAdapter: StringListAdapter
+    private lateinit var watchListAdapter: WatchListAdapter
 
     private fun initAdapter() {
         //addListToAdapter()
         //this.adapter = MediaAdapter()
-        this.watchListAdapter = StringListAdapter(::openWatchLists, false)
+        this.watchListAdapter = WatchListAdapter(::openWatchLists)
     }
 
 
-    private fun openWatchLists(items: List<String>, selection: String) {
+    private fun openWatchLists(selection: String) {
         //set current list in viewModel
         viewModel.setCurrentWatchList(selection)
         findNavController().navigate(
@@ -137,11 +134,11 @@ class DashboardFragment : Fragment() {
         initRecyclerViewDividers(binding.myWatchLists)
 
         viewModel.observeWatchLists().observe(viewLifecycleOwner,
-            Observer { movieList ->
-                val listNames = movieList.map{
+            Observer { watchList ->
+                val listNames = watchList.map{
                     it.name
                 }
-                watchListAdapter.submitList(listNames, emptyList())
+                watchListAdapter.submitWatchListNames(listNames)
                 watchListAdapter.notifyDataSetChanged()
 
             })

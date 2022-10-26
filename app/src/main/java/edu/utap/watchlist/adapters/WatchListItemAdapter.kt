@@ -3,13 +3,14 @@ package edu.utap.watchlist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.api.WatchList
 import edu.utap.watchlist.databinding.WatchlistItemRowBinding
 
 //displays each media item associated with a watchlist to the user
 class WatchListItemAdapter: RecyclerView.Adapter<WatchListItemAdapter.VH>() {
     // Adapter does not have its own copy of list, it just observes
-    private var watchLists = mutableListOf<WatchList>()
+    private var watchLists = mutableListOf<MediaItem>()
 
 
     // ViewHolder pattern minimizes calls to findViewById
@@ -27,7 +28,7 @@ class WatchListItemAdapter: RecyclerView.Adapter<WatchListItemAdapter.VH>() {
     override fun onBindViewHolder(holder: VH, position: Int) {
         val binding = holder.binding
         watchLists[position].let{
-            binding.watchListName.text = it.name
+            binding.watchListName.text = it.title
             //binding.quoteText.text = it.quote
             //binding.charActText.text = it.characterActor
             //binding.movieText.text = it.movie
@@ -35,7 +36,7 @@ class WatchListItemAdapter: RecyclerView.Adapter<WatchListItemAdapter.VH>() {
     }
 
 
-    fun submitMediaList(items: List<WatchList>) {
+    fun submitMediaList(items: List<MediaItem>) {
         watchLists.clear()
         watchLists.addAll(items)
         notifyDataSetChanged()

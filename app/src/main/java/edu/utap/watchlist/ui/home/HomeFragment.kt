@@ -73,6 +73,13 @@ class HomeFragment : Fragment() {
                 NavOptions.Builder().setLaunchSingleTop(true).build())
     }
 
+    private fun setLoadingListener() {
+        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
+            isLoading = false
+        }
+    }
+
+
 
 
     fun initPopularList() {
@@ -99,36 +106,6 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setLoadingListener() {
-        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
-            isLoading = false
-        }
-    }
-
-
-
-    private fun initPopularScrollListener() {
-        binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                if (!isLoading) {
-                    if(currentPopularPage < 10) {
-                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
-                            (viewModel.observePopularMediaItems().value!!.size - 5)) {
-                            isLoading = true
-                            currentPopularPage+=1
-                            viewModel.fetchPopular(currentPopularPage)
-
-                        }
-                    }
-
-                }
-            }
-        })
-    }
-
-
     fun initNowPlayingList() {
 
         //Linear
@@ -147,7 +124,8 @@ class HomeFragment : Fragment() {
 
             })
 
-
+        //Scroll listener
+        initNowPlayingScrollListener()
     }
 
     fun initTopRatedList() {
@@ -167,6 +145,8 @@ class HomeFragment : Fragment() {
                 topRatedAdapter.notifyDataSetChanged()
 
             })
+        //Scroll listener
+        initTopRatedScrollListener()
     }
 
     override fun onCreateView(
@@ -229,7 +209,32 @@ class HomeFragment : Fragment() {
 
 
     //SCROLLING LISTENERS
+    private fun initPopularScrollListener() {
+        binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentPopularPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observePopularMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentPopularPage+=1
+                            viewModel.fetchPopular(currentPopularPage)
+                        }
+                    }
 
+                }
+            }
+        })
+    }
 
+    private fun initNowPlayingScrollListener() {
+
+    }
+
+    private fun initTopRatedScrollListener() {
+
+    }
 
 }

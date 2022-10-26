@@ -85,21 +85,17 @@ class SearchFragment : Fragment() {
 
 
 
-
-
         //setup search
         binding.mediaSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     Log.d("HELLO","HELLO SEARCH")
-
-
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
                     if(newText!! != ""){
-                        viewModel.fetchSearchResults(newText!!)
+                        viewModel.fetchSearchResults(newText!!, 1)
                         //hide keyboard
                     }
                     else{
@@ -107,7 +103,6 @@ class SearchFragment : Fragment() {
                         //hide keyboard
                         val activity = activity as MainActivity
                         activity.hideKeyboard()
-                        binding.mediaSearchView.onActionViewCollapsed()
                         binding.mediaSearchView.isFocusable = false
                         viewModel.clearMediaItems()
                     }

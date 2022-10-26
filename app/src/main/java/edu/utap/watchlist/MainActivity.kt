@@ -1,10 +1,12 @@
 package edu.utap.watchlist
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -19,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.utap.firebaseauth.AuthInit
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.databinding.ActivityMainBinding
+import edu.utap.watchlist.ui.search.SearchFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,9 +38,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
 
-    fun hideKeyboard() {
+    fun hideKeyboard(){
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +53,17 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
+
+        binding.root.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                hideKeyboard()
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN -> null //Do Something
+                }
+
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
@@ -72,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         intent.data = Uri.parse(url)
         startActivity(intent)
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
