@@ -1,10 +1,9 @@
 package edu.utap.watchlist.ui.media
 
-import edu.utap.watchlist.R
-import android.app.ActionBar
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.adapters.ProviderAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
+import edu.utap.watchlist.R
 
 
 class MediaItemViewFragment : Fragment() {
@@ -61,6 +61,13 @@ class MediaItemViewFragment : Fragment() {
         rentProviderAdapter = ProviderAdapter(viewModel)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //val imageView: ImageView = getView()!!.findViewById<View>(R.id.foo) as ImageView
+
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +78,7 @@ class MediaItemViewFragment : Fragment() {
 
         binding.backdrop.setImageBitmap(null);
         //weird issue with leftover images
+
 
         initAdapters()
 

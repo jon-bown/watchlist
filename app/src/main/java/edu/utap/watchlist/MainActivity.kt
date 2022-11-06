@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
             //if backstack is zero
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
+
         }
         return true
     }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
+import edu.utap.watchlist.adapters.WatchListItemAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
 import edu.utap.watchlist.ui.profile.SelectionListArgs
@@ -33,7 +34,7 @@ class SingleWatchListView : Fragment() {
 
     private var _binding: FragmentSingleWatchListViewBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: MediaWatchListItemAdapter
+    private lateinit var adapter: WatchListItemAdapter
 
 
     private val viewModel: MainViewModel by activityViewModels()
@@ -62,7 +63,7 @@ class SingleWatchListView : Fragment() {
         _binding = FragmentSingleWatchListViewBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        this.adapter = MediaWatchListItemAdapter(::collectSelectedLists)
+        this.adapter = WatchListItemAdapter(viewModel)
 
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL

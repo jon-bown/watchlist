@@ -4,8 +4,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -14,6 +16,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
@@ -74,8 +78,13 @@ class HomeFragment : Fragment() {
     fun openMediaView(item: MediaItem) {
         //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
+        //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
                 NavOptions.Builder().setLaunchSingleTop(true).build())
+
+
+
     }
 
     private fun setLoadingListener() {

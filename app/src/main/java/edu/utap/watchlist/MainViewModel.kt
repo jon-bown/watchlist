@@ -76,8 +76,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun addSeenMedia(item: String){
-        userDB.addSeenItem(item)
-        fetchSeenMediaItems()
+        if(!seenMediaItems.value!!.contains(item)){
+            userDB.addSeenItem(item)
+            fetchSeenMediaItems()
+        }
     }
     fun removeSeenMedia(item: String) {
         userDB.removeSeenItem(item)

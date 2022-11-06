@@ -24,6 +24,6 @@
         android:layout_margin="8dp"
         android:background="@drawable/rounded"
         android:id="@+id/watchlistEditDoneButton"
-        android:text="Done"/>
+        android:text="Save"/>
 
 </LinearLayout>
