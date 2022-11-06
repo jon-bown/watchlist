@@ -36,14 +36,15 @@
             />
         <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
             android:checked="false"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
     </edu.utap.watchlist.components.SegmentedControl>
 
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Popular" />
+        android:text="Popular"
+        android:layout_marginLeft="8dp"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -58,7 +59,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Now Playing" />
+        android:text="Now Playing"
+        android:layout_marginLeft="8dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/nowPlayingList"
         android:layout_width="wrap_content"
@@ -72,7 +75,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Top Rated" />
+        android:text="Top Rated"
+        android:layout_marginLeft="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topRatedList"
@@ -88,7 +92,48 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Collections" />
+        android:text="Trending Today"
+        android:layout_marginLeft="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trendingTodayList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trending This Week"
+        android:layout_marginLeft="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trendingWeekList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upcoming"
+        android:layout_marginLeft="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/upcomingList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>

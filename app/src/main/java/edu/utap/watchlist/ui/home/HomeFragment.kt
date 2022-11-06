@@ -36,6 +36,12 @@ class HomeFragment : Fragment() {
     private var currentNowPlayingPage = 1
     private lateinit var topRatedAdapter: MediaCardAdapter
     private var currentTopRatedPage = 1
+    private lateinit var trendingTodayAdapter: MediaCardAdapter
+    private var currentTrendingTodayPage = 1
+    private lateinit var trendingWeekAdapter: MediaCardAdapter
+    private var currentTrendingWeekPage = 1
+
+
     private var isLoading = false
 
 
@@ -51,24 +57,23 @@ class HomeFragment : Fragment() {
 
 
     private fun initAdapter() {
-        //addListToAdapter()
-        //this.adapter = MediaAdapter()
         this.popularAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.nowPlayingAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.topRatedAdapter = MediaCardAdapter(viewModel, ::openMediaView)
-
+        this.trendingTodayAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        this.trendingWeekAdapter = MediaCardAdapter(viewModel, ::openMediaView)
     }
 
     private fun notifiyAdaptersChanged() {
         popularAdapter.notifyDataSetChanged()
         nowPlayingAdapter.notifyDataSetChanged()
         topRatedAdapter.notifyDataSetChanged()
+
     }
 
     fun openMediaView(item: MediaItem) {
+        //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
-
-
         findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
                 NavOptions.Builder().setLaunchSingleTop(true).build())
     }
@@ -79,17 +84,10 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
-
     fun initPopularList() {
         //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
-        binding.popularList.layoutManager = LinearLayoutManager(activity)
-
-        //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
-        //manager.orientation =
         binding.popularList.layoutManager = manager
         binding.popularList.adapter = popularAdapter
         initRecyclerViewDividers(binding.popularList)
@@ -111,8 +109,6 @@ class HomeFragment : Fragment() {
         //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
-        binding.nowPlayingList.layoutManager = LinearLayoutManager(activity)
-
         binding.nowPlayingList.layoutManager = manager
         binding.nowPlayingList.adapter = nowPlayingAdapter
         initRecyclerViewDividers(binding.nowPlayingList)
@@ -133,8 +129,6 @@ class HomeFragment : Fragment() {
         //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
-        binding.topRatedList.layoutManager = LinearLayoutManager(activity)
-
         binding.topRatedList.layoutManager = manager
         binding.topRatedList.adapter = topRatedAdapter
         initRecyclerViewDividers(binding.nowPlayingList)
@@ -147,6 +141,39 @@ class HomeFragment : Fragment() {
             })
         //Scroll listener
         initTopRatedScrollListener()
+    }
+
+    private fun initTrendingTodayList() {
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.trendingTodayList.layoutManager = manager
+        binding.trendingTodayList.adapter = trendingTodayAdapter
+        initRecyclerViewDividers(binding.trendingTodayList)
+
+        viewModel.observeTrendingTodayMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                trendingTodayAdapter.submitMediaList(movieList)
+                trendingTodayAdapter.notifyDataSetChanged()
+
+            })
+        //Scroll listener
+        //initTopRatedScrollListener()
+    }
+
+    private fun initTrendingWeekList() {
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.trendingWeekList.layoutManager = manager
+        binding.trendingWeekList.adapter = trendingWeekAdapter
+        initRecyclerViewDividers(binding.trendingWeekList)
+
+        viewModel.observeTrendingWeekMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                trendingWeekAdapter.submitMediaList(movieList)
+                trendingWeekAdapter.notifyDataSetChanged()
+            })
+        //Scroll listener
+        //initTopRatedScrollListener()
     }
 
     override fun onCreateView(
@@ -171,6 +198,10 @@ class HomeFragment : Fragment() {
         initPopularList()
         initNowPlayingList()
         initTopRatedList()
+        initTrendingTodayList()
+        initTrendingWeekList()
+
+
         setLoadingListener()
         return root
     }
@@ -234,6 +265,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun initTopRatedScrollListener() {
+
+    }
+
+    private fun initTrendingWeekScrollListener() {
+
+    }
+
+    private fun initTrendingDayScrollListener() {
+
+    }
+
+    private fun initUpcomingScrollListener() {
 
     }
 

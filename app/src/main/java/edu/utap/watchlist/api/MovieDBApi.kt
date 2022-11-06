@@ -21,10 +21,6 @@ interface MovieDBApi {
     @GET("/3/movie/{movie}?api_key=${apikey.KEY}")
     suspend fun getMovieDetails(@Path("movie") movie: String, @Query("language") lang: String) : Movie
 
-    // Movie Providers
-    @GET("/3/movie/{movie}/watch/providers?api_key=${apikey.KEY}")
-    suspend fun getMovieProviders(@Path("movie") movie: String) : RegionMap
-
     //Similar
     @GET("/3/movie/{movie}/similar?api_key=${apikey.KEY}")
     suspend fun getSimilarMovies(@Path("movie") movie: String, @Query("language") lang: String, @Query("include_adult") adult: String,
@@ -79,10 +75,6 @@ interface MovieDBApi {
     suspend fun getTVDetails(@Path("tv") tv: String, @Query("language") lang: String): TVShow
 
 
-    //TV Providers
-    @GET("/3/tv/{tv}/watch/providers?api_key=${apikey.KEY}")
-    suspend fun getTVProviders(@Path("tv") tv: String) : RegionMap
-
     //Similar
     @GET("/3/tv/{tv}/similar?api_key=${apikey.KEY}")
     suspend fun getSimilarTV(@Path("tv") tv: String, @Query("language") lang: String, @Query("include_adult") adult: String,
@@ -133,6 +125,16 @@ interface MovieDBApi {
     @GET("/3/trending/tv/week?api_key=${apikey.KEY}")
     suspend fun getTVTrendingWeek(@Query("language") lang: String, @Query("include_adult") adult: String,
                                   @Query("page") page: Int) : TVListResponse
+
+
+    /////////Streaming Providers///////////
+    // Movie Providers
+    @GET("/3/movie/{movie}/watch/providers?api_key=${apikey.KEY}")
+    suspend fun getMovieProviders(@Path("movie") movie: String) : RegionMap
+
+    //TV Providers
+    @GET("/3/tv/{tv}/watch/providers?api_key=${apikey.KEY}")
+    suspend fun getTVProviders(@Path("tv") tv: String) : RegionMap
 
 
 

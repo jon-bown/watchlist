@@ -1,12 +1,15 @@
 package edu.utap.watchlist.ui.media
 
+import edu.utap.watchlist.R
+import android.app.ActionBar
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
@@ -15,28 +18,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
-import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
-import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
+import edu.utap.watchlist.adapters.ProviderAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
-import edu.utap.watchlist.databinding.FragmentProfileBinding
-import edu.utap.watchlist.ui.home.HomeFragmentDirections
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MediaItemViewFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MediaItemViewFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
 
     private var _binding: FragmentMediaItemViewBinding? = null
@@ -47,7 +35,11 @@ class MediaItemViewFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
-    private lateinit var adapter: MediaCardAdapter
+    private lateinit var similarAdapter: MediaCardAdapter
+    private lateinit var recommendedAdapter: MediaCardAdapter
+    private lateinit var streamProvidersAdapter: ProviderAdapter
+    private lateinit var buyProviderAdapter: ProviderAdapter
+    private lateinit var rentProviderAdapter: ProviderAdapter
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
@@ -61,6 +53,14 @@ class MediaItemViewFragment : Fragment() {
 
     }
 
+    private fun initAdapters(){
+        similarAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        recommendedAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        streamProvidersAdapter = ProviderAdapter(viewModel)
+        buyProviderAdapter = ProviderAdapter(viewModel)
+        rentProviderAdapter = ProviderAdapter(viewModel)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,19 +71,22 @@ class MediaItemViewFragment : Fragment() {
 
         binding.backdrop.setImageBitmap(null);
         //weird issue with leftover images
-        adapter = MediaCardAdapter(viewModel, ::openMediaView)
 
+        initAdapters()
 
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
+                (requireActivity() as AppCompatActivity).supportActionBar?.title = it.title
+                        //binding.ratingText.text =
+                //binding.runTimeText = it.run time
+
+                initSeenButton(it.id.toString())
+
                 if(it.backdropPath != null){
-                    Log.d("BACKDROP_PATH", it.backdropPath)
 
                     viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
                 }
-
-                //set other properties
             }
 
 
@@ -91,6 +94,7 @@ class MediaItemViewFragment : Fragment() {
                 binding.movieTitleText.text = it.title
                 Log.d("BACKDROP_PATH", it.backdropPath)
                 viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                initSeenButton(it.id.toString())
                 //set other properties
             }
 
@@ -106,10 +110,44 @@ class MediaItemViewFragment : Fragment() {
 
 
 
+
+
+
         //init items
         initSimilarList()
+        initRecommendedList()
+
+        initProviderList()
 
         return root
+    }
+
+    fun initSeenButton(item: String){
+        binding.seenButton.setOnClickListener {
+            if(viewModel.checkInSeenMediaItems(item)){
+                //item is seen
+                Log.d("Contains", item)
+                viewModel.removeSeenMedia(item)
+            }
+            else {
+                viewModel.addSeenMedia(item)
+
+            }
+
+        }
+
+        viewModel.observeSeenMediaItems().observe(viewLifecycleOwner) {
+            Log.d("Seen Items Changed", it.toString())
+            if(it.contains(item)){
+                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_circle_24)
+            }
+            else {
+                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+            }
+
+
+        }
+
     }
 
     //Set up lists
@@ -122,25 +160,86 @@ class MediaItemViewFragment : Fragment() {
         //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
         //manager.orientation =
         binding.similarItemList.layoutManager = manager
-        binding.similarItemList.adapter = adapter
+        binding.similarItemList.adapter = similarAdapter
 
         // Live data lets us display the latest list, whatever it is
         // NB: owner is viewLifecycleOwner
         viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
-                adapter.submitMediaList(movieList)
-                adapter.notifyDataSetChanged()
+                similarAdapter.submitMediaList(movieList)
+                similarAdapter.notifyDataSetChanged()
 
             })
     }
 
 
+    fun initRecommendedList() {
+
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.recommendedList.layoutManager = manager
+        binding.recommendedList.adapter = recommendedAdapter
+
+
+        viewModel.observeRecommendedMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                recommendedAdapter.submitMediaList(movieList)
+                recommendedAdapter.notifyDataSetChanged()
+            })
+    }
+
+    fun initProviderList() {
+
+
+        //Stream
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.streamServiceList.layoutManager = manager
+        binding.streamServiceList.adapter = streamProvidersAdapter
+
+        //rent
+        val managerBuy = LinearLayoutManager(context)
+        managerBuy.orientation = LinearLayoutManager.HORIZONTAL
+        binding.buyServiceList.layoutManager = managerBuy
+        binding.buyServiceList.adapter = buyProviderAdapter
+
+
+        //buy
+        val managerRent = LinearLayoutManager(context)
+        managerRent.orientation = LinearLayoutManager.HORIZONTAL
+        binding.rentServiceList.layoutManager = managerRent
+        binding.rentServiceList.adapter = rentProviderAdapter
+
+
+        viewModel.observeStreamingProviders().observe(viewLifecycleOwner,
+            Observer { providerList ->
+                streamProvidersAdapter.submitProviderList(providerList)
+                streamProvidersAdapter.notifyDataSetChanged()
+            })
+
+
+        viewModel.observeBuyProviders().observe(viewLifecycleOwner,
+            Observer { providerList ->
+                buyProviderAdapter.submitProviderList(providerList)
+                buyProviderAdapter.notifyDataSetChanged()
+            })
+
+        viewModel.observeRentProviders().observe(viewLifecycleOwner,
+            Observer { providerList ->
+                rentProviderAdapter.submitProviderList(providerList)
+                rentProviderAdapter.notifyDataSetChanged()
+            })
+
+
+
+    }
+
+
+
 
     fun openMediaView(item: MediaItem) {
         viewModel.setUpCurrentMediaData(item)
-
-
-
+        findNavController().popBackStack()
         findNavController().navigate(R.id.navigation_media)
     }
 
@@ -152,23 +251,4 @@ class MediaItemViewFragment : Fragment() {
 
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MediaItemViewFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MediaItemViewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

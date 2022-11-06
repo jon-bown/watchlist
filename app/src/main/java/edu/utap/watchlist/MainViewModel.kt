@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import edu.utap.watchlist.api.*
 import edu.utap.watchlist.firestore.UserDBClient
 import edu.utap.watchlist.glide.Glide
+import edu.utap.watchlist.providers.Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -20,6 +21,12 @@ import java.util.concurrent.atomic.AtomicBoolean
 class MainViewModel : ViewModel() {
 
 
+    //Firebase
+    private var userDB = UserDBClient()
+
+    private val movieApi = MovieDBApi.create()
+    private val repository = MediaRepository(movieApi)
+    private val mediaItems = MutableLiveData<List<MediaItem>>()
 
     private var displayName = MutableLiveData("")
     private var email = MutableLiveData("")
@@ -53,11 +60,33 @@ class MainViewModel : ViewModel() {
         userDB.setLanguage(newValue)
     }
 
+    ////////////SEEN MEDIA ITEMS//////////////////
+    private var seenMediaItems = MutableLiveData<List<String>>()
+    fun observeSeenMediaItems(): LiveData<List<String>> {
+        return seenMediaItems
+    }
 
+    fun fetchSeenMediaItems() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            seenMediaItems.postValue(userDB.getSeenMediaItems())
+        }
+    }
 
-    private val movieApi = MovieDBApi.create()
-    private val repository = MediaRepository(movieApi)
-    private val mediaItems = MutableLiveData<List<MediaItem>>()
+    fun addSeenMedia(item: String){
+        userDB.addSeenItem(item)
+        fetchSeenMediaItems()
+    }
+    fun removeSeenMedia(item: String) {
+        userDB.removeSeenItem(item)
+        fetchSeenMediaItems()
+    }
+    fun checkInSeenMediaItems(item: String): Boolean{
+        return seenMediaItems.value!!.contains(item)
+    }
+
     //User Lists
 
     //Current List
@@ -121,8 +150,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    //Firebase
-    private var userDB = UserDBClient()
 
 
 
@@ -133,10 +160,71 @@ class MainViewModel : ViewModel() {
         return currentMediaItem
     }
 
+    /////////PROVIDERS//////////
+    private val currentStreamingProviders = MutableLiveData<List<Provider>>()
+    fun observeStreamingProviders(): LiveData<List<Provider>> {
+        return currentStreamingProviders
+    }
+
+    private val currentBuyProviders = MutableLiveData<List<Provider>>()
+    fun observeBuyProviders(): LiveData<List<Provider>> {
+        return currentBuyProviders
+    }
+
+    private val currentRentProviders = MutableLiveData<List<Provider>>()
+    fun observeRentProviders(): LiveData<List<Provider>> {
+        return currentRentProviders
+    }
+
+    fun fetchProviders() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(currentMediaItem.value!!.type == "MOVIE"){
+
+                val providerContainer = repository.fetchMovieProviders(currentMediaItem.value!!.id.toString(), countrySetting.value!!)
+                if(providerContainer.flatRate != null){
+                    currentStreamingProviders.postValue(providerContainer.flatRate!!)
+                }
+                if(providerContainer.buy != null){
+                    currentBuyProviders.postValue(providerContainer.buy!!)
+                }
+                if(providerContainer.rent != null){
+                    currentRentProviders.postValue(providerContainer.buy!!)
+                }
+
+                fetchDone.postValue(true)
+            }
+            else {
+
+                val providerContainer = repository.fetchTVProviders(currentMediaItem.value!!.id.toString(), countrySetting.value!!)
+                if(providerContainer.flatRate != null){
+                    currentStreamingProviders.postValue(providerContainer.flatRate!!)
+                }
+                if(providerContainer.buy != null){
+                    currentBuyProviders.postValue(providerContainer.buy!!)
+                }
+                if(providerContainer.rent != null){
+                    currentRentProviders.postValue(providerContainer.buy!!)
+                }
+
+                fetchDone.postValue(true)
+            }
+
+        }
+    }
+
+
+
+
+
+
     private val currentMovie = MutableLiveData<Movie>()
     fun observeCurrentMovie(): LiveData<Movie> {
         return currentMovie
     }
+
     private val currentTV = MutableLiveData<TVShow>()
     fun observeCurrentTV(): LiveData<TVShow> {
         return currentTV
@@ -152,6 +240,9 @@ class MainViewModel : ViewModel() {
             fetchCurrentTV()
         }
         fetchSimilar(1)
+        fetchRecommended(1)
+        fetchProviders()
+        fetchSeenMediaItems()
     }
 
     fun fetchCurrentMovie() {
@@ -206,6 +297,33 @@ class MainViewModel : ViewModel() {
 
 
 
+    private val recommendedMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeRecommendedMediaItems(): LiveData<List<MediaItem>> {
+        return recommendedMediaItems
+    }
+    fun fetchRecommended(page: Int) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(currentMediaItem.value!!.type == "MOVIE"){
+                val movieList = repository.fetchRecommendedMovies(currentMediaItem.value!!.id.toString(),
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                recommendedMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
+                fetchDone.postValue(true)
+            }
+            else {
+                val tvList = repository.fetchRecommendedTV(currentMediaItem.value!!.id.toString(),
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                recommendedMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
+
+        }
+    }
+
+
+
     //Media Items
     private val popularMediaItems = MutableLiveData<List<MediaItem>>()
     fun observePopularMediaItems(): LiveData<List<MediaItem>> {
@@ -223,6 +341,16 @@ class MainViewModel : ViewModel() {
     private val userLists = MutableLiveData<List<WatchList>>()
     fun observeUserLists(): LiveData<List<WatchList>> {
         return userLists
+    }
+
+    private val trendingTodayMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeTrendingTodayMediaItems(): LiveData<List<MediaItem>> {
+        return trendingTodayMediaItems
+    }
+
+    private val trendingWeekMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeTrendingWeekMediaItems(): LiveData<List<MediaItem>> {
+        return trendingWeekMediaItems
     }
 
 
@@ -245,6 +373,8 @@ class MainViewModel : ViewModel() {
         fetchPopular(1)
         fetchNowPlaying(1)
         fetchTopRated(1)
+        fetchTrendingToday(1)
+        fetchTrendingWeek(1)
     }
 
     //POPULAR
@@ -330,6 +460,52 @@ class MainViewModel : ViewModel() {
 
         }
     }
+
+
+
+    fun fetchTrendingToday(page: Int) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(movieMode.get()){
+                val movieList = repository.fetchMoviesTrendingToday(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                trendingTodayMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
+                fetchDone.postValue(true)
+            }
+            else {
+                val tvList = repository.fetchTVTrendingToday(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                trendingTodayMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
+
+        }
+    }
+
+    fun fetchTrendingWeek(page: Int) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(movieMode.get()){
+                val movieList = repository.fetchMoviesTrendingWeek(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                trendingWeekMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
+                fetchDone.postValue(true)
+            }
+            else {
+                val tvList = repository.fetchTVTrendingWeek(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                trendingWeekMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
+
+        }
+    }
+
+
 
 
 

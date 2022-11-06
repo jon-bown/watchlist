@@ -4,6 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="segmented_control_min_width">100dp</dimen>
     <dimen name="segmented_control_min_height">40dp</dimen>
-    <dimen name="corner_radius">0dp</dimen>
+    <dimen name="corner_radius">5dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 </resources>

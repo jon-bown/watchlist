@@ -180,6 +180,22 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Not all languages and regions available. Default is English, US"
+            android:textSize="10sp"
+            android:textStyle="italic"
+            />
+    </LinearLayout>
+
 
 
     <LinearLayout

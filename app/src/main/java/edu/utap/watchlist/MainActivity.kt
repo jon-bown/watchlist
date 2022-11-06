@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         AuthInit(viewModel, signInLauncher)
+
     }
 
     fun openBrowser(view: View) {
@@ -93,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         val id = item.itemId
         if (id == android.R.id.home) {
             //findNavController().popBackStack()
-            Log.d("BACK BUTTON", "HELLO")
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
             //if backstack is zero
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)

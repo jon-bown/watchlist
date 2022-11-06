@@ -103,7 +103,7 @@ class SearchFragment : Fragment() {
                         //hide keyboard
                         val activity = activity as MainActivity
                         activity.hideKeyboard()
-                        binding.mediaSearchView.isFocusable = false
+                        //binding.mediaSearchView.isFocusable = false
                         viewModel.clearMediaItems()
                     }
                     return true

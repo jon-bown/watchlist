@@ -1,24 +1,26 @@
 package edu.utap.watchlist.ui.watchlist
 
+import android.opengl.Visibility
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.StringListAdapter
-import edu.utap.watchlist.adapters.StringListSelectionAdapter
-import edu.utap.watchlist.api.Languages
-import edu.utap.watchlist.databinding.FragmentSelectionListBinding
 import edu.utap.watchlist.databinding.FragmentWatchListCheckViewBinding
 import edu.utap.watchlist.ui.profile.SelectionListArgs
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,6 +90,15 @@ class WatchListCheckView : Fragment() {
 
         }
 
+        binding.watchlistEditDoneButton.setOnClickListener {
+            findNavController().popBackStack()
+            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+        }
+
+        val bottomNav = view?.findViewById<BottomNavigationView>(R.id.nav_host_fragment_activity_main)
+        bottomNav?.visibility = View.INVISIBLE
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+        //hide bottom navigation view
 
         return root
     }

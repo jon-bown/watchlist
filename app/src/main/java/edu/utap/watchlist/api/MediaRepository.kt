@@ -14,9 +14,15 @@ class MediaRepository(private val api: MovieDBApi) {
     suspend fun fetchMovieProviders(movie: String, region: String): RegionContainer {
         val regionList = api.getMovieProviders(movie).results
         if(regionList[region] == null) {
-            return regionList["US"]!!
+            if(regionList["US"] != null){
+                return regionList["US"]!!
+            }
+
         }
-        return regionList[region]!!
+        else {
+            return regionList[region]!!
+        }
+        return RegionContainer("", null, null, null)
     }
 
     suspend fun fetchSimilarMovies(movie: String, language: String, adult: Boolean, page: Int): List<Movie> {
@@ -93,6 +99,10 @@ class MediaRepository(private val api: MovieDBApi) {
         return api.getTVPopular(language, adult.toString(), page).results
     }
 
+    suspend fun fetchUpcomingTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVUpcoming(language, adult.toString(), page).results
+    }
+
 
 //    suspend fun fetchLatestMovies(): List<Movie> {
 //        return api.getMoviesLatest().results
@@ -101,6 +111,27 @@ class MediaRepository(private val api: MovieDBApi) {
 //    suspend fun fetchLatestTV(): List<TVShow> {
 //        return api.getTVLatest().results
 //    }
+
+
+    suspend fun fetchTVStreamingRegionProviders(region: String, id: String): RegionContainer {
+        val results = api.getTVProviders(id).results
+        if(region in results.keys){
+            return results[region]!!
+        }
+        else{
+            return results["US"]!!
+        }
+    }
+
+    suspend fun fetchMovieStreamingRegionProviders(region: String, id: String): RegionContainer {
+        val results = api.getTVProviders(id).results
+        if(region in results.keys){
+            return results[region]!!
+        }
+        else{
+            return results["US"]!!
+        }
+    }
 
 
     suspend fun fetchTopRatedTV(language: String, adult: Boolean, page: Int): List<TVShow> {

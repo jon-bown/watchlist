@@ -110,7 +110,6 @@
     <fragment
         android:id="@+id/navigation_media"
         android:name="edu.utap.watchlist.ui.media.MediaItemViewFragment"
-        android:label="@string/title_profile"
         tools:layout="@layout/fragment_media_item_view">
         <action
             android:id="@+id/action_media_to_watchlist"
@@ -127,7 +126,7 @@
     <fragment
         android:id="@+id/navigation_selectionList"
         android:name="edu.utap.watchlist.ui.watchlist.WatchListCheckView"
-        android:label="@string/title_home"
+        android:label="@string/watchlist_selection"
         tools:layout="@layout/fragment_watch_list_check_view">
         <action
             android:id="@+id/action_watchlist_to_media"
