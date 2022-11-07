@@ -1,10 +1,8 @@
 package edu.utap.watchlist
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -12,7 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -22,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.utap.firebaseauth.AuthInit
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.databinding.ActivityMainBinding
-import edu.utap.watchlist.ui.search.SearchFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -74,8 +71,26 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+//        navView.setOnItemSelectedListener {
+//            popBackOnStack()
+//            setupActionBarWithNavController(navController, appBarConfiguration)
+//            navView.setupWithNavController(navController)
+//            true
+//        }
         AuthInit(viewModel, signInLauncher)
 
+
+    }
+
+    fun hideNavBar() {
+        binding.navView.visibility = View.GONE
+//        groupDetails.visibility = View.GONE
+    }
+
+    fun showNavBar() {
+        binding.navView.visibility = View.VISIBLE
+//        groupDetails.visibility = View.GONE
     }
 
     fun openBrowser(view: View) {

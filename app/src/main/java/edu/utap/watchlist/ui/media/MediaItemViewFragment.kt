@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
@@ -17,11 +19,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.adapters.ProviderAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
 import edu.utap.watchlist.R
+import edu.utap.watchlist.ui.watchlist.SingleWatchListView
 
 
 class MediaItemViewFragment : Fragment() {
@@ -81,6 +85,8 @@ class MediaItemViewFragment : Fragment() {
 
 
         initAdapters()
+
+        setCloseButton()
 
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
@@ -247,16 +253,50 @@ class MediaItemViewFragment : Fragment() {
 
     fun openMediaView(item: MediaItem) {
         viewModel.setUpCurrentMediaData(item)
-        findNavController().popBackStack()
-        findNavController().navigate(R.id.navigation_media)
+        //findNavController().popBackStack()
+        //findNavController().navigate(R.id.navigation_media)
+        val manager: FragmentManager? = parentFragmentManager
+        val transaction: FragmentTransaction = manager!!.beginTransaction()
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance(), null)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 
+    fun setCloseButton() {
+        binding.closeButton.setOnClickListener {
+            val manager: FragmentManager? = parentFragmentManager
+
+            val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
+
+            manager.popBackStack(backStackId,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+
+            val act = activity as MainActivity
+            act.showNavBar()
+        }
+    }
 
 
     override fun onDestroy() {
         super.onDestroy()
 
+    }
+
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment SingleWatchListView.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance() =
+            MediaItemViewFragment()
     }
 
 }

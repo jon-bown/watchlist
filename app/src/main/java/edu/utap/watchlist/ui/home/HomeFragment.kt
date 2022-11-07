@@ -1,28 +1,33 @@
 package edu.utap.watchlist.ui.home
 
+import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentHomeBinding
+import edu.utap.watchlist.ui.media.MediaItemViewFragment
+import java.util.Calendar.getInstance
 
 
 class HomeFragment : Fragment() {
@@ -80,12 +85,30 @@ class HomeFragment : Fragment() {
         viewModel.setUpCurrentMediaData(item)
         //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-        findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
-                NavOptions.Builder().setLaunchSingleTop(true).build())
+
+        val manager: FragmentManager? = parentFragmentManager
+        val transaction: FragmentTransaction = manager!!.beginTransaction()
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance(), null)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+        val act = activity as MainActivity
+        act.hideNavBar()
+//        childFragmentManager.beginTransaction()
+//            .replace(R.id.container, MediaItemViewFragment.newInstance()).commit()
+
+//        findNavController().navigate(MediaItemViewFragment.newInstance())
+//        findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
+//                NavOptions.Builder().build())
 
 
 
     }
+
+
+
+
+
 
     private fun setLoadingListener() {
         viewModel.observeFetchDone().observe(viewLifecycleOwner) {
