@@ -137,6 +137,28 @@ class MainViewModel : ViewModel() {
         watchLists.postValue(mutableWatchLists)
     }
 
+    fun removeFromLists(addedLists: List<String>){
+
+        for(list in watchLists.value!!){
+            if(!(list.name in addedLists)){
+                val listWithName = watchLists.value!!.filter { it.name == list.name }.first()
+                val newList = mutableListOf<MediaItem>()
+                if(listWithName.items != null){
+                    newList.addAll(listWithName.items!!.toList())
+                }
+
+                newList.remove(currentMediaItem.value!!)
+
+                val currentWatchLists = watchLists.value
+                val mutableWatchLists = currentWatchLists!!.toMutableList()
+                mutableWatchLists.remove(listWithName)
+                mutableWatchLists.add(WatchList(listWithName.name, newList))
+                watchLists.postValue(mutableWatchLists)
+            }
+        }
+
+    }
+
     fun getWatchlistNamesThatContain(): List<String> {
         val id = currentMediaItem.value!!.id
         if(this.watchLists.value != null){

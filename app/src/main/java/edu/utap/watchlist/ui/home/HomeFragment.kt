@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
         //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
         //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+
 
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()

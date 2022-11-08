@@ -2,11 +2,13 @@ package edu.utap.watchlist.ui.watchlist
 
 import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.StringListAdapter
 import edu.utap.watchlist.databinding.FragmentWatchListCheckViewBinding
@@ -45,6 +48,8 @@ class WatchListCheckView : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
+    private val listsToAdd = mutableListOf<String>()
+
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
@@ -71,7 +76,7 @@ class WatchListCheckView : Fragment() {
         _binding = FragmentWatchListCheckViewBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        this.adapter = StringListAdapter(::collectSelectedLists, true)
+        this.adapter = StringListAdapter(::toggleLists, true)
 
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
@@ -84,15 +89,40 @@ class WatchListCheckView : Fragment() {
 
         viewModel.observeWatchLists().observe(viewLifecycleOwner) { lists ->
 
+                if(!lists.isEmpty()){
+                    binding.watchlistEditDoneButton.isEnabled = true
+                    binding.noListText.visibility = View.GONE
+                }
                 //Need all lists where this current item belongs
                 adapter.submitList(lists.map{ it.name}, viewModel.getWatchlistNamesThatContain())
                 adapter.notifyDataSetChanged()
 
         }
 
+
+
+
         binding.watchlistEditDoneButton.setOnClickListener {
-            findNavController().popBackStack()
-            (activity as AppCompatActivity?)!!.supportActionBar!!.show()
+            //save items
+            collectSelectedLists()
+            popBackToFragment()
+            val act = activity as MainActivity
+            act.showNavBar()
+
+        }
+
+        if(viewModel.observeWatchLists().value == null || viewModel.observeWatchLists().value!!.isEmpty()){
+            binding.watchlistEditDoneButton.isEnabled = false
+            binding.noListText.visibility = View.VISIBLE
+        }
+
+        binding.watchlistCancelButton.setOnClickListener {
+
+            popBackToFragment()
+
+
+            val act = activity as MainActivity
+            act.showNavBar()
         }
 
         val bottomNav = view?.findViewById<BottomNavigationView>(R.id.nav_host_fragment_activity_main)
@@ -103,11 +133,24 @@ class WatchListCheckView : Fragment() {
         return root
     }
 
-    private fun collectSelectedLists(items: List<String>, selection: String) {
-        for(list in items) {
+    private fun collectSelectedLists() {
+        for(list in listsToAdd) {
             viewModel.addToWatchList(list)
         }
+        viewModel.removeFromLists(listsToAdd)
 
+    }
+
+    private fun toggleLists(items: List<String>, selection: String) {
+        listsToAdd.clear()
+        listsToAdd.addAll(items)
+    }
+
+    private fun popBackToFragment() {
+        val manager: FragmentManager? = parentFragmentManager
+        val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
+        manager.popBackStack(backStackId,
+            FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     companion object {
@@ -121,12 +164,8 @@ class WatchListCheckView : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             WatchListCheckView().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
             }
     }
 }

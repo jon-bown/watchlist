@@ -18,12 +18,41 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <Button
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_margin="8dp"
-        android:background="@drawable/rounded"
-        android:id="@+id/watchlistEditDoneButton"
-        android:text="Save"/>
+        android:layout_height="wrap_content"
+        android:text="You Don't Have Any Watchlists!"
+        android:id="@+id/noListText"
+        android:textSize="20sp"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded"
+            android:id="@+id/watchlistEditDoneButton"
+            android:text="Save"/>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded"
+            android:id="@+id/watchlistCancelButton"
+            android:text="Cancel"/>
+
+
+    </LinearLayout>
+
 
 </LinearLayout>

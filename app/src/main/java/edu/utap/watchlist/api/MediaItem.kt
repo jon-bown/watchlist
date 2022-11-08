@@ -5,6 +5,21 @@ data class MediaItem(
     val id: Int,
     val type: String,
     val imageURL: String?
-                     )
+                     ) {
+
+
+    override fun equals(other: Any?): Boolean{
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as MediaItem
+
+        if (this.id == other.id) return true
+
+        return false
+    }
+
+
+}
 
 

@@ -71,13 +71,7 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-//        navView.setOnItemSelectedListener {
-//            popBackOnStack()
-//            setupActionBarWithNavController(navController, appBarConfiguration)
-//            navView.setupWithNavController(navController)
-//            true
-//        }
+        
         AuthInit(viewModel, signInLauncher)
 
 
@@ -85,11 +79,13 @@ class MainActivity : AppCompatActivity() {
 
     fun hideNavBar() {
         binding.navView.visibility = View.GONE
+        supportActionBar!!.hide()
 //        groupDetails.visibility = View.GONE
     }
 
     fun showNavBar() {
         binding.navView.visibility = View.VISIBLE
+        supportActionBar!!.show()
 //        groupDetails.visibility = View.GONE
     }
 

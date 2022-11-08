@@ -26,6 +26,7 @@ import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
 import edu.utap.watchlist.R
 import edu.utap.watchlist.ui.watchlist.SingleWatchListView
+import edu.utap.watchlist.ui.watchlist.WatchListCheckView
 
 
 class MediaItemViewFragment : Fragment() {
@@ -91,14 +92,13 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
-                (requireActivity() as AppCompatActivity).supportActionBar?.title = it.title
+
                         //binding.ratingText.text =
                 //binding.runTimeText = it.run time
 
                 initSeenButton(it.id.toString())
 
                 if(it.backdropPath != null){
-
                     viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
                 }
             }
@@ -115,10 +115,20 @@ class MediaItemViewFragment : Fragment() {
 
         binding.addButton.setOnClickListener {
             //open watchlist selecitonview fragment
-            val bundle = bundleOf("type" to "language")
-            findNavController().navigate(
-                MediaItemViewFragmentDirections.actionMediaToWatchlist(),
-                NavOptions.Builder().setLaunchSingleTop(true).build())
+
+//            findNavController().navigate(
+//                MediaItemViewFragmentDirections.actionMediaToWatchlist(),
+//                NavOptions.Builder().setLaunchSingleTop(true).build())
+
+            val manager: FragmentManager? = parentFragmentManager
+            val transaction: FragmentTransaction = manager!!.beginTransaction()
+            transaction.replace(R.id.nav_host_fragment_activity_main, WatchListCheckView.newInstance(), null)
+            transaction.addToBackStack(null)
+            transaction.commit()
+
+            val act = activity as MainActivity
+            act.hideNavBar()
+
             //findNavController().navigate(R.id.navigation_stringList, bundle)
         }
 
