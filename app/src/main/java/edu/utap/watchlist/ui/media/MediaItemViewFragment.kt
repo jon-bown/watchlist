@@ -234,9 +234,17 @@ class MediaItemViewFragment : Fragment() {
         binding.rentServiceList.layoutManager = managerRent
         binding.rentServiceList.adapter = rentProviderAdapter
 
+        binding.streamContainer.visibility = View.GONE
+        binding.buyContainer.visibility = View.GONE
+        binding.rentContainer.visibility = View.GONE
+
+
 
         viewModel.observeStreamingProviders().observe(viewLifecycleOwner,
             Observer { providerList ->
+                if(!providerList.isEmpty()){
+                    binding.streamContainer.visibility = View.VISIBLE
+                }
                 streamProvidersAdapter.submitProviderList(providerList)
                 streamProvidersAdapter.notifyDataSetChanged()
             })
@@ -244,17 +252,21 @@ class MediaItemViewFragment : Fragment() {
 
         viewModel.observeBuyProviders().observe(viewLifecycleOwner,
             Observer { providerList ->
+                if(!providerList.isEmpty()){
+                    binding.buyContainer.visibility = View.VISIBLE
+                }
                 buyProviderAdapter.submitProviderList(providerList)
                 buyProviderAdapter.notifyDataSetChanged()
             })
 
         viewModel.observeRentProviders().observe(viewLifecycleOwner,
             Observer { providerList ->
+                if(!providerList.isEmpty()){
+                    binding.rentContainer.visibility = View.VISIBLE
+                }
                 rentProviderAdapter.submitProviderList(providerList)
                 rentProviderAdapter.notifyDataSetChanged()
             })
-
-
 
     }
 
