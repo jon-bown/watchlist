@@ -29,8 +29,11 @@ import edu.utap.watchlist.ui.watchlist.SingleWatchListView
 import edu.utap.watchlist.ui.watchlist.WatchListCheckView
 
 
+private const val CLOSE_FULL = "param1"
+
 class MediaItemViewFragment : Fragment() {
 
+    private var param1: String? = null
 
     private var _binding: FragmentMediaItemViewBinding? = null
 
@@ -56,6 +59,9 @@ class MediaItemViewFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        arguments?.let {
+            param1 = it.getString(CLOSE_FULL)
+        }
     }
 
     private fun initAdapters(){
@@ -92,9 +98,14 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
+                binding.runTimeText.text = it.runtime.toString()
+                binding.popularityText.text = it.popularity.toString()
+                binding.overviewText.text = it.overview
 
                         //binding.ratingText.text =
                 //binding.runTimeText = it.run time
+
+                viewModel.fetchProviders()
 
                 initSeenButton(it.id.toString())
 
@@ -109,6 +120,8 @@ class MediaItemViewFragment : Fragment() {
                 Log.d("BACKDROP_PATH", it.backdropPath)
                 viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
                 initSeenButton(it.id.toString())
+
+                viewModel.fetchProviders()
                 //set other properties
             }
 
@@ -128,7 +141,7 @@ class MediaItemViewFragment : Fragment() {
 
             val act = activity as MainActivity
             act.hideNavBar()
-
+            act.hideActionBar()
             //findNavController().navigate(R.id.navigation_stringList, bundle)
         }
 
@@ -140,7 +153,6 @@ class MediaItemViewFragment : Fragment() {
         //init items
         initSimilarList()
         initRecommendedList()
-
         initProviderList()
 
         return root
@@ -245,6 +257,9 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.streamContainer.visibility = View.VISIBLE
                 }
+                else {
+                    binding.streamContainer.visibility = View.GONE
+                }
                 streamProvidersAdapter.submitProviderList(providerList)
                 streamProvidersAdapter.notifyDataSetChanged()
             })
@@ -255,6 +270,9 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.buyContainer.visibility = View.VISIBLE
                 }
+                else {
+                    binding.buyContainer.visibility = View.GONE
+                }
                 buyProviderAdapter.submitProviderList(providerList)
                 buyProviderAdapter.notifyDataSetChanged()
             })
@@ -263,6 +281,9 @@ class MediaItemViewFragment : Fragment() {
             Observer { providerList ->
                 if(!providerList.isEmpty()){
                     binding.rentContainer.visibility = View.VISIBLE
+                }
+                else {
+                    binding.rentContainer.visibility = View.GONE
                 }
                 rentProviderAdapter.submitProviderList(providerList)
                 rentProviderAdapter.notifyDataSetChanged()
@@ -279,25 +300,64 @@ class MediaItemViewFragment : Fragment() {
         //findNavController().navigate(R.id.navigation_media)
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance(), null)
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("one"), null)
         transaction.addToBackStack(null)
         transaction.commit()
     }
 
 
     fun setCloseButton() {
+
+
         binding.closeButton.setOnClickListener {
-            val manager: FragmentManager? = parentFragmentManager
-
-            val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
-
-            manager.popBackStack(backStackId,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
 
-            val act = activity as MainActivity
-            act.showNavBar()
+            if(viewModel.observeCurrentMediaItemsStack().value!!.size == 1){
+//                val manager: FragmentManager? = parentFragmentManager
+//
+//                val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
+//
+//                manager.popBackStack(backStackId,
+//                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+                val manager: FragmentManager? = parentFragmentManager
+                manager?.popBackStack()
+
+                viewModel.popToLastMediaData()
+
+                val act = activity as MainActivity
+                act.showNavBar()
+                act.showActionBar()
+            }
+            else {
+                val manager: FragmentManager? = parentFragmentManager
+                manager?.popBackStack()
+
+                viewModel.popToLastMediaData()
+
+            }
+
+
+//            if(param1 != "all"){
+//
+//                val manager: FragmentManager? = parentFragmentManager
+//                manager?.popBackStack()
+//
+//            }
+//            else {
+//                val manager: FragmentManager? = parentFragmentManager
+//
+//                val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
+//
+//                manager.popBackStack(backStackId,
+//                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
+//            }
+//
+//            val act = activity as MainActivity
+//            act.showNavBar()
+//            act.showActionBar()
         }
+
     }
 
 
@@ -307,18 +367,14 @@ class MediaItemViewFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SingleWatchListView.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
-        fun newInstance() =
-            MediaItemViewFragment()
+        fun newInstance(param1: String) =
+            MediaItemViewFragment().apply {
+                arguments = Bundle().apply{
+                    putString(CLOSE_FULL, param1)
+                }
+            }
     }
 
 }

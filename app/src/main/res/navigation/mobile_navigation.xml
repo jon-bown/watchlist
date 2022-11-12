@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="edu.utap.watchlist.ui.dashboard.DashboardFragment"
+        android:name="edu.utap.watchlist.ui.dashboard.WatchListsFragment"
         android:label="@string/title_watchlists"
         tools:layout="@layout/fragment_dashboard">
         <action android:id="@+id/action_watchlists_to_watchlist"

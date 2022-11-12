@@ -26,5 +26,9 @@ data class Movie (
     @SerializedName("vote_average")
     val voteAverage: Float,
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+    @SerializedName("overview")
+    val overview: String?,
+    @SerializedName("status")
+    val status: String
 )

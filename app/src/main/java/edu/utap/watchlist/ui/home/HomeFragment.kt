@@ -88,20 +88,13 @@ class HomeFragment : Fragment() {
 
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance(), null)
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("none"), null)
         transaction.addToBackStack(null)
         transaction.commit()
 
         val act = activity as MainActivity
         act.hideNavBar()
-//        childFragmentManager.beginTransaction()
-//            .replace(R.id.container, MediaItemViewFragment.newInstance()).commit()
-
-//        findNavController().navigate(MediaItemViewFragment.newInstance())
-//        findNavController().navigate(HomeFragmentDirections.actionHomeToMedia(),
-//                NavOptions.Builder().build())
-
-
+        act.hideActionBar()
 
     }
 

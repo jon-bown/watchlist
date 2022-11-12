@@ -3,6 +3,7 @@ package edu.utap.watchlist
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -75,17 +76,26 @@ class MainActivity : AppCompatActivity() {
         AuthInit(viewModel, signInLauncher)
 
 
+
     }
 
-    fun hideNavBar() {
-        binding.navView.visibility = View.GONE
+    fun hideActionBar() {
         supportActionBar!!.hide()
+//        groupDetails.visibility = View.GONE
+    }
+
+    fun showActionBar() {
+        supportActionBar!!.show()
 //        groupDetails.visibility = View.GONE
     }
 
     fun showNavBar() {
         binding.navView.visibility = View.VISIBLE
-        supportActionBar!!.show()
+//        groupDetails.visibility = View.GONE
+    }
+
+    fun hideNavBar() {
+        binding.navView.visibility = View.GONE
 //        groupDetails.visibility = View.GONE
     }
 
@@ -111,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
 
         }
+
         return true
     }
 

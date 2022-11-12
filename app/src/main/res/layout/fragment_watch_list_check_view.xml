@@ -8,6 +8,15 @@
     tools:context=".ui.watchlist.WatchListCheckView"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You Don't Have Any Watchlists!"
+        android:id="@+id/noListText"
+        android:textSize="25sp"
+        android:layout_margin="8dp"
+        android:textAlignment="center"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selectionList"
         android:layout_width="match_parent"
@@ -18,13 +27,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="You Don't Have Any Watchlists!"
-        android:id="@+id/noListText"
-        android:textSize="20sp"
-        android:textAlignment="center"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"

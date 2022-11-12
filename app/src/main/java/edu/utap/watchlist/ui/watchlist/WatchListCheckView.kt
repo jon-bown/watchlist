@@ -91,7 +91,7 @@ class WatchListCheckView : Fragment() {
 
                 if(!lists.isEmpty()){
                     binding.watchlistEditDoneButton.isEnabled = true
-                    binding.noListText.visibility = View.GONE
+                    binding.noListText.text = "Select Watchlists"
                 }
                 //Need all lists where this current item belongs
                 adapter.submitList(lists.map{ it.name}, viewModel.getWatchlistNamesThatContain())
@@ -105,6 +105,11 @@ class WatchListCheckView : Fragment() {
         binding.watchlistEditDoneButton.setOnClickListener {
             //save items
             collectSelectedLists()
+
+
+            //Show Toast
+
+
             popBackToFragment()
             val act = activity as MainActivity
             act.showNavBar()
@@ -113,7 +118,7 @@ class WatchListCheckView : Fragment() {
 
         if(viewModel.observeWatchLists().value == null || viewModel.observeWatchLists().value!!.isEmpty()){
             binding.watchlistEditDoneButton.isEnabled = false
-            binding.noListText.visibility = View.VISIBLE
+            binding.noListText.text  = "You don't have any watchlists!"
         }
 
         binding.watchlistCancelButton.setOnClickListener {

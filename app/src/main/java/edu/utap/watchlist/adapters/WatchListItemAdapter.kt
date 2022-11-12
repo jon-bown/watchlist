@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.api.MediaItem
-import edu.utap.watchlist.api.WatchList
 import edu.utap.watchlist.databinding.WatchlistItemRowBinding
 
 //displays each media item associated with a watchlist to the user
-class WatchListItemAdapter(private val viewModel: MainViewModel): RecyclerView.Adapter<WatchListItemAdapter.VH>() {
+class WatchListItemAdapter(private val viewModel: MainViewModel, private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<WatchListItemAdapter.VH>() {
     // Adapter does not have its own copy of list, it just observes
-    private var watchLists = mutableListOf<MediaItem>()
+    private var watchListItems = mutableListOf<MediaItem>()
 
 
     // ViewHolder pattern minimizes calls to findViewById
@@ -21,7 +20,14 @@ class WatchListItemAdapter(private val viewModel: MainViewModel): RecyclerView.A
         : RecyclerView.ViewHolder(binding.root) {
 
             init {
+                binding.root.setOnClickListener {
 
+
+                    //launch activity from result launcher
+                    //findNavController()
+
+                    clickListener(watchListItems[adapterPosition])
+                }
             }
 
         }
@@ -37,7 +43,7 @@ class WatchListItemAdapter(private val viewModel: MainViewModel): RecyclerView.A
     override fun onBindViewHolder(holder: VH, position: Int) {
         val binding = holder.binding
 
-        watchLists[holder.adapterPosition].let{
+        watchListItems[holder.adapterPosition].let{
             binding.watchListName.text = it.title
             //binding.quoteText.text = it.quote
             //binding.charActText.text = it.characterActor
@@ -73,11 +79,11 @@ class WatchListItemAdapter(private val viewModel: MainViewModel): RecyclerView.A
 
 
     fun submitMediaList(items: List<MediaItem>) {
-        watchLists.clear()
-        watchLists.addAll(items)
+        watchListItems.clear()
+        watchListItems.addAll(items)
         notifyDataSetChanged()
     }
 
 
-    override fun getItemCount() = watchLists.size
+    override fun getItemCount() = watchListItems.size
 }

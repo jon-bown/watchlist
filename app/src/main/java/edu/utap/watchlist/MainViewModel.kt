@@ -16,6 +16,7 @@ import edu.utap.watchlist.glide.Glide
 import edu.utap.watchlist.providers.Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel : ViewModel() {
@@ -184,6 +185,12 @@ class MainViewModel : ViewModel() {
         return currentMediaItem
     }
 
+
+    private val currentMediaItems = MutableLiveData<Stack<MediaItem>>()
+    fun observeCurrentMediaItemsStack(): LiveData<Stack<MediaItem>> {
+        return currentMediaItems
+    }
+
     /////////PROVIDERS//////////
     private val currentStreamingProviders = MutableLiveData<List<Provider>>()
     fun observeStreamingProviders(): LiveData<List<Provider>> {
@@ -211,11 +218,20 @@ class MainViewModel : ViewModel() {
                 if(providerContainer.flatRate != null){
                     currentStreamingProviders.postValue(providerContainer.flatRate!!)
                 }
+                else {
+                    currentStreamingProviders.postValue(emptyList())
+                }
                 if(providerContainer.buy != null){
                     currentBuyProviders.postValue(providerContainer.buy!!)
                 }
+                else {
+                    currentBuyProviders.postValue(emptyList())
+                }
                 if(providerContainer.rent != null){
                     currentRentProviders.postValue(providerContainer.buy!!)
+                }
+                else {
+                    currentRentProviders.postValue(emptyList())
                 }
 
                 fetchDone.postValue(true)
@@ -226,11 +242,20 @@ class MainViewModel : ViewModel() {
                 if(providerContainer.flatRate != null){
                     currentStreamingProviders.postValue(providerContainer.flatRate!!)
                 }
+                else {
+                    currentStreamingProviders.postValue(emptyList())
+                }
                 if(providerContainer.buy != null){
                     currentBuyProviders.postValue(providerContainer.buy!!)
                 }
+                else {
+                    currentBuyProviders.postValue(emptyList())
+                }
                 if(providerContainer.rent != null){
                     currentRentProviders.postValue(providerContainer.buy!!)
+                }
+                else {
+                    currentRentProviders.postValue(emptyList())
                 }
 
                 fetchDone.postValue(true)
@@ -254,8 +279,20 @@ class MainViewModel : ViewModel() {
         return currentTV
     }
 
-    fun setUpCurrentMediaData(item: MediaItem) {
-        // This is where the network request is initiated.
+
+    fun popToLastMediaData(){
+
+        val tempStack = currentMediaItems.value
+        tempStack!!.pop()
+
+        if(tempStack.isNotEmpty()){
+            refreshCurrentMediaInfo(tempStack.peek())
+
+        }
+
+    }
+
+    private fun refreshCurrentMediaInfo(item: MediaItem){
         currentMediaItem.value = item
         if(item.type == "MOVIE"){
             fetchCurrentMovie()
@@ -267,6 +304,19 @@ class MainViewModel : ViewModel() {
         fetchRecommended(1)
         fetchProviders()
         fetchSeenMediaItems()
+    }
+
+
+    fun setUpCurrentMediaData(item: MediaItem) {
+        // This is where the network request is initiated.
+
+        var tempStack = currentMediaItems.value
+        if(tempStack == null){
+            tempStack = Stack<MediaItem>()
+        }
+        tempStack!!.push(item)
+        currentMediaItems.postValue(tempStack!!)
+        refreshCurrentMediaInfo(item)
     }
 
     fun fetchCurrentMovie() {

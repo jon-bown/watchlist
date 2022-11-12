@@ -5,16 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
+import edu.utap.watchlist.MainActivity
+import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
 import edu.utap.watchlist.adapters.WatchListItemAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
+import edu.utap.watchlist.ui.media.MediaItemViewFragment
 import edu.utap.watchlist.ui.profile.SelectionListArgs
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,7 +68,7 @@ class SingleWatchListView : Fragment() {
         _binding = FragmentSingleWatchListViewBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        this.adapter = WatchListItemAdapter(viewModel)
+        this.adapter = WatchListItemAdapter(viewModel, ::openMediaView)
 
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
@@ -85,6 +90,25 @@ class SingleWatchListView : Fragment() {
 
         return root
     }
+
+    fun openMediaView(item: MediaItem) {
+        //open single view with given media item
+        viewModel.setUpCurrentMediaData(item)
+        //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
+
+
+        val manager: FragmentManager? = parentFragmentManager
+        val transaction: FragmentTransaction = manager!!.beginTransaction()
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("one"), null)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+        val act = activity as MainActivity
+        act.hideNavBar()
+        act.hideActionBar()
+
+    }
+
 
     private fun collectSelectedLists(item: MediaItem) {
         //open single media item view
