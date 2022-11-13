@@ -5,14 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import edu.utap.watchlist.api.MediaItem
+import edu.utap.watchlist.api.User
 import edu.utap.watchlist.api.WatchList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import kotlin.collections.HashMap
 
 class UserDBClient {
 
@@ -85,6 +88,7 @@ class UserDBClient {
         val TAG = "INIT_USER"
         val docRef = db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
         val document = docRef.get().await()
+
         if (document != null) {
             Log.d(TAG, "DocumentSnapshot data: ${document.data}")
             adultMode = document.data!!.get("adult") as Boolean
@@ -100,15 +104,42 @@ class UserDBClient {
         val TAG = "INIT_USER"
         val docRef = db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
         val document = docRef.get().await()
-        if (document != null) {
-            Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-            userLists = document.data!!.get("lists") as List<WatchList>
-        } else {
-            Log.d(TAG, "No such document")
-            createDocument()
-
+        if(document != null){
+            val item = document?.toObject(User::class.java)
+            Log.d(TAG, "DocumentSnapshot data: ${item}")
+            userLists = item!!.lists!!
+            Log.d(TAG, "User Lists: ${userLists}")
+        }
+        else {
+            Log.d(TAG, "Watchlist Items")
         }
         return userLists
+    }
+
+//
+//    suspend fun getWatchLists(): List<WatchList> {
+//        val TAG = "INIT_USER"
+//        val docRef = db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
+//        val document = docRef.get().await()
+//        if (document != null) {
+//            Log.d(TAG, "DocumentSnapshot data: ${document.data!!.get("lists")}")
+//            val data = document.data!!.get("lists") as List<HashMap<String, >>
+//            for(item in data){
+//
+//            }
+//
+//            userLists = document.get("lists") as List<WatchList>
+//        } else {
+//            Log.d(TAG, "No such document")
+//            createDocument()
+//
+//        }
+//        return userLists
+//    }
+
+    fun addWatchList(list: WatchList){
+        db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
+            .update("lists", FieldValue.arrayUnion(list))
     }
 
 

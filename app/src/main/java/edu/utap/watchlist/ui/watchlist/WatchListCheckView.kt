@@ -94,7 +94,7 @@ class WatchListCheckView : Fragment() {
                     binding.noListText.text = "Select Watchlists"
                 }
                 //Need all lists where this current item belongs
-                adapter.submitList(lists.map{ it.name}, viewModel.getWatchlistNamesThatContain())
+                adapter.submitList(lists.map{ it.name!!}, viewModel.getWatchlistNamesThatContain())
                 adapter.notifyDataSetChanged()
 
         }

@@ -117,7 +117,9 @@ class MainViewModel : ViewModel() {
             currentLists.addAll(watchLists.value!!)
         }
         //error if list already exists
+        val newList = WatchList(name, mutableListOf<MediaItem>())
         currentLists.add(WatchList(name, mutableListOf<MediaItem>()))
+        userDB.addWatchList(newList)
         watchLists.postValue(currentLists)
     }
 
@@ -167,7 +169,7 @@ class MainViewModel : ViewModel() {
                 id in wlist.items!!.map{it.id}
             }
                 .map{ wlist ->
-                wlist.name }
+                wlist.name!! }
                 return names
             }
         else{
@@ -756,6 +758,7 @@ class MainViewModel : ViewModel() {
             displayName.postValue(userDB.getUserName())
             languageSetting.postValue(userDB.getLanguage())
             countrySetting.postValue(userDB.getCountry())
+            watchLists.postValue(userDB.getWatchLists())
             adultMode.postValue(userDB.getAdultMode())
             fetchDone.postValue(true)
         }
