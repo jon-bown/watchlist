@@ -113,6 +113,7 @@ class WatchListCheckView : Fragment() {
             popBackToFragment()
             val act = activity as MainActivity
             act.showNavBar()
+            act.showActionBar()
 
         }
 
@@ -128,6 +129,7 @@ class WatchListCheckView : Fragment() {
 
             val act = activity as MainActivity
             act.showNavBar()
+            act.showActionBar()
         }
 
         val bottomNav = view?.findViewById<BottomNavigationView>(R.id.nav_host_fragment_activity_main)

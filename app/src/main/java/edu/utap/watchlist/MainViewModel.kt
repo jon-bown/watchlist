@@ -111,6 +111,17 @@ class MainViewModel : ViewModel() {
     fun observeWatchLists(): LiveData<List<WatchList>> {
         return watchLists
     }
+    fun fetchWatchLists() {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+
+            watchLists.postValue(userDB.getWatchLists())
+        }
+    }
+
+
     fun addNewWatchList(name: String){
         var currentLists = mutableListOf<WatchList>()
         if(watchLists.value != null) {
@@ -123,6 +134,15 @@ class MainViewModel : ViewModel() {
         watchLists.postValue(currentLists)
     }
 
+    fun removeWatchList(name: String){
+
+        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        userDB.removeWatchList(listWithName)
+        fetchWatchLists()
+
+    }
+
+
     fun addToWatchList(name: String) {
         //possibly need some error handling here
         val listWithName = watchLists.value!!.filter { it.name == name }.first()
@@ -132,7 +152,7 @@ class MainViewModel : ViewModel() {
         }
 
         newList.add(currentMediaItem.value!!)
-
+        userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!)
         val currentWatchLists = watchLists.value
         val mutableWatchLists = currentWatchLists!!.toMutableList()
         mutableWatchLists.remove(listWithName)
@@ -749,28 +769,22 @@ class MainViewModel : ViewModel() {
     fun populateUserData() {
 
         val TAG = "VIEWMODEL"
-        //languageSetting.postValue(userDB.getLanguage())
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
             email.postValue(userDB.getEmail())
             displayName.postValue(userDB.getUserName())
-            languageSetting.postValue(userDB.getLanguage())
-            countrySetting.postValue(userDB.getCountry())
+            val user = userDB.getUserData()
+
+            languageSetting.postValue(user.language)
+            countrySetting.postValue(user.country)
             watchLists.postValue(userDB.getWatchLists())
-            adultMode.postValue(userDB.getAdultMode())
+            adultMode.postValue(user.adult)
+            seenMediaItems.postValue(user.seen)
             fetchDone.postValue(true)
         }
 
-
-//        displayName.postValue(userDB.displayName)
-//        email.value = userDB.email
-//        uid.value = userDB.uid
-        //Lists
-
-        Log.d("POPULATE_L", languageSetting.value!!)
-        Log.d("POPULATE_C", countrySetting.value!!)
     }
 
 

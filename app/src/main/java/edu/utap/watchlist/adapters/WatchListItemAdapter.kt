@@ -28,6 +28,12 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
                     clickListener(watchListItems[adapterPosition])
                 }
+
+                binding.root.setOnDragListener { view, dragEvent ->
+                    Log.d("DRAG", "EVENT")
+                    true
+
+                }
             }
 
         }

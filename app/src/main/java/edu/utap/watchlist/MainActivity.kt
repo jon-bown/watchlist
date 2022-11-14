@@ -79,6 +79,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun setActionBarTitle(title: String){
+        supportActionBar!!.title = title
+    }
+
+
     fun hideActionBar() {
         supportActionBar!!.hide()
 //        groupDetails.visibility = View.GONE
@@ -119,7 +124,8 @@ class MainActivity : AppCompatActivity() {
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
             //if backstack is zero
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
-
+            showActionBar()
+            showNavBar()
         }
 
         return true

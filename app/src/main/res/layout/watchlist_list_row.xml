@@ -25,11 +25,12 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:id="@+id/arrow"
         android:layout_margin="2dp"
-        android:layout_gravity="right"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="right|center"
         android:layout_weight="0.3"
         android:src="@drawable/ic_baseline_arrow_forward_ios_24"
         />

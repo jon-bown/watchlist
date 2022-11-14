@@ -3,10 +3,11 @@ package edu.utap.watchlist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.databinding.WatchlistListRowBinding
 
 //displays the name of the watchlist to the user
-class WatchListAdapter(private val clickListener: (selection: String) -> Unit): RecyclerView.Adapter<WatchListAdapter.VH>() {
+class WatchListAdapter(private val viewModel: MainViewModel, private val clickListener: (selection: String) -> Unit): RecyclerView.Adapter<WatchListAdapter.VH>() {
 
     private var watchLists = mutableListOf<String>()
 
@@ -49,5 +50,11 @@ class WatchListAdapter(private val clickListener: (selection: String) -> Unit): 
 
 
     override fun getItemCount() = watchLists.size
+
+
+    fun removeAt(position: Int){
+        viewModel.removeWatchList(watchLists[position])
+        notifyDataSetChanged()
+    }
 
 }
