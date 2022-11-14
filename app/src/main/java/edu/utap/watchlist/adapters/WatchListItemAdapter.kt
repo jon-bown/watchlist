@@ -92,4 +92,11 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
 
     override fun getItemCount() = watchListItems.size
+
+
+
+    fun removeAt(position: Int){
+        viewModel.removeFromWatchList(watchListItems[position])
+        notifyDataSetChanged()
+    }
 }

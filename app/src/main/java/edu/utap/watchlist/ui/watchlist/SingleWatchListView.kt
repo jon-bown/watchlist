@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
@@ -18,6 +19,7 @@ import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
 import edu.utap.watchlist.adapters.WatchListItemAdapter
 import edu.utap.watchlist.api.MediaItem
+import edu.utap.watchlist.components.SwipeToDeleteCallback
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
 import edu.utap.watchlist.ui.media.MediaItemViewFragment
 import edu.utap.watchlist.ui.profile.SelectionListArgs
@@ -79,6 +81,20 @@ class SingleWatchListView : Fragment() {
         initRecyclerViewDividers(binding.watchList)
 
 
+
+        val swipeToDeleteCallback = object : SwipeToDeleteCallback() {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                adapter.removeAt(position)
+            }
+
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(binding.watchList)
+
+
+
         viewModel.observeCurrentWatchList().observe(viewLifecycleOwner) {
 
             //Need all lists where this current item belongs
@@ -115,14 +131,6 @@ class SingleWatchListView : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SingleWatchListView.
-         */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =

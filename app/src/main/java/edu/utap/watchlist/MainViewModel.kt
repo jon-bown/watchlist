@@ -160,6 +160,18 @@ class MainViewModel : ViewModel() {
         watchLists.postValue(mutableWatchLists)
     }
 
+
+    fun removeFromWatchList(mediaItem: MediaItem) {
+
+        var newList = currentWatchList.value!!
+        newList.items!!.remove(mediaItem)
+        userDB.removeMediaItemFromWatchlist(newList.name!!, mediaItem)
+        currentWatchList.postValue(WatchList(newList.name, newList.items))
+        fetchWatchLists()
+    }
+
+
+
     fun removeFromLists(addedLists: List<String>){
 
         for(list in watchLists.value!!){
