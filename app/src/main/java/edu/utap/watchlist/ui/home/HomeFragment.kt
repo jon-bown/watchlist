@@ -1,17 +1,10 @@
 package edu.utap.watchlist.ui.home
 
-import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.PopupWindow
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -27,7 +20,6 @@ import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentHomeBinding
 import edu.utap.watchlist.ui.media.MediaItemViewFragment
-import java.util.Calendar.getInstance
 
 
 class HomeFragment : Fragment() {
@@ -49,6 +41,10 @@ class HomeFragment : Fragment() {
     private var currentTrendingTodayPage = 1
     private lateinit var trendingWeekAdapter: MediaCardAdapter
     private var currentTrendingWeekPage = 1
+    private lateinit var upcomingAdapter: MediaCardAdapter
+    private var currentUpcomingPage = 1
+    private lateinit var nowAiringAdapter: MediaCardAdapter
+    private var currentNowAiringPage = 1
 
 
     private var isLoading = false
@@ -71,19 +67,17 @@ class HomeFragment : Fragment() {
         this.topRatedAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.trendingTodayAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.trendingWeekAdapter = MediaCardAdapter(viewModel, ::openMediaView)
-    }
-
-    private fun notifiyAdaptersChanged() {
-        popularAdapter.notifyDataSetChanged()
-        nowPlayingAdapter.notifyDataSetChanged()
-        topRatedAdapter.notifyDataSetChanged()
+        this.upcomingAdapter = MediaCardAdapter(viewModel, ::openMediaView)
+        this.nowAiringAdapter = MediaCardAdapter(viewModel, ::openMediaView)
 
     }
+
+
 
     fun openMediaView(item: MediaItem) {
         //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
-        //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
+
 
 
         val manager: FragmentManager? = parentFragmentManager
@@ -122,7 +116,6 @@ class HomeFragment : Fragment() {
         viewModel.observePopularMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 popularAdapter.submitMediaList(movieList)
-                popularAdapter.notifyDataSetChanged()
 
             })
         initPopularScrollListener()
@@ -141,7 +134,6 @@ class HomeFragment : Fragment() {
         viewModel.observeNowPlayingMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 nowPlayingAdapter.submitMediaList(movieList)
-                nowPlayingAdapter.notifyDataSetChanged()
 
             })
 
@@ -161,7 +153,6 @@ class HomeFragment : Fragment() {
         viewModel.observeTopRatedMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 topRatedAdapter.submitMediaList(movieList)
-                topRatedAdapter.notifyDataSetChanged()
 
             })
         //Scroll listener
@@ -178,7 +169,6 @@ class HomeFragment : Fragment() {
         viewModel.observeTrendingTodayMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 trendingTodayAdapter.submitMediaList(movieList)
-                trendingTodayAdapter.notifyDataSetChanged()
 
             })
         //Scroll listener
@@ -195,10 +185,56 @@ class HomeFragment : Fragment() {
         viewModel.observeTrendingWeekMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 trendingWeekAdapter.submitMediaList(movieList)
-                trendingWeekAdapter.notifyDataSetChanged()
             })
         //Scroll listener
         //initTopRatedScrollListener()
+    }
+
+
+    fun initUpcomingList() {
+
+        //Linear
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.upcomingList.layoutManager = manager
+        binding.upcomingList.adapter = upcomingAdapter
+        initRecyclerViewDividers(binding.upcomingList)
+
+        viewModel.observeUpcomingMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                upcomingAdapter.submitMediaList(movieList)
+            })
+        //Scroll listener
+        initUpcomingScrollListener()
+    }
+
+    fun initNowAiringList() {
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.airingList.layoutManager = manager
+        binding.airingList.adapter = nowAiringAdapter
+        initRecyclerViewDividers(binding.airingList)
+
+        viewModel.observeNowAiringMediaItems().observe(viewLifecycleOwner,
+            Observer { movieList ->
+                nowAiringAdapter.submitMediaList(movieList)
+            })
+        //Scroll listener
+        initNowAiringScrollListener()
+
+        binding.airingList.visibility = View.VISIBLE
+        binding.onTheAirText.visibility = View.VISIBLE
+        binding.upcomingText.text = "Now Airing"
+
+
+    }
+
+    fun hideAiringList() {
+        binding.airingList.visibility = View.GONE
+        binding.onTheAirText.visibility = View.GONE
+        binding.upcomingText.text = "Upcoming"
+        initUpcomingList()
+
     }
 
     override fun onCreateView(
@@ -225,6 +261,17 @@ class HomeFragment : Fragment() {
         initTopRatedList()
         initTrendingTodayList()
         initTrendingWeekList()
+        initUpcomingList()
+
+
+        viewModel.observeMovieMode().observe(viewLifecycleOwner) {
+            if(it){
+                hideAiringList()
+            }
+            else {
+                initNowAiringList()
+            }
+        }
 
 
         setLoadingListener()
@@ -242,7 +289,7 @@ class HomeFragment : Fragment() {
             binding.moviesTvControl.check(R.id.opt_1)
             binding.opt2.setBackgroundColor(Color.TRANSPARENT)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.updateMediaType(true)
+            viewModel.updateMovieMode(true)
             viewModel.netRefresh()
 
 
@@ -251,16 +298,18 @@ class HomeFragment : Fragment() {
             binding.moviesTvControl.check(R.id.opt_2)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             binding.opt1.setBackgroundColor(Color.TRANSPARENT)
-            viewModel.updateMediaType(false)
+            viewModel.updateMovieMode(false)
             viewModel.netRefresh()
             popularAdapter.notifyDataSetChanged()
 
         }
         binding.moviesTvControl.check(R.id.opt_1)
         binding.opt1.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        binding.moviesTvControl.setOnCheckedChangeListener { radioGroup, i ->
-            binding.moviesTvControl.check(i)
+
+        binding.moviesTvControl.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
+            // Respond to button selection
         }
+
     }
 
 
@@ -302,6 +351,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun initUpcomingScrollListener() {
+
+    }
+
+    private fun initNowAiringScrollListener() {
 
     }
 

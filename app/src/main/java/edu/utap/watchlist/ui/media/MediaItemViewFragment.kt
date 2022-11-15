@@ -337,25 +337,6 @@ class MediaItemViewFragment : Fragment() {
 
             }
 
-
-//            if(param1 != "all"){
-//
-//                val manager: FragmentManager? = parentFragmentManager
-//                manager?.popBackStack()
-//
-//            }
-//            else {
-//                val manager: FragmentManager? = parentFragmentManager
-//
-//                val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
-//
-//                manager.popBackStack(backStackId,
-//                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
-//            }
-//
-//            val act = activity as MainActivity
-//            act.showNavBar()
-//            act.showActionBar()
         }
 
     }

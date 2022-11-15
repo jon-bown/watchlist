@@ -100,7 +100,11 @@ class MediaRepository(private val api: MovieDBApi) {
     }
 
     suspend fun fetchUpcomingTV(language: String, adult: Boolean, page: Int): List<TVShow> {
-        return api.getTVUpcoming(language, adult.toString(), page).results
+        return api.getTVAiringToday(language, adult.toString(), page).results
+    }
+
+    suspend fun fetchAiringTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+        return api.getTVOnTheAir(language, adult.toString(), page).results
     }
 
 

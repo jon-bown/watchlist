@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
@@ -114,6 +115,13 @@ class WatchListCheckView : Fragment() {
             val act = activity as MainActivity
             act.showNavBar()
             act.showActionBar()
+
+
+            Snackbar.make(
+                act.findViewById(R.id.nav_host_fragment_activity_main),
+                "Added To Your Lists!",
+                Snackbar.LENGTH_SHORT
+            ).show()
 
         }
 

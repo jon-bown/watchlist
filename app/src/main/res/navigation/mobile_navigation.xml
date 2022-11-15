@@ -54,7 +54,7 @@
         android:id="@+id/navigation_notifications"
         android:name="edu.utap.watchlist.ui.search.SearchFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications">
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_search_to_media"
             app:destination="@id/navigation_media"

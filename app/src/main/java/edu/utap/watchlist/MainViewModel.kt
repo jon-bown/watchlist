@@ -17,7 +17,6 @@ import edu.utap.watchlist.providers.Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 class MainViewModel : ViewModel() {
 
@@ -32,10 +31,16 @@ class MainViewModel : ViewModel() {
     private var displayName = MutableLiveData("")
     private var email = MutableLiveData("")
     private var uid = MutableLiveData("")
-    private var movieMode = AtomicBoolean(true)
-    fun getMediaMode(): Boolean {
-        return movieMode.get()
+    private var movieMode = MutableLiveData(true)
+
+    fun observeMovieMode(): LiveData<Boolean> {
+        return movieMode
     }
+
+    private fun getMovieMode(): Boolean {
+        return movieMode.value!!
+    }
+
     //settings
     private var adultMode = MutableLiveData(false)
     fun observeAdultMode(): LiveData<Boolean> {
@@ -321,9 +326,7 @@ class MainViewModel : ViewModel() {
 
         if(tempStack.isNotEmpty()){
             refreshCurrentMediaInfo(tempStack.peek())
-
         }
-
     }
 
     private fun refreshCurrentMediaInfo(item: MediaItem){
@@ -462,6 +465,19 @@ class MainViewModel : ViewModel() {
     }
 
 
+    private val upcomingMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeUpcomingMediaItems(): LiveData<List<MediaItem>> {
+        return upcomingMediaItems
+    }
+
+
+    private val nowAiringMediaItems = MutableLiveData<List<MediaItem>>()
+    fun observeNowAiringMediaItems(): LiveData<List<MediaItem>> {
+        return nowAiringMediaItems
+    }
+
+
+
 
 
     //Initial guess for width and height
@@ -483,6 +499,8 @@ class MainViewModel : ViewModel() {
         fetchTopRated(1)
         fetchTrendingToday(1)
         fetchTrendingWeek(1)
+        fetchMoviesUpcoming(1)
+        fetchTVAiringToday(1)
     }
 
     //POPULAR
@@ -493,7 +511,7 @@ class MainViewModel : ViewModel() {
         ) {
             // Update LiveData from IO dispatcher, use postValue
 
-            if(movieMode.get()){
+            if(getMovieMode()){
                 var list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
@@ -525,7 +543,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            if(movieMode.get()){
+            if(getMovieMode()){
                 var list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
@@ -551,7 +569,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            if(movieMode.get()){
+            if(getMovieMode()){
                 var list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
@@ -576,7 +594,7 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
-            if(movieMode.get()){
+            if(getMovieMode()){
                 val movieList = repository.fetchMoviesTrendingToday(
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
                 trendingTodayMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
@@ -597,7 +615,7 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
-            if(movieMode.get()){
+            if(getMovieMode()){
                 val movieList = repository.fetchMoviesTrendingWeek(
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
                 trendingWeekMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
@@ -615,7 +633,42 @@ class MainViewModel : ViewModel() {
 
 
 
+    fun fetchMoviesUpcoming(page: Int) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(getMovieMode()){
+                val movieList = repository.fetchUpcomingMovies(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                upcomingMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
+                fetchDone.postValue(true)
+            }
+            else {
+                val tvList = repository.fetchUpcomingTV(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                upcomingMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
 
+        }
+    }
+
+
+
+    fun fetchTVAiringToday(page: Int) {
+        viewModelScope.launch(
+            context = viewModelScope.coroutineContext
+                    + Dispatchers.IO
+        ) {
+            if(!getMovieMode()){
+                val tvList = repository.fetchAiringTV(
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                nowAiringMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                fetchDone.postValue(true)
+            }
+        }
+    }
 
 
     fun fetchSearchResults(query: String, page: Int) {
@@ -624,7 +677,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            if(movieMode.get()){
+            if(getMovieMode()){
                 var list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
@@ -658,23 +711,9 @@ class MainViewModel : ViewModel() {
         return mediaItems
     }
 
-    fun updateMediaMode(value: Boolean, type: String) {
-        movieMode.set(value)
-        if(type == "popular"){
-            fetchPopular(1)
-            //mediaItems.notifyAll()
-        }
-        else if(type == "nowPlaying"){
-            fetchNowPlaying(1)
-        }
-        else if(type == "topRated"){
-            fetchTopRated(1)
-        }
 
-    }
-
-    fun updateMediaType(value: Boolean){
-        movieMode.set(value)
+    fun updateMovieMode(value: Boolean){
+        movieMode.value = value
     }
 
 

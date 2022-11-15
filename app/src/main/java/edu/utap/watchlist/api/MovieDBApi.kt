@@ -93,8 +93,8 @@ interface MovieDBApi {
                                  @Query("page") page: Int) : TVListResponse
 
     //Get Upcoming
-    @GET("3/tv/upcoming?api_key=${apikey.KEY}")
-    suspend fun getTVUpcoming(@Query("language") lang: String, @Query("include_adult") adult: String,
+    @GET("3/tv/airing_today?api_key=${apikey.KEY}")
+    suspend fun getTVOnTheAir(@Query("language") lang: String, @Query("include_adult") adult: String,
                               @Query("page") page: Int) : TVListResponse
 
     //Get On Air
@@ -103,7 +103,7 @@ interface MovieDBApi {
                                 @Query("page") page: Int) : TVListResponse
 
     //Get Top Rated
-    @GET("/3/tv/top_rated?api_key=${apikey.KEY}")
+    @GET("/3/tv/on_the_air?api_key=${apikey.KEY}")
     suspend fun getTVTopRated(@Query("language") lang: String, @Query("include_adult") adult: String,
                               @Query("page") page: Int) : TVListResponse
 

@@ -8,9 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +20,12 @@ import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.adapters.MediaAdapter
 import edu.utap.watchlist.R
 import edu.utap.watchlist.api.MediaItem
-import edu.utap.watchlist.databinding.FragmentNotificationsBinding
+import edu.utap.watchlist.databinding.FragmentSearchBinding
+import edu.utap.watchlist.ui.media.MediaItemViewFragment
 
 class SearchFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentSearchBinding? = null
 
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -47,7 +49,16 @@ class SearchFragment : Fragment() {
 
     fun openMediaView(item: MediaItem) {
         viewModel.setUpCurrentMediaData(item)
-        findNavController().navigate(R.id.navigation_media)
+        //findNavController().navigate(R.id.navigation_media)
+        val manager: FragmentManager? = parentFragmentManager
+        val transaction: FragmentTransaction = manager!!.beginTransaction()
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("none"), null)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+        val act = activity as MainActivity
+        act.hideNavBar()
+        act.hideActionBar()
     }
 
 
@@ -57,7 +68,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
 
@@ -124,7 +135,7 @@ class SearchFragment : Fragment() {
             binding.moviesTvSearchControl.check(R.id.opt_1)
             binding.searchTv.setBackgroundColor(Color.TRANSPARENT)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.updateMediaType(true)
+            viewModel.updateMovieMode(true)
             adapter.notifyDataSetChanged()
 
         }
@@ -132,15 +143,12 @@ class SearchFragment : Fragment() {
             binding.moviesTvSearchControl.check(R.id.opt_2)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             binding.searchMovies.setBackgroundColor(Color.TRANSPARENT)
-            viewModel.updateMediaType(false)
+            viewModel.updateMovieMode(false)
             adapter.notifyDataSetChanged()
 
         }
         binding.moviesTvSearchControl.check(R.id.opt_1)
         binding.searchMovies.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-        binding.moviesTvSearchControl.setOnCheckedChangeListener { radioGroup, i ->
-            binding.moviesTvSearchControl.check(i)
-        }
     }
 
     override fun onDestroyView() {

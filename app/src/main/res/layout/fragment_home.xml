@@ -17,27 +17,32 @@
     tools:context=".ui.home.HomeFragment"
     >
 
-    <edu.utap.watchlist.components.SegmentedControl
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/movies_tv_control"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_gravity="top"
-
         >
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_1"
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/opt_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Movies"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:checked="true"
             android:textAlignment="center"
+            android:layout_weight="1"
             />
-        <edu.utap.watchlist.components.SegmentedControlButton android:id="@+id/opt_2" android:text="TV" android:layout_height="match_parent" android:layout_width="wrap_content"
-            android:checked="false"
-            android:textAlignment="center" />
-    </edu.utap.watchlist.components.SegmentedControl>
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/opt_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TV"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
 
     <TextView
@@ -124,7 +129,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Upcoming"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:id="@+id/upcomingText"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/upcomingList"
@@ -135,6 +141,22 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
     </androidx.recyclerview.widget.RecyclerView>
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Now Airing"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/onTheAirText"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/airingList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
 </ScrollView>
