@@ -15,7 +15,8 @@
         android:id="@+id/noListText"
         android:textSize="25sp"
         android:layout_margin="8dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selectionList"
@@ -37,22 +38,26 @@
         android:gravity="center|bottom"
         >
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/rounded"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
             android:id="@+id/watchlistEditDoneButton"
-            android:text="Save"/>
+            android:text="Save"
+            style="@style/Button.Blue"
+            app:cornerRadius="10dp"/>
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_margin="8dp"
-            android:background="@drawable/rounded"
             android:id="@+id/watchlistCancelButton"
-            android:text="Cancel"/>
+            style="@style/Button.Blue"
+            android:text="Cancel"
+            app:cornerRadius="10dp"/>
 
 
     </LinearLayout>

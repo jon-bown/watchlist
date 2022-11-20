@@ -97,7 +97,7 @@ class MediaItemViewFragment : Fragment() {
                 binding.overviewText.text = it.overview
                 binding.taglineText.text = it.tagline
                 //if movie:
-                binding.PerformanceText.text = "Budget: ${convertToMillions(it.revenue)}m      Revenue: ${convertToMillions(it.budget)}m"
+                binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
 
                         //binding.ratingText.text =
                 //binding.runTimeText = it.run time
@@ -172,10 +172,10 @@ class MediaItemViewFragment : Fragment() {
         viewModel.observeSeenMediaItems().observe(viewLifecycleOwner) {
             Log.d("Seen Items Changed", it.toString())
             if(it.contains(item)){
-                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_circle_24)
+                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_box_24)
             }
             else {
-                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_box_outline_blank_24)
             }
 
 

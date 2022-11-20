@@ -1,5 +1,6 @@
 package edu.utap.watchlist.ui.watchlist
 
+import android.graphics.Color
 import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
@@ -139,6 +142,7 @@ class WatchListCheckView : Fragment() {
             act.showNavBar()
             act.showActionBar()
         }
+
 
         val bottomNav = view?.findViewById<BottomNavigationView>(R.id.nav_host_fragment_activity_main)
         bottomNav?.visibility = View.INVISIBLE

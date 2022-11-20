@@ -84,7 +84,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:id="@+id/addButton"
-                    android:src="@drawable/ic_round_add_24"
+                    android:src="@drawable/ic_baseline_add_box_24"
                     android:background="@color/fui_transparent"
                     />
                 <TextView
@@ -114,7 +114,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:id="@+id/seenButton"
-                    android:src="@drawable/ic_baseline_radio_button_unchecked_24"
+                    android:src="@drawable/ic_baseline_check_box_outline_blank_24"
                     android:background="@color/fui_transparent"
                     />
                 <TextView

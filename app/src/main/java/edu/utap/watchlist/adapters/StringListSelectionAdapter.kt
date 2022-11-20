@@ -17,7 +17,7 @@ class StringListSelectionAdapter(private val clickListener: (selection: String)-
         : RecyclerView.ViewHolder(binding.root) {
             init {
                 binding.root.setOnClickListener {
-                    binding.checkMark.setImageResource(R.drawable.ic_baseline_check_24)
+                    binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24)
                     //clear all images
                     //call click listener to update viewmodel
                     selectedItem = items[adapterPosition]
@@ -38,11 +38,11 @@ class StringListSelectionAdapter(private val clickListener: (selection: String)-
         items[position].let{
             binding.itemName.text = it
             if(it == selectedItem) {
-                binding.checkMark.setImageResource(R.drawable.ic_baseline_check_24)
+                binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24)
             }
             else {
                 //remove image resource
-                binding.checkMark.setImageResource(0)
+                binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
 
             }
         }

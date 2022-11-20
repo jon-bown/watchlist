@@ -21,12 +21,12 @@ class StringListAdapter(private val clickListener: (selectedLists: List<String>,
             binding.root.setOnClickListener {
                 if(allowCheckMarks) {
                     if(binding.checkMark.isSelected){
-                        binding.checkMark.setImageResource(0)
+                        binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
                         binding.checkMark.isSelected = false
                         selectedItems.remove(binding.itemName.text)
                     }
                     else {
-                        binding.checkMark.setImageResource(R.drawable.ic_baseline_check_24)
+                        binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24)
                         binding.checkMark.isSelected = true
                         selectedItems.add(binding.itemName.text.toString())
                     }
@@ -48,7 +48,7 @@ class StringListAdapter(private val clickListener: (selectedLists: List<String>,
             binding.itemName.text = it
             if(it in selectedItems){
                 binding.checkMark.isSelected = true
-                binding.checkMark.setImageResource(R.drawable.ic_baseline_check_24)
+                binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24)
             }
         }
     }
