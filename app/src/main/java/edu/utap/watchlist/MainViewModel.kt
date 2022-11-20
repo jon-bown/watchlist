@@ -529,7 +529,13 @@ class MainViewModel : ViewModel() {
                 var list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
-                    popularMediaItems.postValue(MediaItems(list, movieList = null).mediaList)
+                    if(page == 1){
+                        popularMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                    }
+                    else {
+                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = list, movieList = null).mediaList)
+                        popularMediaItems.postValue(popList)
+                    }
 
                 }
             }
@@ -551,7 +557,7 @@ class MainViewModel : ViewModel() {
                 }
             }
             else {
-                var list = repository.fetchPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                var list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
                 if(list.isNotEmpty()){
                     fetchDone.postValue(true)
                     nowPlayingMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
@@ -662,7 +668,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             if(!getMovieMode()){
-                val tvList = repository.fetchAiringTV(
+                val tvList = repository.fetchNowPlayingTV(
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
                 nowAiringMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
                 fetchDone.postValue(true)

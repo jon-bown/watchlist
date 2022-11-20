@@ -1,8 +1,6 @@
 package edu.utap.watchlist.api
 
-import edu.utap.watchlist.providers.Provider
 import edu.utap.watchlist.providers.RegionContainer
-import retrofit2.http.Query
 
 class MediaRepository(private val api: MovieDBApi) {
 
@@ -103,7 +101,7 @@ class MediaRepository(private val api: MovieDBApi) {
         return api.getTVAiringToday(language, adult.toString(), page).results
     }
 
-    suspend fun fetchAiringTV(language: String, adult: Boolean, page: Int): List<TVShow> {
+    suspend fun fetchNowPlayingTV(language: String, adult: Boolean, page: Int): List<TVShow> {
         return api.getTVOnTheAir(language, adult.toString(), page).results
     }
 
@@ -140,10 +138,6 @@ class MediaRepository(private val api: MovieDBApi) {
 
     suspend fun fetchTopRatedTV(language: String, adult: Boolean, page: Int): List<TVShow> {
         return api.getTVTopRated(language, adult.toString(), page).results
-    }
-
-    suspend fun fetchPlayingTV(language: String, adult: Boolean, page: Int): List<TVShow> {
-        return api.getTVNowPlaying(language, adult.toString(), page).results
     }
 
     suspend fun fetchSearchTV(query: String, language: String, adult: Boolean, page: Int): List<TVShow>{

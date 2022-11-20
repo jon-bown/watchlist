@@ -43,8 +43,6 @@ class HomeFragment : Fragment() {
     private var currentTrendingWeekPage = 1
     private lateinit var upcomingAdapter: MediaCardAdapter
     private var currentUpcomingPage = 1
-    private lateinit var nowAiringAdapter: MediaCardAdapter
-    private var currentNowAiringPage = 1
 
 
     private var isLoading = false
@@ -68,7 +66,6 @@ class HomeFragment : Fragment() {
         this.trendingTodayAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.trendingWeekAdapter = MediaCardAdapter(viewModel, ::openMediaView)
         this.upcomingAdapter = MediaCardAdapter(viewModel, ::openMediaView)
-        this.nowAiringAdapter = MediaCardAdapter(viewModel, ::openMediaView)
 
     }
 
@@ -77,8 +74,6 @@ class HomeFragment : Fragment() {
     fun openMediaView(item: MediaItem) {
         //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
-
-
 
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
@@ -172,7 +167,7 @@ class HomeFragment : Fragment() {
 
             })
         //Scroll listener
-        //initTopRatedScrollListener()
+        initTrendingDayScrollListener()
     }
 
     private fun initTrendingWeekList() {
@@ -187,7 +182,7 @@ class HomeFragment : Fragment() {
                 trendingWeekAdapter.submitMediaList(movieList)
             })
         //Scroll listener
-        //initTopRatedScrollListener()
+        initTrendingWeekScrollListener()
     }
 
 
@@ -209,18 +204,7 @@ class HomeFragment : Fragment() {
     }
 
     fun initNowAiringList() {
-        val manager = LinearLayoutManager(context)
-        manager.orientation = LinearLayoutManager.HORIZONTAL
-        binding.airingList.layoutManager = manager
-        binding.airingList.adapter = nowAiringAdapter
-        initRecyclerViewDividers(binding.airingList)
 
-        viewModel.observeNowAiringMediaItems().observe(viewLifecycleOwner,
-            Observer { movieList ->
-                nowAiringAdapter.submitMediaList(movieList)
-            })
-        //Scroll listener
-        initNowAiringScrollListener()
 
         binding.airingList.visibility = View.VISIBLE
         binding.onTheAirText.visibility = View.VISIBLE
@@ -314,6 +298,35 @@ class HomeFragment : Fragment() {
 
 
     //SCROLLING LISTENERS
+    private fun addScrollListener(list: RecyclerView, page: Int, size: Int, fetch: (page: Int) -> Unit) {
+
+//        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+//                if (!isLoading) {
+//                    if(page < 10) {
+//                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+//                            (size - 5)) {
+//                            isLoading = true
+//                            page+=1
+//                            fetch(currentPopularPage)
+//                        }
+//                    }
+//
+//                }
+//            }
+//        })
+
+
+
+
+    }
+
+
+
+
+
     private fun initPopularScrollListener() {
         binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -335,27 +348,104 @@ class HomeFragment : Fragment() {
     }
 
     private fun initNowPlayingScrollListener() {
+        binding.nowPlayingList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentNowPlayingPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeNowPlayingMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentNowPlayingPage+=1
+                            viewModel.fetchNowPlaying(currentNowPlayingPage)
+                        }
+                    }
 
+                }
+            }
+        })
     }
 
     private fun initTopRatedScrollListener() {
+        binding.topRatedList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentTopRatedPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeTopRatedMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentTopRatedPage+=1
+                            viewModel.fetchTopRated(currentTrendingWeekPage)
+                        }
+                    }
 
+                }
+            }
+        })
     }
 
     private fun initTrendingWeekScrollListener() {
+        binding.trendingWeekList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentTrendingWeekPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeTrendingWeekMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentTrendingWeekPage+=1
+                            viewModel.fetchTrendingWeek(currentTrendingWeekPage)
+                        }
+                    }
 
+                }
+            }
+        })
     }
 
     private fun initTrendingDayScrollListener() {
+        binding.trendingTodayList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentTrendingTodayPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeTrendingTodayMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentTrendingTodayPage+=1
+                            viewModel.fetchTrendingToday(currentTrendingTodayPage)
+                        }
+                    }
 
+                }
+            }
+        })
     }
 
     private fun initUpcomingScrollListener() {
+        binding.upcomingList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentUpcomingPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeUpcomingMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentUpcomingPage+=1
+                            viewModel.fetchMoviesUpcoming(currentUpcomingPage)
+                        }
+                    }
 
+                }
+            }
+        })
     }
 
-    private fun initNowAiringScrollListener() {
-
-    }
 
 }
