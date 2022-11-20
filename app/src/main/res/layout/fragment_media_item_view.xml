@@ -265,23 +265,58 @@
             android:id="@+id/overviewText"
             android:layout_margin="8dp"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/performanceTitle"
-            android:layout_margin="8dp"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:text="Performance"/>
+            android:orientation="vertical"
+            android:id="@+id/performanceContainer">
 
-        <TextView
-            android:layout_width="match_parent"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/performanceTitle"
+                android:layout_margin="8dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:text="Performance"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/PerformanceText"
+                android:layout_margin="8dp"
+                android:textSize="20dp"
+                android:textStyle="bold|italic"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/PerformanceText"
-            android:layout_margin="8dp"
-            android:textSize="20dp"
-            android:textStyle="bold|italic"
-            android:textAlignment="center"/>
+            android:orientation="vertical"
+            android:id="@+id/infoContainer">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:text="Info" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textSize="18dp"
+                android:text=""
+                android:id="@+id/infoText"
+                android:lineSpacingMultiplier="1.2"/>
+
+        </LinearLayout>
+
 
 
         <TextView

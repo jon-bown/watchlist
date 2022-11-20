@@ -19,6 +19,8 @@ import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.adapters.ProviderAdapter
 import edu.utap.watchlist.api.MediaItem
+import edu.utap.watchlist.api.Movie
+import edu.utap.watchlist.api.TVShow
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
 import edu.utap.watchlist.ui.watchlist.WatchListCheckView
 
@@ -96,9 +98,9 @@ class MediaItemViewFragment : Fragment() {
                 binding.popularityText.text = "${it.voteAverage.toDouble().format(1)}/10"
                 binding.overviewText.text = it.overview
                 binding.taglineText.text = it.tagline
-                //if movie:
+                binding.performanceContainer.visibility = View.VISIBLE
                 binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
-
+                binding.infoText.text = setMovieInfo(it)
                         //binding.ratingText.text =
                 //binding.runTimeText = it.run time
 
@@ -114,8 +116,12 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentTV().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
-                Log.d("BACKDROP_PATH", it.backdropPath)
+                binding.popularityText.text = "${it.voteAverage.toDouble().format(1)}/10"
+                binding.overviewText.text = it.overview
                 viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                binding.taglineText.text = it.tagline
+                binding.performanceContainer.visibility = View.GONE
+                binding.infoText.text = setTVInfo(it)
                 initSeenButton(it.id.toString())
 
                 viewModel.fetchProviders()
@@ -125,10 +131,6 @@ class MediaItemViewFragment : Fragment() {
 
         binding.addButton.setOnClickListener {
             //open watchlist selecitonview fragment
-
-//            findNavController().navigate(
-//                MediaItemViewFragmentDirections.actionMediaToWatchlist(),
-//                NavOptions.Builder().setLaunchSingleTop(true).build())
 
             val manager: FragmentManager? = parentFragmentManager
             val transaction: FragmentTransaction = manager!!.beginTransaction()
@@ -172,10 +174,10 @@ class MediaItemViewFragment : Fragment() {
         viewModel.observeSeenMediaItems().observe(viewLifecycleOwner) {
             Log.d("Seen Items Changed", it.toString())
             if(it.contains(item)){
-                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_box_24)
+                binding.seenButton.setImageResource(R.drawable.ic_baseline_check_box_24)
             }
             else {
-                binding.seenButton.setBackgroundResource(R.drawable.ic_baseline_check_box_outline_blank_24)
+                binding.seenButton.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
             }
 
 
@@ -339,6 +341,22 @@ class MediaItemViewFragment : Fragment() {
 
         }
 
+    }
+
+
+
+    private fun setMovieInfo(movie: Movie): String{
+
+        return ""
+    }
+
+    private fun setTVInfo(tv: TVShow): String {
+        val infoStr = "Status: ${tv.status}\n" +
+                "First Air Date: ${tv.firstAirDate}\n" +
+                "Last Air Date: ${tv.lastAirDate}\n" +
+                "Original Language: ${tv.originalLanguage}\n"
+
+        return infoStr
     }
 
     private fun convertHHMM(minutes: Int): String {

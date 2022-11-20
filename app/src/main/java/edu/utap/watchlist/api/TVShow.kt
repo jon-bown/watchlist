@@ -18,5 +18,19 @@ data class TVShow (
     @SerializedName("number_of_seasons")
     val numberOfSeasons: Int,
     @SerializedName("poster_path")
-    val posterPath: String?
+    val posterPath: String?,
+    @SerializedName("tagline")
+    val tagline: String?,
+    @SerializedName("vote_average")
+    val voteAverage: Float,
+    @SerializedName("vote_count")
+    val voteCount: Int,
+    @SerializedName("overview")
+    val overview: String?,
+    @SerializedName("original_language")
+    val originalLanguage: String,
+    @SerializedName("status")
+    val status: String,
+    @SerializedName("type")
+    val type: String,
                 )
