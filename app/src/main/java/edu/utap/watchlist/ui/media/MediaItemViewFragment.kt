@@ -3,29 +3,23 @@ package edu.utap.watchlist.ui.media
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
+import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.MediaCardAdapter
 import edu.utap.watchlist.adapters.ProviderAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.FragmentMediaItemViewBinding
-import edu.utap.watchlist.R
-import edu.utap.watchlist.ui.watchlist.SingleWatchListView
 import edu.utap.watchlist.ui.watchlist.WatchListCheckView
 
 
@@ -98,9 +92,12 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
-                binding.runTimeText.text = it.runtime.toString()
-                binding.popularityText.text = it.popularity.toString()
+                binding.runTimeText.text = convertHHMM(it.runtime)
+                binding.popularityText.text = "${it.voteAverage.toDouble().format(1)}/10"
                 binding.overviewText.text = it.overview
+                binding.taglineText.text = it.tagline
+                //if movie:
+                binding.PerformanceText.text = "Budget: ${convertToMillions(it.revenue)}m      Revenue: ${convertToMillions(it.budget)}m"
 
                         //binding.ratingText.text =
                 //binding.runTimeText = it.run time
@@ -249,13 +246,14 @@ class MediaItemViewFragment : Fragment() {
         binding.streamContainer.visibility = View.GONE
         binding.buyContainer.visibility = View.GONE
         binding.rentContainer.visibility = View.GONE
-
+        binding.howToWatchText.visibility = View.GONE
 
 
         viewModel.observeStreamingProviders().observe(viewLifecycleOwner,
             Observer { providerList ->
                 if(!providerList.isEmpty()){
                     binding.streamContainer.visibility = View.VISIBLE
+                    binding.howToWatchText.visibility = View.VISIBLE
                 }
                 else {
                     binding.streamContainer.visibility = View.GONE
@@ -269,6 +267,7 @@ class MediaItemViewFragment : Fragment() {
             Observer { providerList ->
                 if(!providerList.isEmpty()){
                     binding.buyContainer.visibility = View.VISIBLE
+                    binding.howToWatchText.visibility = View.VISIBLE
                 }
                 else {
                     binding.buyContainer.visibility = View.GONE
@@ -281,6 +280,7 @@ class MediaItemViewFragment : Fragment() {
             Observer { providerList ->
                 if(!providerList.isEmpty()){
                     binding.rentContainer.visibility = View.VISIBLE
+                    binding.howToWatchText.visibility = View.VISIBLE
                 }
                 else {
                     binding.rentContainer.visibility = View.GONE
@@ -341,6 +341,20 @@ class MediaItemViewFragment : Fragment() {
 
     }
 
+    private fun convertHHMM(minutes: Int): String {
+        val seconds = minutes*60
+        val HH = seconds / 3600.0
+        val MM = seconds % 3600.0 / 60.0
+        return "${HH.format(0)}h ${MM.format(0)}m"
+    }
+
+
+    private fun convertToMillions(dollars: Int): Int {
+        val million = 1000000L
+        return (dollars / million).toInt()
+    }
+
+    fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
     override fun onDestroy() {
         super.onDestroy()

@@ -49,7 +49,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Popular"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -65,7 +67,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Now Playing"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/nowPlayingList"
@@ -81,7 +85,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Top Rated"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topRatedList"
@@ -98,7 +104,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Trending Today"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trendingTodayList"
@@ -114,7 +122,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Trending This Week"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trendingWeekList"
@@ -130,7 +140,9 @@
         android:layout_height="wrap_content"
         android:text="Upcoming"
         android:layout_marginLeft="8dp"
-        android:id="@+id/upcomingText"/>
+        android:id="@+id/upcomingText"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/upcomingList"
@@ -147,7 +159,9 @@
         android:layout_height="wrap_content"
         android:text="Now Airing"
         android:layout_marginLeft="8dp"
-        android:id="@+id/onTheAirText"/>
+        android:id="@+id/onTheAirText"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/airingList"

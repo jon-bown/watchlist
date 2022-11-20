@@ -30,5 +30,9 @@ data class Movie (
     @SerializedName("overview")
     val overview: String?,
     @SerializedName("status")
-    val status: String
+    val status: String,
+    @SerializedName("tagline")
+    val tagline: String?,
+    @SerializedName("revenue")
+    val revenue: Int
 )

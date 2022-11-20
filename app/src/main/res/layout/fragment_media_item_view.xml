@@ -33,31 +33,34 @@
            />
 
         </FrameLayout>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/movieTitleText"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            android:layout_margin="8dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="top|center">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ratingText"/>
+                android:id="@+id/ratingText"
+                android:layout_margin="4dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/runTimeText"/>
+                android:id="@+id/runTimeText"
+                android:layout_margin="4dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/popularityText"/>
+                android:id="@+id/popularityText"
+                android:layout_margin="4dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -75,7 +78,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_weight="1">
                 <ImageButton
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -86,8 +90,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Watchlist"
-                    android:textAlignment="center"/>
+                    android:text="Add"
+                    android:textAlignment="center"
+                    android:textSize="18dp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <LinearLayout
@@ -101,6 +107,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="top|center"
                 >
                 <ImageButton
                     android:layout_width="50dp"
@@ -113,7 +121,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Seen"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 
@@ -129,13 +140,18 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/synopsisText"/>
+            android:id="@+id/synopsisText"
+            android:layout_margin="8dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="How To Watch"
-            android:id="@+id/howToWatchText"/>
+            android:id="@+id/howToWatchText"
+            android:layout_margin="8dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -144,14 +160,18 @@
             android:id="@+id/streamContainer">
 
             <TextView
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:textSize="12sp"
-                android:text="Stream"
                 android:rotation="-90"
-                android:gravity="fill_vertical"
-                android:layout_marginLeft="8dp"
-                android:lines="1"/>
+                android:text="Stream"
+                android:gravity="center"
+                android:lines="1"
+                android:textSize="18dp"
+                android:textStyle="bold|italic"
+             />
+
+
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/streamServiceList"
@@ -159,7 +179,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:background="@color/back_gray">
             </androidx.recyclerview.widget.RecyclerView>
 
 
@@ -173,12 +195,14 @@
             android:id="@+id/rentContainer">
 
             <TextView
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:rotation="-90"
                 android:text="Rent"
-                android:gravity="fill_vertical"
-                android:layout_marginLeft="8dp"/>
+                android:gravity="center"
+                android:lines="1"
+                android:textSize="18dp"
+                android:textStyle="bold|italic"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rentServiceList"
@@ -186,7 +210,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:background="@color/back_gray">
             </androidx.recyclerview.widget.RecyclerView>
 
 
@@ -200,12 +226,14 @@
             android:id="@+id/buyContainer">
 
             <TextView
-                android:layout_width="30dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:rotation="-90"
                 android:text="Buy"
-                android:layout_marginLeft="8dp"
-                android:gravity="fill_vertical"/>
+                android:gravity="center"
+                android:lines="1"
+                android:textSize="18dp"
+                android:textStyle="bold|italic"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/buyServiceList"
@@ -223,14 +251,45 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/overviewText"/>
+            android:id="@+id/taglineText"
+            android:layout_margin="8dp"
+            android:textAlignment="center"
+            android:textStyle="italic"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/overviewText"
+            android:layout_margin="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/performanceTitle"
+            android:layout_margin="8dp"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:text="Performance"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/PerformanceText"
+            android:layout_margin="8dp"
+            android:textSize="20dp"
+            android:textStyle="bold|italic"
+            android:textAlignment="center"/>
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Similar"
-            android:id="@+id/similarItemText"/>
+            android:id="@+id/similarItemText"
+            android:layout_margin="8dp"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/similarItemList"
@@ -248,7 +307,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recommended" />
+            android:text="Recommended"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recommendedList"

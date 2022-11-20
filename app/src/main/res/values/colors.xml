@@ -16,4 +16,6 @@
 
     <color name="button_pressed">#ff0099cc</color>
     <color name="button_checked">#ff33b5e5</color>
+    <color name="main_blue">#2D3751</color>
+    <color name="main_green">#56F70D</color>
 </resources>

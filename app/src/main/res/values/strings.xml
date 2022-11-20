@@ -2,6 +2,7 @@
     <string name="app_name">Watchlist</string>
     <string name="title_home">Explore</string>
     <string name="title_watchlists">WatchLists</string>
+    <string name="subtitle_watchlists">Lists</string>
     <string name="title_notifications">Search</string>
     <string name="title_profile">Profile</string>
     <!-- TODO: Remove or change this placeholder text -->

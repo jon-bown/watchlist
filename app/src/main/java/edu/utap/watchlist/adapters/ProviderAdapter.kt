@@ -38,7 +38,6 @@ class ProviderAdapter(private val viewModel: MainViewModel): RecyclerView.Adapte
             if(it.logoURL != null){
                 viewModel.netFetchImage(binding.streamImage, it.logoURL!!)
             }
-            binding.providerName.text = it.name
 
         }
     }
