@@ -203,23 +203,6 @@ class HomeFragment : Fragment() {
         initUpcomingScrollListener()
     }
 
-    fun initNowAiringList() {
-
-
-        binding.airingList.visibility = View.VISIBLE
-        binding.onTheAirText.visibility = View.VISIBLE
-        binding.upcomingText.text = "Now Airing"
-
-
-    }
-
-    fun hideAiringList() {
-        binding.airingList.visibility = View.GONE
-        binding.onTheAirText.visibility = View.GONE
-        binding.upcomingText.text = "Upcoming"
-        initUpcomingList()
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -250,10 +233,12 @@ class HomeFragment : Fragment() {
 
         viewModel.observeMovieMode().observe(viewLifecycleOwner) {
             if(it){
-                hideAiringList()
+                binding.nowPlayingText.text = "Now Playing"
+                binding.upcomingText.text = "Upcoming"
             }
             else {
-                initNowAiringList()
+                binding.nowPlayingText.text = "Now Airing"
+                binding.upcomingText.text = "Airing Today"
             }
         }
 
@@ -378,7 +363,7 @@ class HomeFragment : Fragment() {
                             (viewModel.observeTopRatedMediaItems().value!!.size - 5)) {
                             isLoading = true
                             currentTopRatedPage+=1
-                            viewModel.fetchTopRated(currentTrendingWeekPage)
+                            viewModel.fetchTopRated(currentTopRatedPage)
                         }
                     }
 
@@ -438,7 +423,7 @@ class HomeFragment : Fragment() {
                             (viewModel.observeUpcomingMediaItems().value!!.size - 5)) {
                             isLoading = true
                             currentUpcomingPage+=1
-                            viewModel.fetchMoviesUpcoming(currentUpcomingPage)
+                            viewModel.fetchUpcoming(currentUpcomingPage)
                         }
                     }
 

@@ -499,7 +499,7 @@ class MainViewModel : ViewModel() {
         fetchTopRated(1)
         fetchTrendingToday(1)
         fetchTrendingWeek(1)
-        fetchMoviesUpcoming(1)
+        fetchUpcoming(1)
         fetchTVAiringToday(1)
     }
 
@@ -510,34 +510,35 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-
+            var list: List<Any>
             if(getMovieMode()){
-                var list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    if(page == 1){
-                        popularMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
-                    }
-                    else {
-                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list).mediaList)
-                        popularMediaItems.postValue(popList)
-                    }
-
-                }
+                list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                var list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    if(page == 1){
-                        popularMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+
+            if(list.isNotEmpty()){
+                fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        popularMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
                     else {
-                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = list, movieList = null).mediaList)
+                        popularMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                         popularMediaItems.postValue(popList)
                     }
-
+                    else {
+                        val popList = (popularMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        popularMediaItems.postValue(popList)
+                    }
                 }
+
             }
         }
     }
@@ -549,19 +550,34 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
+            var list: List<Any>
             if(getMovieMode()){
-                var list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
-                }
+                list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                var list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    nowPlayingMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+            if(list.isNotEmpty()){
+                fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        nowPlayingMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
                 }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (nowPlayingMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        nowPlayingMediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (nowPlayingMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        nowPlayingMediaItems.postValue(mergedList)
+                    }
+                }
+
             }
 
         }
@@ -575,19 +591,34 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
+            var list: List<Any>
             if(getMovieMode()){
-                var list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    topRatedMediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
-                }
+                list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                var list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    topRatedMediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
+                list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+            if(list.isNotEmpty()){
+                fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        topRatedMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        topRatedMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
                 }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (topRatedMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        topRatedMediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (topRatedMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        topRatedMediaItems.postValue(mergedList)
+                    }
+                }
+
             }
 
         }
@@ -600,17 +631,34 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+            var list: List<Any>
             if(getMovieMode()){
-                val movieList = repository.fetchMoviesTrendingToday(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                trendingTodayMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
-                fetchDone.postValue(true)
+                list = repository.fetchMoviesTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                val tvList = repository.fetchTVTrendingToday(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                trendingTodayMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                list = repository.fetchTVTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+            if(list.isNotEmpty()){
                 fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        trendingTodayMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        trendingTodayMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (trendingTodayMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        trendingTodayMediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (trendingTodayMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        trendingTodayMediaItems.postValue(mergedList)
+                    }
+                }
+
             }
 
         }
@@ -621,17 +669,34 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+            var list: List<Any>
             if(getMovieMode()){
-                val movieList = repository.fetchMoviesTrendingWeek(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                trendingWeekMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
-                fetchDone.postValue(true)
+                list = repository.fetchMoviesTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                val tvList = repository.fetchTVTrendingWeek(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                trendingWeekMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                list = repository.fetchTVTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+            if(list.isNotEmpty()){
                 fetchDone.postValue(true)
+                if(page == 1) {
+                    if(getMovieMode()){
+                        trendingWeekMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        trendingWeekMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (trendingWeekMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        trendingWeekMediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (trendingWeekMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        trendingWeekMediaItems.postValue(mergedList)
+                    }
+                }
+
             }
 
         }
@@ -639,22 +704,39 @@ class MainViewModel : ViewModel() {
 
 
 
-    fun fetchMoviesUpcoming(page: Int) {
+    fun fetchUpcoming(page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+            var list: List<Any>
             if(getMovieMode()){
-                val movieList = repository.fetchUpcomingMovies(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                upcomingMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
-                fetchDone.postValue(true)
+                list = repository.fetchUpcomingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                val tvList = repository.fetchUpcomingTV(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                upcomingMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+                list = repository.fetchUpcomingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+            }
+            if(list.isNotEmpty()){
                 fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        upcomingMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        upcomingMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (upcomingMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        upcomingMediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (upcomingMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        upcomingMediaItems.postValue(mergedList)
+                    }
+                }
+
             }
 
         }
@@ -683,20 +765,36 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
+            var list: List<Any>
             if(getMovieMode()){
-                var list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = null, movieList = list).mediaList)
-                }
+                list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
-                var list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
-                if(list.isNotEmpty()){
-                    fetchDone.postValue(true)
-                    mediaItems.postValue(MediaItems(tvList = list, movieList = null).mediaList)
-                }
+                list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
+            if(list.isNotEmpty()){
+                fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        mediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        mediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val mergedList = (mediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        mediaItems.postValue(mergedList)
+                    }
+                    else {
+                        val mergedList = (mediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        mediaItems.postValue(mergedList)
+                    }
+                }
+
+            }
+
 
         }
     }

@@ -69,7 +69,8 @@
         android:text="Now Playing"
         android:layout_marginLeft="8dp"
         android:textSize="25dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:id="@+id/nowPlayingText"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/nowPlayingList"
@@ -154,23 +155,6 @@
     </androidx.recyclerview.widget.RecyclerView>
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Now Airing"
-        android:layout_marginLeft="8dp"
-        android:id="@+id/onTheAirText"
-        android:textSize="25dp"
-        android:textStyle="bold"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/airingList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
 </ScrollView>

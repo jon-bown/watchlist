@@ -99,7 +99,7 @@ interface MovieDBApi {
 
 
     //Get Top Rated
-    @GET("/3/tv/on_the_air?api_key=${apikey.KEY}")
+    @GET("/3/tv/top_rated?api_key=${apikey.KEY}")
     suspend fun getTVTopRated(@Query("language") lang: String, @Query("include_adult") adult: String,
                               @Query("page") page: Int) : TVListResponse
 
