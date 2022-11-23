@@ -213,6 +213,7 @@ class HomeFragment : Fragment() {
         initTrendingTodayList()
         initTrendingWeekList()
         initUpcomingList()
+        initLatestMediaItem()
 
 
         viewModel.observeMovieMode().observe(viewLifecycleOwner) {
@@ -262,6 +263,21 @@ class HomeFragment : Fragment() {
         binding.moviesTvControl.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
             // Respond to button selection
         }
+
+    }
+
+    private fun initLatestMediaItem() {
+        viewModel.observeLatestMediaItem().observe(viewLifecycleOwner,
+            Observer {
+                if(it.imageURL != null){
+                    viewModel.netFetchImage(binding.latestMedia, it.imageURL!!)
+                }
+
+                binding.latestMedia.setOnClickListener { view ->
+                    openMediaView(it)
+                }
+
+            })
 
     }
 

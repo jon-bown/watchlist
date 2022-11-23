@@ -10,7 +10,6 @@ import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.api.User
 import edu.utap.watchlist.api.WatchList
 import kotlinx.coroutines.tasks.await
-import java.lang.reflect.Field
 import java.util.*
 
 class UserDBClient {
@@ -52,6 +51,8 @@ class UserDBClient {
         val document = docRef.get().await()
         if(document != null){
             userData = document!!.toObject(User::class.java)!!
+
+
         }
         else {
             createDocument()
@@ -116,23 +117,31 @@ class UserDBClient {
         val docRef = db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
         val document = docRef.get().await()
         if(document != null){
-            val item = document!!.toObject(User::class.java)
-            Log.d(TAG, "DocumentSnapshot data: ${item}")
-            var watchLists = mutableListOf<WatchList>()
-            for(list in item!!.lists!!.keys){
-                watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+            try {
+                val item = document!!.toObject(User::class.java)
+                Log.d(TAG, "DocumentSnapshot data: ${item}")
+                var watchLists = mutableListOf<WatchList>()
+                for(list in item!!.lists!!.keys){
+                    watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+                }
+                userLists = watchLists.toList()
             }
-            userLists = watchLists.toList()
+            catch (e: Exception) {
+                userLists = emptyList()
+                return userLists
+            }
+
+
         }
         else {
-            Log.d(TAG, "Watchlist Items")
+            createDocument()
         }
         return userLists
     }
 
     fun removeWatchList(list: WatchList){
         db.collection("users").document("dM2OT8ycb53ZqDTo6Lvd")
-            .update("lists", FieldValue.arrayRemove(list))
+            .update(FieldPath.of("lists", list.name), FieldValue.delete())
     }
 
     fun addMediaItemToWatchlist(name: String, item: MediaItem) {

@@ -55,23 +55,22 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
             //binding.charActText.text = it.characterActor
             //binding.movieText.text = it.movie
             if(viewModel.checkInSeenMediaItems(it.id.toString())){
-                binding.seenClick.setImageResource(R.drawable.ic_baseline_check_circle_24)
+                binding.seenClick.setImageResource(R.drawable.ic_baseline_check_box_24)
             }
             else {
-                binding.seenClick.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                binding.seenClick.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
             }
 
 
             binding.seenClick.setOnClickListener { view ->
-                Log.d("CLICK ROW", "")
                 if(viewModel.checkInSeenMediaItems(it.id.toString())){
                     //item is seen
                     viewModel.removeSeenMedia(it.id.toString())
-                    binding.seenClick.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                    binding.seenClick.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
                 }
                 else {
                     viewModel.addSeenMedia(it.id.toString())
-                    binding.seenClick.setImageResource(R.drawable.ic_baseline_check_circle_24)
+                    binding.seenClick.setImageResource(R.drawable.ic_baseline_check_box_24)
                 }
 
             }

@@ -94,8 +94,6 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
-                binding.runTimeText.text = convertHHMM(it.runtime)
-                binding.popularityText.text = "${it.voteAverage.toDouble().format(1)}/10"
                 binding.overviewText.text = it.overview
                 binding.taglineText.text = it.tagline
                 binding.performanceContainer.visibility = View.VISIBLE
@@ -116,7 +114,6 @@ class MediaItemViewFragment : Fragment() {
 
             viewModel.observeCurrentTV().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
-                binding.popularityText.text = "${it.voteAverage.toDouble().format(1)}/10"
                 binding.overviewText.text = it.overview
                 viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
                 binding.taglineText.text = it.tagline
@@ -251,11 +248,13 @@ class MediaItemViewFragment : Fragment() {
         binding.howToWatchText.visibility = View.GONE
 
 
+
         viewModel.observeStreamingProviders().observe(viewLifecycleOwner,
             Observer { providerList ->
                 if(!providerList.isEmpty()){
                     binding.streamContainer.visibility = View.VISIBLE
                     binding.howToWatchText.visibility = View.VISIBLE
+                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting()}"
                 }
                 else {
                     binding.streamContainer.visibility = View.GONE
@@ -270,6 +269,7 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.buyContainer.visibility = View.VISIBLE
                     binding.howToWatchText.visibility = View.VISIBLE
+                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting()}"
                 }
                 else {
                     binding.buyContainer.visibility = View.GONE
@@ -283,6 +283,7 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.rentContainer.visibility = View.VISIBLE
                     binding.howToWatchText.visibility = View.VISIBLE
+                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting().value}"
                 }
                 else {
                     binding.rentContainer.visibility = View.GONE
@@ -292,6 +293,9 @@ class MediaItemViewFragment : Fragment() {
             })
 
     }
+
+
+
 
 
 
@@ -315,13 +319,6 @@ class MediaItemViewFragment : Fragment() {
 
 
             if(viewModel.observeCurrentMediaItemsStack().value!!.size == 1){
-//                val manager: FragmentManager? = parentFragmentManager
-//
-//                val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
-//
-//                manager.popBackStack(backStackId,
-//                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
                 val manager: FragmentManager? = parentFragmentManager
                 manager?.popBackStack()
 
@@ -348,12 +345,15 @@ class MediaItemViewFragment : Fragment() {
     private fun setMovieInfo(movie: Movie): String{
         val infoStr = "Status: ${movie.status}\n" +
                 "Release Date: ${movie.releaseDate}\n" +
+                "Runtime: ${convertHHMM(movie.runtime)}"
+                "User Score: ${movie.voteAverage.toDouble().format(1)}/10" +
                 "Original Language: ${movie.originalLanguage}\n"
         return infoStr
     }
 
     private fun setTVInfo(tv: TVShow): String {
         val infoStr = "Status: ${tv.status}\n" +
+                "User Score: ${tv.voteAverage.toDouble().format(1)}/10" +
                 "First Air Date: ${tv.firstAirDate}\n" +
                 "Last Air Date: ${tv.lastAirDate}\n" +
                 "Original Language: ${tv.originalLanguage}\n"

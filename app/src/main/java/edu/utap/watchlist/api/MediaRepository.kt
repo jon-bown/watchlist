@@ -106,13 +106,13 @@ class MediaRepository(private val api: MovieDBApi) {
     }
 
 
-//    suspend fun fetchLatestMovies(): List<Movie> {
-//        return api.getMoviesLatest().results
-//    }
-//
-//    suspend fun fetchLatestTV(): List<TVShow> {
-//        return api.getTVLatest().results
-//    }
+    suspend fun fetchLatestMovie(language: String, adult: Boolean): Movie {
+        return api.getMoviesLatest(language, adult.toString())
+    }
+
+    suspend fun fetchLatestTV(language: String, adult: Boolean): TVShow {
+        return api.getTVLatest(language, adult.toString())
+    }
 
 
     suspend fun fetchTVStreamingRegionProviders(region: String, id: String): RegionContainer {

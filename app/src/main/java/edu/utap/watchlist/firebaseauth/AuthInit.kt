@@ -34,7 +34,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
     init {
         val user = FirebaseAuth.getInstance().currentUser
         if(user == null) {
-            Log.d(TAG, "XXX user null")
             // Choose authentication providers
             val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build())
