@@ -426,17 +426,38 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+
+            var list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
-                val movieList = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
+                list = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                similarMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
-                fetchDone.postValue(true)
             }
             else {
-                val tvList = repository.fetchSimilarTV(currentMediaItem.value!!.id.toString(),
+                list = repository.fetchSimilarTV(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                similarMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+            }
+
+            if(list.isNotEmpty()){
                 fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        similarMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        similarMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val popList = (similarMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        similarMediaItems.postValue(popList)
+                    }
+                    else {
+                        val popList = (similarMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        similarMediaItems.postValue(popList)
+                    }
+                }
+
             }
 
         }
@@ -454,17 +475,38 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+
+            var list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
-                val movieList = repository.fetchRecommendedMovies(currentMediaItem.value!!.id.toString(),
+                list = repository.fetchRecommendedMovies(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                recommendedMediaItems.postValue(MediaItems(tvList = null, movieList = movieList).mediaList)
-                fetchDone.postValue(true)
             }
             else {
-                val tvList = repository.fetchRecommendedTV(currentMediaItem.value!!.id.toString(),
+                list = repository.fetchRecommendedTV(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                recommendedMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
+            }
+
+            if(list.isNotEmpty()){
                 fetchDone.postValue(true)
+                if(page == 1){
+                    if(getMovieMode()){
+                        recommendedMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                    }
+                    else {
+                        recommendedMediaItems.postValue(MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                    }
+                }
+                else {
+                    if(getMovieMode()){
+                        val popList = (recommendedMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
+                        recommendedMediaItems.postValue(popList)
+                    }
+                    else {
+                        val popList = (recommendedMediaItems.value!!.toMutableList() + MediaItems(tvList = list as List<TVShow>, movieList = null).mediaList)
+                        recommendedMediaItems.postValue(popList)
+                    }
+                }
+
             }
 
         }

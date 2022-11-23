@@ -31,14 +31,23 @@ class SearchFragment : Fragment() {
 
     private lateinit var adapter: MediaAdapter
 
+    private var isLoading = false
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var currentSearchPage = 1
 
     // https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
     // https://stackoverflow.com/questions/7789514/how-to-get-activitys-windowtoken-without-view
 
+    private var queryText: String = ""
 
+    private fun setLoadingListener() {
+        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
+            isLoading = false
+        }
+    }
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
@@ -90,31 +99,36 @@ class SearchFragment : Fragment() {
         viewModel.observeMedia().observe(viewLifecycleOwner,
             Observer { movieList ->
                 adapter.submitMediaList(movieList)
-                adapter.notifyDataSetChanged()
-
             })
 
 
 
         //setup search
+
         binding.mediaSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    Log.d("HELLO","HELLO SEARCH")
+                    if(query == ""){
+                        queryText = ""
+                        viewModel.clearMediaItems()
+                    }
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-                    if(newText!! != ""){
-                        viewModel.fetchSearchResults(newText!!, 1)
+                    Log.d("NEWTEXT", newText)
+                    if(newText != ""){
+                        queryText = newText
+                        viewModel.fetchSearchResults(newText, 1)
                         //hide keyboard
                     }
                     else{
                         //make toast
                         //hide keyboard
-                        val activity = activity as MainActivity
-                        activity.hideKeyboard()
+                        //val activity = activity as MainActivity
+                        //activity.hideKeyboard()
                         //binding.mediaSearchView.isFocusable = false
+                        queryText = ""
                         viewModel.clearMediaItems()
                     }
                     return true
@@ -123,7 +137,9 @@ class SearchFragment : Fragment() {
 
 
 
+        setLoadingListener()
         initMainSelector()
+        initSearchListScrollListener()
 
         return root
     }
@@ -132,24 +148,63 @@ class SearchFragment : Fragment() {
 
     private fun initMainSelector() {
         binding.searchMovies.setOnClickListener {
-            binding.moviesTvSearchControl.check(R.id.opt_1)
+            viewModel.updateMovieMode(true)
             binding.searchTv.setBackgroundColor(Color.TRANSPARENT)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
-            viewModel.updateMovieMode(true)
-            adapter.notifyDataSetChanged()
+            if(queryText != ""){
+                viewModel.fetchSearchResults(queryText!!, 1)
+            }
+            else{
+                viewModel.clearMediaItems()
+            }
+
 
         }
         binding.searchTv.setOnClickListener {
-            binding.moviesTvSearchControl.check(R.id.opt_2)
+            viewModel.updateMovieMode(false)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             binding.searchMovies.setBackgroundColor(Color.TRANSPARENT)
-            viewModel.updateMovieMode(false)
-            adapter.notifyDataSetChanged()
+            if(queryText != ""){
+                viewModel.fetchSearchResults(queryText!!, 1)
+            }
+            else{
+                viewModel.clearMediaItems()
+            }
 
         }
         binding.moviesTvSearchControl.check(R.id.opt_1)
         binding.searchMovies.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
     }
+
+
+
+    private fun initSearchListScrollListener() {
+        binding.searchResults.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                //binding.mediaSearchView.setVisibility(View.INVISIBLE);
+                //binding.mediaSearchView.setVisibility(View.VISIBLE);
+                if (!isLoading) {
+                    if(currentSearchPage < 20) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeMedia().value!!.size - 10)) {
+                            isLoading = true
+                            currentSearchPage+=1
+                            if(queryText != ""){
+                                viewModel.fetchSearchResults(queryText, currentSearchPage)
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        })
+    }
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -70,7 +70,15 @@ class MediaRepository(private val api: MovieDBApi) {
     suspend fun fetchTVProviders(tv: String, region: String): RegionContainer {
         val regionList = api.getTVProviders(tv).results
         if(regionList[region] == null) {
-            return regionList["US"]!!
+            if(regionList["US"] != null)
+            {
+                return regionList["US"]!!
+            }
+            else {
+                return RegionContainer("", null, null, null)
+            }
+
+
         }
         return regionList[region]!!
     }

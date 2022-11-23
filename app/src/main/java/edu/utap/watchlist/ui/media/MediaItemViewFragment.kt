@@ -45,6 +45,10 @@ class MediaItemViewFragment : Fragment() {
     private lateinit var buyProviderAdapter: ProviderAdapter
     private lateinit var rentProviderAdapter: ProviderAdapter
 
+    private var isLoading = false
+    private var currentSimilarPage = 1
+    private var currentRecommendedPage = 1
+
     private fun initRecyclerViewDividers(rv: RecyclerView) {
         // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
@@ -57,6 +61,12 @@ class MediaItemViewFragment : Fragment() {
 
         arguments?.let {
             param1 = it.getString(CLOSE_FULL)
+        }
+    }
+
+    private fun setLoadingListener() {
+        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
+            isLoading = false
         }
     }
 
@@ -115,7 +125,9 @@ class MediaItemViewFragment : Fragment() {
             viewModel.observeCurrentTV().observe(viewLifecycleOwner) {
                 binding.movieTitleText.text = it.title
                 binding.overviewText.text = it.overview
-                viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                if(it.backdropPath != null){
+                    viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                }
                 binding.taglineText.text = it.tagline
                 binding.performanceContainer.visibility = View.GONE
                 binding.infoText.text = setTVInfo(it)
@@ -148,8 +160,14 @@ class MediaItemViewFragment : Fragment() {
 
         //init items
         initSimilarList()
+        initSimilarScrollListener()
+
         initRecommendedList()
+        initRecommendedScrollListener()
+
         initProviderList()
+
+        setLoadingListener()
 
         return root
     }
@@ -254,7 +272,7 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.streamContainer.visibility = View.VISIBLE
                     binding.howToWatchText.visibility = View.VISIBLE
-                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting()}"
+                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting().value}"
                 }
                 else {
                     binding.streamContainer.visibility = View.GONE
@@ -269,7 +287,7 @@ class MediaItemViewFragment : Fragment() {
                 if(!providerList.isEmpty()){
                     binding.buyContainer.visibility = View.VISIBLE
                     binding.howToWatchText.visibility = View.VISIBLE
-                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting()}"
+                    binding.howToWatchText.text = "How To Watch In: ${viewModel.observeCountrySetting().value}"
                 }
                 else {
                     binding.buyContainer.visibility = View.GONE
@@ -341,12 +359,54 @@ class MediaItemViewFragment : Fragment() {
     }
 
 
+    private fun initSimilarScrollListener() {
+        binding.similarItemList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentSimilarPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeSimilarMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentSimilarPage+=1
+                            viewModel.fetchSimilar(currentSimilarPage)
+                        }
+                    }
+
+                }
+            }
+        })
+    }
+
+
+    private fun initRecommendedScrollListener() {
+        binding.recommendedList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                if (!isLoading) {
+                    if(currentRecommendedPage < 10) {
+                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
+                            (viewModel.observeRecommendedMediaItems().value!!.size - 5)) {
+                            isLoading = true
+                            currentRecommendedPage+=1
+                            viewModel.fetchRecommended(currentRecommendedPage)
+                        }
+                    }
+
+                }
+            }
+        })
+    }
+
+
 
     private fun setMovieInfo(movie: Movie): String{
         val infoStr = "Status: ${movie.status}\n" +
                 "Release Date: ${movie.releaseDate}\n" +
                 "Runtime: ${convertHHMM(movie.runtime)}"
-                "User Score: ${movie.voteAverage.toDouble().format(1)}/10" +
+                "User Score: ${movie.voteAverage.toDouble().format(1)}/10\n" +
                 "Original Language: ${movie.originalLanguage}\n"
         return infoStr
     }
