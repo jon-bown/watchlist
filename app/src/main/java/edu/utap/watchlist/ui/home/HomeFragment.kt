@@ -213,8 +213,6 @@ class HomeFragment : Fragment() {
         initTrendingTodayList()
         initTrendingWeekList()
         initUpcomingList()
-        initLatestMediaItem()
-
 
         viewModel.observeMovieMode().observe(viewLifecycleOwner) {
             if(it){
@@ -266,20 +264,6 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun initLatestMediaItem() {
-        viewModel.observeLatestMediaItem().observe(viewLifecycleOwner,
-            Observer {
-                if(it.imageURL != null){
-                    viewModel.netFetchImage(binding.latestMedia, it.imageURL!!)
-                }
-
-                binding.latestMedia.setOnClickListener { view ->
-                    openMediaView(it)
-                }
-
-            })
-
-    }
 
 
     //SCROLLING LISTENERS

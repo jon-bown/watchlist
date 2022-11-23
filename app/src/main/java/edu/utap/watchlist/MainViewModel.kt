@@ -355,36 +355,6 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private val latestMediaItem = MutableLiveData<MediaItem>()
-    fun observeLatestMediaItem(): LiveData<MediaItem> {
-        return latestMediaItem
-    }
-
-
-    fun fetchLatestMediaItem() {
-        viewModelScope.launch(
-            context = viewModelScope.coroutineContext
-                    + Dispatchers.IO
-        ) {
-
-            if(getMovieMode()){
-                Log.d("ADULT", adultMode.value!!.toString())
-                val movie = repository.fetchLatestMovie(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
-
-
-                latestMediaItem.postValue(MediaItem(movie.title, movie.id, "MOVIE", movie.posterPath))
-                fetchDone.postValue(true)
-            }
-            else {
-                val show = repository.fetchLatestTV(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!)
-
-                latestMediaItem.postValue(MediaItem(show.title, show.id, "TV", show.posterPath))
-                fetchDone.postValue(true)
-            }
-        }
-    }
 
     fun popToLastMediaData(){
 
@@ -568,7 +538,6 @@ class MainViewModel : ViewModel() {
         fetchTrendingWeek(1)
         fetchUpcoming(1)
         fetchTVAiringToday(1)
-        fetchLatestMediaItem()
     }
 
     //POPULAR
