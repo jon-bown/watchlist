@@ -99,6 +99,7 @@ class MainViewModel : ViewModel() {
 
     //Current List
     private val currentWatchList = MutableLiveData<WatchList>()
+    private val currentWatchListName = MutableLiveData<String>()
     fun setCurrentWatchList(name: String){
         //if name in watchlists throw a toast
         val lists = watchLists.value!!.filter{
@@ -106,7 +107,40 @@ class MainViewModel : ViewModel() {
             it.name == name
         }
         currentWatchList.value = lists.first()
+        currentWatchListName.value = name
     }
+    fun setWatchListOnlySeen(){
+        val lists = watchLists.value!!.filter{
+            //name is unique
+            it.name == currentWatchListName.value
+        }
+        val listF = lists.first().items!!.filter {
+            seenMediaItems.value!!.contains(it.id.toString())
+        }
+        currentWatchList.postValue(WatchList(currentWatchListName.value, listF.toMutableList()))
+    }
+
+    fun setWatchListOnlyNotSeen() {
+        val lists = watchLists.value!!.filter{
+            //name is unique
+            it.name == currentWatchListName.value
+        }
+        val listF = lists.first().items!!.filter {
+            !seenMediaItems.value!!.contains(it.id.toString())
+        }
+        currentWatchList.postValue(WatchList(currentWatchListName.value, listF.toMutableList()))
+    }
+
+    fun restoreWatchList() {
+        val lists = watchLists.value!!.filter{
+            //name is unique
+            it.name == currentWatchListName.value
+        }
+        currentWatchList.value = lists.first()
+    }
+
+
+
     fun observeCurrentWatchList(): LiveData<WatchList>{
         return currentWatchList
     }

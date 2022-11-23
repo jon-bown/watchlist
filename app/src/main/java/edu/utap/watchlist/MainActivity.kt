@@ -4,14 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -26,6 +24,7 @@ import edu.utap.watchlist.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     //private lateinit var binding : ActivityMainBinding
+    var optionsMenu: Menu? = null
 
     // See: https://developer.android.com/training/basics/intents/result
     private val signInLauncher =
@@ -79,8 +78,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
     fun setActionBarTitle(title: String){
         supportActionBar!!.title = title
+        //supportActionBar.set
     }
 
 
@@ -91,6 +93,8 @@ class MainActivity : AppCompatActivity() {
 
     fun showActionBar() {
         supportActionBar!!.show()
+
+
 //        groupDetails.visibility = View.GONE
     }
 
@@ -127,9 +131,67 @@ class MainActivity : AppCompatActivity() {
             showActionBar()
             showNavBar()
         }
+        if(id == R.id.action_all) {
+
+            //call viewmodel only  seen
+            if(!item.isChecked){
+                val seen: MenuItem = optionsMenu!!.findItem(R.id.action_seen)
+                seen.isChecked = false
+
+                val itemT: MenuItem = optionsMenu!!.findItem(R.id.action_not_seen)
+                itemT.isChecked = false
+
+
+                item.isChecked = !item.isChecked
+                Log.d("MENU SELECTED", "ALL")
+                viewModel.restoreWatchList()
+            }
+
+            true
+        }
+        if(id == R.id.action_seen){
+            if(!item.isChecked){
+                val notSeen: MenuItem = optionsMenu!!.findItem(R.id.action_not_seen)
+                notSeen.isChecked = false
+
+                val itemT: MenuItem = optionsMenu!!.findItem(R.id.action_all)
+                itemT.isChecked = false
+
+
+
+
+                item.isChecked = !item.isChecked
+                Log.d("MENU SELECTED", "ALL")
+                viewModel.setWatchListOnlySeen()
+            }
+
+        }
+        if(id == R.id.action_not_seen) {
+            if(!item.isChecked){
+                val seen: MenuItem = optionsMenu!!.findItem(R.id.action_seen)
+                seen.isChecked = false
+
+                val notSeen: MenuItem = optionsMenu!!.findItem(R.id.action_all)
+                notSeen.isChecked = false
+
+
+                item.isChecked = !item.isChecked
+
+                Log.d("MENU SELECTED", "ALL")
+                viewModel.setWatchListOnlyNotSeen()
+            }
+
+        }
 
         return true
     }
 
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //menuInflater.inflate(R.menu.main, menu)
+        //  store the menu to var when creating options menu
+        optionsMenu = menu
+        return true
+    }
 
 }

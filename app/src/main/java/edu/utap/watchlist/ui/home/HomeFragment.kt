@@ -49,14 +49,6 @@ class HomeFragment : Fragment() {
 
 
 
-    private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
-        val dividerItemDecoration = DividerItemDecoration(
-            rv.context, LinearLayoutManager.VERTICAL )
-        rv.addItemDecoration(dividerItemDecoration)
-    }
-
-
 
 
     private fun initAdapter() {
@@ -104,8 +96,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.popularList.layoutManager = manager
         binding.popularList.adapter = popularAdapter
-        initRecyclerViewDividers(binding.popularList)
-
         // Live data lets us display the latest list, whatever it is
         // NB: owner is viewLifecycleOwner
         viewModel.observePopularMediaItems().observe(viewLifecycleOwner,
@@ -124,7 +114,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.nowPlayingList.layoutManager = manager
         binding.nowPlayingList.adapter = nowPlayingAdapter
-        initRecyclerViewDividers(binding.nowPlayingList)
 
         viewModel.observeNowPlayingMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
@@ -143,7 +132,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.topRatedList.layoutManager = manager
         binding.topRatedList.adapter = topRatedAdapter
-        initRecyclerViewDividers(binding.nowPlayingList)
 
         viewModel.observeTopRatedMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
@@ -159,7 +147,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.trendingTodayList.layoutManager = manager
         binding.trendingTodayList.adapter = trendingTodayAdapter
-        initRecyclerViewDividers(binding.trendingTodayList)
 
         viewModel.observeTrendingTodayMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
@@ -175,8 +162,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.trendingWeekList.layoutManager = manager
         binding.trendingWeekList.adapter = trendingWeekAdapter
-        initRecyclerViewDividers(binding.trendingWeekList)
-
         viewModel.observeTrendingWeekMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 trendingWeekAdapter.submitMediaList(movieList)
@@ -193,7 +178,6 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.upcomingList.layoutManager = manager
         binding.upcomingList.adapter = upcomingAdapter
-        initRecyclerViewDividers(binding.upcomingList)
 
         viewModel.observeUpcomingMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->

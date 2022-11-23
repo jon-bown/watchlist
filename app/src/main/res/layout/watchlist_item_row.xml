@@ -7,19 +7,20 @@
     android:layout_margin="8dp">
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="100dp"
+        android:layout_width="90dp"
+        android:layout_height="150dp"
         android:layout_marginLeft="2dp"
         android:id="@+id/poster"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Test"
             android:id="@+id/watchListName"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textColor="@color/black"
             android:gravity="center_vertical"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,6 +33,7 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_baseline_check_box_outline_blank_24"
             android:id="@+id/seenClick"
+            android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

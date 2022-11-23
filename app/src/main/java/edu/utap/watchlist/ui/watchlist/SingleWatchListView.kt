@@ -1,14 +1,15 @@
 package edu.utap.watchlist.ui.watchlist
 
 import android.os.Bundle
+import android.util.Log
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
-import edu.utap.watchlist.adapters.MediaWatchListItemAdapter
 import edu.utap.watchlist.adapters.WatchListItemAdapter
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.components.SwipeToDeleteCallback
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
 import edu.utap.watchlist.ui.media.MediaItemViewFragment
-import edu.utap.watchlist.ui.profile.SelectionListArgs
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +59,8 @@ class SingleWatchListView : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
     }
 
     override fun onCreateView(
@@ -106,6 +108,56 @@ class SingleWatchListView : Fragment() {
 
         return root
     }
+
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+        val menuHost: MenuHost = requireActivity()
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.top_filter, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.action_seen -> {
+                        // clearCompletedTasks()
+
+                        viewModel.setWatchListOnlySeen()
+                        true
+                    }
+                    R.id.action_not_seen -> {
+                        // loadTasks(true)
+
+                        //call viewmodel only not seen
+                        viewModel.setWatchListOnlyNotSeen()
+                        true
+                    }
+                    R.id.action_all -> {
+
+                        //call viewmodel only  seen
+                        Log.d("MENU SELECTED", "ALL")
+                        viewModel.restoreWatchList()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+
 
     fun openMediaView(item: MediaItem) {
         //open single view with given media item

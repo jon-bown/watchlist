@@ -8,22 +8,10 @@
 
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="130dp"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:id="@+id/mediaImage"
             android:layout_margin="2dp"
-            />
-
-        <TextView
-            android:id="@+id/TV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#000"
-            android:textSize="20sp"
-            android:layout_margin="5dp"
-            android:layout_gravity="right"
-            android:fontFamily="sans-serif-condensed"
-
             />
 
 </FrameLayout>
