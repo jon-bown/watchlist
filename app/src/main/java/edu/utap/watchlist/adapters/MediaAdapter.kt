@@ -3,6 +3,7 @@ package edu.utap.watchlist.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import edu.utap.watchlist.BuildConfig
 import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaRowBinding
 
@@ -45,7 +46,9 @@ class MediaAdapter(private val clickListener: (item: MediaItem)->Unit): Recycler
             media.clear()
             media.addAll(items)
             notifyDataSetChanged()
+
         }
+
 
 
         override fun getItemCount() = media.size

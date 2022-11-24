@@ -16,6 +16,8 @@ interface MovieDBApi {
     object apikey {
         const val KEY = "9bcd9c1a6267ef7c56f11da1295bf749"
     }
+
+
     //////MOVIES/////////
     // Get Movie Details
     @GET("/3/movie/{movie}?api_key=${apikey.KEY}")
