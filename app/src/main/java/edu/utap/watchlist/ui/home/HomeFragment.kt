@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
@@ -88,6 +89,21 @@ class HomeFragment : Fragment() {
     private fun setLoadingListener() {
         viewModel.observeFetchDone().observe(viewLifecycleOwner) {
             isLoading = false
+        }
+    }
+
+
+    private fun initSwipeLayout(swipe : SwipeRefreshLayout) {
+        viewModel.observeFetchDone().observe(viewLifecycleOwner) {
+            if(it){
+                swipe.isRefreshing = false
+            }
+
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.netRefresh()
+            swipe.isRefreshing = true
         }
     }
 
@@ -212,7 +228,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-
+        initSwipeLayout(binding.swipeRefreshLayout)
 
         if(savedInstanceState == null) {
             viewModel.populateUserData()
