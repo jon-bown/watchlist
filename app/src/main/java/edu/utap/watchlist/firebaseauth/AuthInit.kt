@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import edu.utap.watchlist.R
 
 // https://firebase.google.com/docs/auth/android/firebaseui
 class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<Intent>) {
@@ -44,6 +45,7 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
                 .setIsSmartLockEnabled(false)
+                .setTheme(R.style.Theme_Watchlist)
                 .build()
             signInLauncher.launch(signInIntent)
         } else {

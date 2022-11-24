@@ -343,7 +343,7 @@ class MediaItemViewFragment : Fragment() {
         binding.closeButton.setOnClickListener {
 
 
-            if(viewModel.observeCurrentMediaItemsStack().value!!.size == 1){
+            if(viewModel.observeCurrentMediaItemsStack().value!!.size <= 1){
                 val manager: FragmentManager? = parentFragmentManager
                 manager?.popBackStack()
 

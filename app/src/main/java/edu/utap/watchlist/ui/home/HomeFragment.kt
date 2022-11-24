@@ -2,6 +2,7 @@ package edu.utap.watchlist.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -188,6 +189,20 @@ class HomeFragment : Fragment() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        if(viewModel.observeMovieMode().value!!){
+            binding.moviesTvControl.check(R.id.opt_1)
+            binding.opt2.setBackgroundColor(Color.TRANSPARENT)
+            binding.opt1.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
+        }
+        else {
+            binding.moviesTvControl.check(R.id.opt_2)
+            binding.opt1.setBackgroundColor(Color.TRANSPARENT)
+            binding.opt2.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -218,10 +233,14 @@ class HomeFragment : Fragment() {
             if(it){
                 binding.nowPlayingText.text = "Now Playing"
                 binding.upcomingText.text = "Upcoming"
+                binding.moviesTvControl.check(R.id.opt_1)
+
+
             }
             else {
                 binding.nowPlayingText.text = "Now Airing"
                 binding.upcomingText.text = "Airing Today"
+                binding.moviesTvControl.check(R.id.opt_2)
             }
         }
 
@@ -255,12 +274,9 @@ class HomeFragment : Fragment() {
             popularAdapter.notifyDataSetChanged()
 
         }
-        binding.moviesTvControl.check(R.id.opt_1)
+
         binding.opt1.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
 
-        binding.moviesTvControl.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
-            // Respond to button selection
-        }
 
     }
 

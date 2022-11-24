@@ -48,7 +48,6 @@ class UserDBClient {
 
     suspend fun getUserData(): User {
         val TAG = "INIT_USER"
-        Log.d("DOCNAME", docName)
         val docRef = db.collection("users").document(docName)
 
         val document = docRef.get().await()

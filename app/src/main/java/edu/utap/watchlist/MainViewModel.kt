@@ -16,6 +16,8 @@ import edu.utap.watchlist.glide.Glide
 import edu.utap.watchlist.providers.Provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 class MainViewModel : ViewModel() {
@@ -625,12 +627,17 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            val list: List<Any>
+            var list: List<Any>
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
             if(getMovieMode()){
                 list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+
+                list = list.sortedByDescending { sdf.parse(it.releaseDate) }
+
             }
             else {
                 list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                //list = list.sortedByDescending { sdf.parse(it.lastAirDate) }
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -785,8 +792,10 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             var list: List<Any>
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
             if(getMovieMode()){
                 list = repository.fetchUpcomingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = list.filter { sdf.parse(it.releaseDate) >= Date()}
             }
             else {
                 list = repository.fetchUpcomingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
