@@ -81,8 +81,6 @@ class MediaItemViewFragment : Fragment() {
         val root: View = binding.root
 
         binding.backdrop.setImageBitmap(null);
-        //weird issue with leftover images
-
 
         initAdapters()
 
