@@ -980,11 +980,12 @@ class MainViewModel : ViewModel() {
     ///////USER DATA//////////
 
     fun populateUserData() {
-
+        userDB = UserDBClient()
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
+
             email.postValue(userDB.getEmail())
             displayName.postValue(userDB.getUserName())
             val user = userDB.getUserData()

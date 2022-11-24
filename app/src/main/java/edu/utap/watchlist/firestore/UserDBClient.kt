@@ -21,7 +21,7 @@ class UserDBClient {
     private var adultMode = false
     private var userLists = emptyList<WatchList>()
     private var seenList = emptyList<String>()
-    var user = FirebaseAuth.getInstance().currentUser
+    private var user = FirebaseAuth.getInstance().currentUser
     private var displayName = ""
     private var email = ""
     private var uid = ""
@@ -29,6 +29,7 @@ class UserDBClient {
 
 
     init {
+        val user = FirebaseAuth.getInstance().currentUser
         if(user != null){
             docName = user!!.uid
             email = user!!.email!!
@@ -47,11 +48,14 @@ class UserDBClient {
 
     suspend fun getUserData(): User {
         val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(user!!.uid)
-        val document = docRef.get().await()
-        if(document != null){
-            userData = document!!.toObject(User::class.java)!!
+        Log.d("DOCNAME", docName)
+        val docRef = db.collection("users").document(docName)
 
+        val document = docRef.get().await()
+        if(document.data != null){
+
+            userData = document!!.toObject(User::class.java)!!
+            //if(userData.country)
 
         }
         else {
@@ -64,7 +68,7 @@ class UserDBClient {
     suspend fun getLanguage(): String {
         Log.d("GET LANGUAGE", "1")
         val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(user!!.uid)
+        val docRef = db.collection("users").document(docName)
         val document = docRef.get().await()
         if (document != null) {
             Log.d(TAG, "DocumentSnapshot data: ${document.data}")
@@ -82,7 +86,7 @@ class UserDBClient {
     suspend fun getCountry(): String {
         Log.d("GET COUNTRY", "1")
         val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(user!!.uid)
+        val docRef = db.collection("users").document(docName)
         val document = docRef.get().await()
         if (document != null) {
             Log.d(TAG, "DocumentSnapshot data: ${document.data}")
@@ -98,7 +102,7 @@ class UserDBClient {
     suspend fun getAdultMode(): Boolean {
         Log.d("ADULT MODE", "1")
         val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(user!!.uid)
+        val docRef = db.collection("users").document(docName)
         val document = docRef.get().await()
 
         if (document != null) {
@@ -113,45 +117,49 @@ class UserDBClient {
 
 
     suspend fun getWatchLists(): List<WatchList> {
-        val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(user!!.uid)
-        val document = docRef.get().await()
-        if(document != null){
-            try {
-                val item = document!!.toObject(User::class.java)
-                Log.d(TAG, "DocumentSnapshot data: ${item}")
-                var watchLists = mutableListOf<WatchList>()
-                for(list in item!!.lists!!.keys){
-                    watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+        if(docName != ""){
+            val docRef = db.collection("users").document(docName)
+            val document = docRef.get().await()
+            if(document != null){
+                try {
+                    val item = document!!.toObject(User::class.java)
+                    var watchLists = mutableListOf<WatchList>()
+                    for(list in item!!.lists!!.keys){
+                        watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+                    }
+                    userLists = watchLists.toList()
                 }
-                userLists = watchLists.toList()
-            }
-            catch (e: Exception) {
-                userLists = emptyList()
-                return userLists
-            }
+                catch (e: Exception) {
+                    userLists = emptyList()
+                    return userLists
+                }
 
 
+            }
+            else {
+                createDocument()
+            }
+            return userLists
         }
         else {
-            createDocument()
+            return emptyList()
         }
-        return userLists
+
     }
 
     fun removeWatchList(list: WatchList){
-        db.collection("users").document(user!!.uid)
+        db.collection("users").document(docName)
             .update(FieldPath.of("lists", list.name), FieldValue.delete())
     }
 
     fun addMediaItemToWatchlist(name: String, item: MediaItem) {
-        db.collection("users").document(user!!.uid).update(
+        db.collection("users").document(docName).update(
             FieldPath.of("lists", name), FieldValue.arrayUnion(item)
         )
     }
 
     fun removeMediaItemFromWatchlist(name: String, item: MediaItem) {
-        db.collection("users").document(user!!.uid).update(
+        db.collection("users").document(docName).update(
             FieldPath.of("lists", name), FieldValue.arrayRemove(item)
         )
     }
@@ -170,21 +178,25 @@ class UserDBClient {
 
 
     suspend fun getSeenMediaItems(): List<String> {
-        val docRef = db.collection("users").document(user!!.uid)
-        val document = docRef.get().await()
-        if(document != null){
-            val list = document.data!!.get("seen")
-            if(list == null) {
-                seenList == emptyList<String>()
+        if(docName != "") {
+            val docRef = db.collection("users").document(user!!.uid)
+            val document = docRef.get().await()
+            if (document != null) {
+                val list = document.data!!.get("seen")
+                if (list == null) {
+                    seenList == emptyList<String>()
+                } else {
+                    seenList = list as List<String>
+                }
+            } else {
+                createDocument()
             }
-            else {
-                seenList = list as List<String>
-            }
+            return seenList
+
         }
         else {
-            createDocument()
+            return emptyList()
         }
-        return seenList
     }
 
 
@@ -195,7 +207,7 @@ class UserDBClient {
     }
 
     fun removeSeenItem(item: String){
-        db.collection("users").document(user!!.uid)
+        db.collection("users").document(docName)
             .update("seen", FieldValue.arrayRemove(item))
     }
 
@@ -205,7 +217,7 @@ class UserDBClient {
 
     fun setAdultMode(mode: Boolean) {
         db.collection("users")
-            .document(user!!.uid)
+            .document(docName)
             .update(mapOf(
                 "adult" to mode
         ))
@@ -213,7 +225,7 @@ class UserDBClient {
 
     fun setLanguage(language: String) {
         db.collection("users")
-            .document(user!!.uid)
+            .document(docName)
             .update(mapOf(
                 "language" to language
             ))
@@ -221,7 +233,7 @@ class UserDBClient {
 
     fun setCountry(country: String) {
         db.collection("users")
-            .document(user!!.uid)
+            .document(docName)
             .update(mapOf(
                 "country" to country
             ))
@@ -238,7 +250,7 @@ class UserDBClient {
             "lists" to emptyMap<String, List<MediaItem>>()
         )
 
-        db.collection("users").document(user!!.uid)
+        db.collection("users").document(docName)
             .set(newUser)
             .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
