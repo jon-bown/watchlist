@@ -33,4 +33,6 @@ data class TVShow (
     val status: String,
     @SerializedName("type")
     val type: String,
+    @SerializedName("popularity")
+    val popularity: Float,
                 )

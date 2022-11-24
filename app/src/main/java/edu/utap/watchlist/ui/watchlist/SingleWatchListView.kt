@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
@@ -23,21 +24,7 @@ import edu.utap.watchlist.components.SwipeToDeleteCallback
 import edu.utap.watchlist.databinding.FragmentSingleWatchListViewBinding
 import edu.utap.watchlist.ui.media.MediaItemViewFragment
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SingleWatchListView.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SingleWatchListView : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var _binding: FragmentSingleWatchListViewBinding? = null
     private val binding get() = _binding!!
@@ -56,8 +43,6 @@ class SingleWatchListView : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
 
 
@@ -76,8 +61,6 @@ class SingleWatchListView : Fragment() {
 
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
-        binding.watchList.layoutManager = LinearLayoutManager(activity)
-
         binding.watchList.layoutManager = manager
         binding.watchList.adapter = adapter
         initRecyclerViewDividers(binding.watchList)
@@ -88,6 +71,13 @@ class SingleWatchListView : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 adapter.removeAt(position)
+
+                Snackbar.make(
+                    activity!!.findViewById(R.id.nav_host_fragment_activity_main),
+                    "Removed From ${viewModel.observeCurrentWatchList().value!!.name}",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
             }
 
         }
@@ -101,7 +91,6 @@ class SingleWatchListView : Fragment() {
 
             //Need all lists where this current item belongs
             adapter.submitMediaList(it.items!!.toList())
-            adapter.notifyDataSetChanged()
 
         }
 

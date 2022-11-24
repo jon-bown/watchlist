@@ -113,37 +113,6 @@ class MediaRepository(private val api: MovieDBApi) {
         return api.getTVOnTheAir(language, adult.toString(), page).results
     }
 
-
-    suspend fun fetchLatestMovie(language: String, adult: Boolean): Movie {
-        return api.getMoviesLatest(language, adult.toString())
-    }
-
-    suspend fun fetchLatestTV(language: String, adult: Boolean): TVShow {
-        return api.getTVLatest(language, adult.toString())
-    }
-
-
-    suspend fun fetchTVStreamingRegionProviders(region: String, id: String): RegionContainer {
-        val results = api.getTVProviders(id).results
-        if(region in results.keys){
-            return results[region]!!
-        }
-        else{
-            return results["US"]!!
-        }
-    }
-
-    suspend fun fetchMovieStreamingRegionProviders(region: String, id: String): RegionContainer {
-        val results = api.getTVProviders(id).results
-        if(region in results.keys){
-            return results[region]!!
-        }
-        else{
-            return results["US"]!!
-        }
-    }
-
-
     suspend fun fetchTopRatedTV(language: String, adult: Boolean, page: Int): List<TVShow> {
         return api.getTVTopRated(language, adult.toString(), page).results
     }

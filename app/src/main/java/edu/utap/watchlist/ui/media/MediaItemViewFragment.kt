@@ -217,7 +217,6 @@ class MediaItemViewFragment : Fragment() {
         viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 similarAdapter.submitMediaList(movieList)
-                similarAdapter.notifyDataSetChanged()
 
             })
     }
@@ -233,8 +232,16 @@ class MediaItemViewFragment : Fragment() {
 
         viewModel.observeRecommendedMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
-                recommendedAdapter.submitMediaList(movieList)
-                recommendedAdapter.notifyDataSetChanged()
+                if(movieList.isEmpty()){
+                    binding.recommendedList.visibility = View.GONE
+                    binding.recommendedText.visibility = View.GONE
+                }
+                else {
+                    binding.recommendedList.visibility = View.VISIBLE
+                    binding.recommendedText.visibility = View.VISIBLE
+                    recommendedAdapter.submitMediaList(movieList)
+                }
+
             })
     }
 
@@ -428,9 +435,17 @@ class MediaItemViewFragment : Fragment() {
     }
 
 
-    private fun convertToMillions(dollars: Int): Int {
+    private fun convertToMillions(dollars: Int): String {
         val million = 1000000L
-        return (dollars / million).toInt()
+
+        val result = (dollars / million).toInt()
+        if(result < 0){
+            return " < 1M"
+        }
+        else {
+          return result.toString()
+        }
+
     }
 
     fun Double.format(digits: Int) = "%.${digits}f".format(this)

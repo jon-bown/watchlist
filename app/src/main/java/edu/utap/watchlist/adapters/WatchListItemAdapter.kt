@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.api.MediaItem
@@ -96,6 +97,6 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
     fun removeAt(position: Int){
         viewModel.removeFromWatchList(watchListItems[position])
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 }

@@ -54,7 +54,7 @@ class WatchListAdapter(private val viewModel: MainViewModel, private val clickLi
 
     fun removeAt(position: Int){
         viewModel.removeWatchList(watchLists[position])
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
 }

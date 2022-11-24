@@ -49,10 +49,6 @@ interface MovieDBApi {
     suspend fun getMoviesTopRated(@Query("language") lang: String, @Query("include_adult") adult: String,
                                   @Query("page") page: Int) : MovieListResponse
 
-    //Get Latest
-    @GET("/3/movie/latest?api_key=${apikey.KEY}")
-    suspend fun getMoviesLatest(@Query("language") lang: String, @Query("include_adult") adult: String) : Movie
-
     //Get Popular
     @GET("/3/movie/popular?api_key=${apikey.KEY}")
     suspend fun getMoviesPopular(@Query("language") lang: String, @Query("include_adult") adult: String,
@@ -102,11 +98,6 @@ interface MovieDBApi {
     @GET("/3/tv/top_rated?api_key=${apikey.KEY}")
     suspend fun getTVTopRated(@Query("language") lang: String, @Query("include_adult") adult: String,
                               @Query("page") page: Int) : TVListResponse
-
-    //Get Latest
-    @GET("/3/tv/latest?api_key=${apikey.KEY}")
-    suspend fun getTVLatest(@Query("language") lang: String, @Query("include_adult") adult: String) : TVShow
-
     //Get Popular
     @GET("/3/tv/popular?api_key=${apikey.KEY}")
     suspend fun getTVPopular(@Query("language") lang: String, @Query("include_adult") adult: String,

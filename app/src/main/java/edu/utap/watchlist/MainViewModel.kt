@@ -162,13 +162,13 @@ class MainViewModel : ViewModel() {
 
 
     fun addNewWatchList(name: String){
-        var currentLists = mutableListOf<WatchList>()
+        val currentLists = mutableListOf<WatchList>()
         if(watchLists.value != null) {
             currentLists.addAll(watchLists.value!!)
         }
         //error if list already exists
-        val newList = WatchList(name, mutableListOf<MediaItem>())
-        currentLists.add(WatchList(name, mutableListOf<MediaItem>()))
+        val newList = WatchList(name, mutableListOf())
+        currentLists.add(WatchList(name, mutableListOf()))
         userDB.addWatchList(newList)
         watchLists.postValue(currentLists)
     }
@@ -202,7 +202,7 @@ class MainViewModel : ViewModel() {
 
     fun removeFromWatchList(mediaItem: MediaItem) {
 
-        var newList = currentWatchList.value!!
+        val newList = currentWatchList.value!!
         newList.items!!.remove(mediaItem)
         userDB.removeMediaItemFromWatchlist(newList.name!!, mediaItem)
         currentWatchList.postValue(WatchList(newList.name, newList.items))
@@ -382,7 +382,6 @@ class MainViewModel : ViewModel() {
 
 
     fun setUpCurrentMediaData(item: MediaItem) {
-        // This is where the network request is initiated.
 
         var tempStack = currentMediaItems.value
         if(tempStack == null){
@@ -393,7 +392,7 @@ class MainViewModel : ViewModel() {
         refreshCurrentMediaInfo(item)
     }
 
-    fun fetchCurrentMovie() {
+    private fun fetchCurrentMovie() {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
@@ -404,7 +403,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun fetchCurrentTV() {
+    private fun fetchCurrentTV() {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
@@ -427,7 +426,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
 
-            var list: List<Any>
+            val list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
                 list = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
@@ -476,7 +475,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
 
-            var list: List<Any>
+            val list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
                 list = repository.fetchRecommendedMovies(currentMediaItem.value!!.id.toString(),
                     "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
@@ -550,11 +549,6 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private val nowAiringMediaItems = MutableLiveData<List<MediaItem>>()
-    fun observeNowAiringMediaItems(): LiveData<List<MediaItem>> {
-        return nowAiringMediaItems
-    }
-
 
 
 
@@ -564,7 +558,7 @@ class MainViewModel : ViewModel() {
     var height = 500
 
 
-    var fetchDone : MutableLiveData<Boolean> = MutableLiveData(false)
+    private var fetchDone : MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         netRefresh()
@@ -579,7 +573,6 @@ class MainViewModel : ViewModel() {
         fetchTrendingToday(1)
         fetchTrendingWeek(1)
         fetchUpcoming(1)
-        fetchTVAiringToday(1)
     }
 
     //POPULAR
@@ -592,9 +585,12 @@ class MainViewModel : ViewModel() {
             var list: List<Any>
             if(getMovieMode()){
                 list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = list.sortedByDescending { it.popularity }
             }
             else {
                 list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = list.sortedByDescending { it.popularity }
+
             }
 
             if(list.isNotEmpty()){
@@ -629,7 +625,7 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
             // Update LiveData from IO dispatcher, use postValue
-            var list: List<Any>
+            val list: List<Any>
             if(getMovieMode()){
                 list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
@@ -822,22 +818,6 @@ class MainViewModel : ViewModel() {
     }
 
 
-
-    fun fetchTVAiringToday(page: Int) {
-        viewModelScope.launch(
-            context = viewModelScope.coroutineContext
-                    + Dispatchers.IO
-        ) {
-            if(!getMovieMode()){
-                val tvList = repository.fetchNowPlayingTV(
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
-                nowAiringMediaItems.postValue(MediaItems(tvList = tvList, movieList = null).mediaList)
-                fetchDone.postValue(true)
-            }
-        }
-    }
-
-
     fun fetchSearchResults(query: String, page: Int) {
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
@@ -930,7 +910,6 @@ class MainViewModel : ViewModel() {
 
 
     fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             Log.d("SIGN IN GOOD", "COULD SIGN IN")
@@ -1002,7 +981,6 @@ class MainViewModel : ViewModel() {
 
     fun populateUserData() {
 
-        val TAG = "VIEWMODEL"
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
