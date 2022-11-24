@@ -921,17 +921,10 @@ class MainViewModel : ViewModel() {
     fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
-            Log.d("SIGN IN GOOD", "COULD SIGN IN")
             populateUserData()
 
-            //
-            // ...
         } else {
-            Log.d("SIGN IN ERROR", "COULDNT SIGN IN")
-            // Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
+            //Pop up toast
         }
     }
 
@@ -940,7 +933,6 @@ class MainViewModel : ViewModel() {
     fun changeAdultMode(newValue: Boolean){
         adultMode.value = newValue
         userDB.setAdultMode(newValue)
-        //push change to firebase
     }
 
 

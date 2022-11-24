@@ -131,15 +131,8 @@ class MediaItemViewFragment : Fragment() {
             val act = activity as MainActivity
             act.hideNavBar()
             act.hideActionBar()
-            //findNavController().navigate(R.id.navigation_stringList, bundle)
         }
 
-
-
-
-
-
-        //init items
         initSimilarList()
         initSimilarScrollListener()
 
@@ -181,10 +174,7 @@ class MediaItemViewFragment : Fragment() {
 
     }
 
-    //Set up lists
-
     fun initSimilarList() {
-        //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.similarItemList.layoutManager = manager
