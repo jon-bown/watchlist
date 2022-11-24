@@ -33,8 +33,6 @@ class MediaItemViewFragment : Fragment() {
 
     private var _binding: FragmentMediaItemViewBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by activityViewModels()
@@ -48,13 +46,6 @@ class MediaItemViewFragment : Fragment() {
     private var isLoading = false
     private var currentSimilarPage = 1
     private var currentRecommendedPage = 1
-
-    private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
-        val dividerItemDecoration = DividerItemDecoration(
-            rv.context, LinearLayoutManager.VERTICAL )
-        rv.addItemDecoration(dividerItemDecoration)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,16 +71,12 @@ class MediaItemViewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //val imageView: ImageView = getView()!!.findViewById<View>(R.id.foo) as ImageView
-
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentMediaItemViewBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -109,9 +96,6 @@ class MediaItemViewFragment : Fragment() {
                 binding.performanceContainer.visibility = View.VISIBLE
                 binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
                 binding.infoText.text = setMovieInfo(it)
-                        //binding.ratingText.text =
-                //binding.runTimeText = it.run time
-
                 viewModel.fetchProviders()
 
                 initSeenButton(it.id.toString())
@@ -134,7 +118,6 @@ class MediaItemViewFragment : Fragment() {
                 initSeenButton(it.id.toString())
 
                 viewModel.fetchProviders()
-                //set other properties
             }
 
 
@@ -207,13 +190,8 @@ class MediaItemViewFragment : Fragment() {
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.similarItemList.layoutManager = manager
-        //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
-        //manager.orientation =
-        binding.similarItemList.layoutManager = manager
         binding.similarItemList.adapter = similarAdapter
 
-        // Live data lets us display the latest list, whatever it is
-        // NB: owner is viewLifecycleOwner
         viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 similarAdapter.submitMediaList(movieList)
@@ -450,10 +428,6 @@ class MediaItemViewFragment : Fragment() {
 
     fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-    }
 
     companion object {
 

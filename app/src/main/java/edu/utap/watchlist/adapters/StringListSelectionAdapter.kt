@@ -18,8 +18,6 @@ class StringListSelectionAdapter(private val clickListener: (selection: String)-
             init {
                 binding.root.setOnClickListener {
                     binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24_blue)
-                    //clear all images
-                    //call click listener to update viewmodel
                     selectedItem = items[adapterPosition]
                     clickListener(selectedItem)
                     notifyDataSetChanged()

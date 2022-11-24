@@ -35,9 +35,6 @@ class WatchListAdapter(private val viewModel: MainViewModel, private val clickLi
         val binding = holder.binding
         watchLists[position].let{
             binding.itemName.text = it
-            //binding.quoteText.text = it.quote
-            //binding.charActText.text = it.characterActor
-            //binding.movieText.text = it.movie
         }
     }
 

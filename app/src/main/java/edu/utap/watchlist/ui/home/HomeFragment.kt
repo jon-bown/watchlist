@@ -28,10 +28,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val viewModel: MainViewModel by activityViewModels()
-    private var listDisplayType: String = "popular"
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var popularAdapter: MediaCardAdapter
     private var currentPopularPage = 1
@@ -170,7 +167,6 @@ class HomeFragment : Fragment() {
                 trendingTodayAdapter.submitMediaList(movieList)
 
             })
-        //Scroll listener
         initTrendingDayScrollListener()
     }
 
@@ -183,14 +179,13 @@ class HomeFragment : Fragment() {
             Observer { movieList ->
                 trendingWeekAdapter.submitMediaList(movieList)
             })
-        //Scroll listener
         initTrendingWeekScrollListener()
     }
 
 
     fun initUpcomingList() {
 
-        //Linear
+
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.upcomingList.layoutManager = manager
@@ -200,7 +195,6 @@ class HomeFragment : Fragment() {
             Observer { movieList ->
                 upcomingAdapter.submitMediaList(movieList)
             })
-        //Scroll listener
         initUpcomingScrollListener()
     }
 
@@ -296,38 +290,7 @@ class HomeFragment : Fragment() {
 
     }
 
-
-
     //SCROLLING LISTENERS
-    private fun addScrollListener(list: RecyclerView, page: Int, size: Int, fetch: (page: Int) -> Unit) {
-
-//        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-//                if (!isLoading) {
-//                    if(page < 10) {
-//                        if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
-//                            (size - 5)) {
-//                            isLoading = true
-//                            page+=1
-//                            fetch(currentPopularPage)
-//                        }
-//                    }
-//
-//                }
-//            }
-//        })
-
-
-
-
-    }
-
-
-
-
-
     private fun initPopularScrollListener() {
         binding.popularList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

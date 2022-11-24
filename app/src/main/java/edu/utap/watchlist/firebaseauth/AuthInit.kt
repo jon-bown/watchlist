@@ -13,9 +13,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
     companion object {
         private const val TAG = "AuthInit"
         fun setDisplayName(displayName : String, viewModel: MainViewModel) {
-            Log.d(TAG, "XXX profile change request")
-            // XXX Write me. User is attempting to update display name. Get the profile updates (see android doc)
-
             val user = FirebaseAuth.getInstance().currentUser
 
             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -35,12 +32,9 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
     init {
         val user = FirebaseAuth.getInstance().currentUser
         if(user == null) {
-            // Choose authentication providers
             val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build())
 
-            // Create and launch sign-in intent
-            // XXX Write me. Set authentication providers and start sign-in for user
             val signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
@@ -49,7 +43,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
                 .build()
             signInLauncher.launch(signInIntent)
         } else {
-            Log.d(TAG, "XXX user ${user.displayName} email ${user.email}")
             viewModel.updateUser()
         }
     }

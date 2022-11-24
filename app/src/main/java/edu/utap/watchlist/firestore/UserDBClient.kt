@@ -14,6 +14,11 @@ import java.util.*
 
 class UserDBClient {
 
+    companion object {
+        private const val TABLE = "users"
+        private const val WATCHLIST_FIELD = "lists"
+    }
+
     private val db = Firebase.firestore
     private var docName = ""
     private var country = ""
@@ -24,7 +29,6 @@ class UserDBClient {
     private var user = FirebaseAuth.getInstance().currentUser
     private var displayName = ""
     private var email = ""
-    private var uid = ""
     private var userData = User()
 
 
@@ -47,15 +51,12 @@ class UserDBClient {
 
 
     suspend fun getUserData(): User {
-        val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(docName)
+        val docRef = db.collection(TABLE).document(docName)
 
         val document = docRef.get().await()
         if(document.data != null){
 
             userData = document!!.toObject(User::class.java)!!
-            //if(userData.country)
-
         }
         else {
             createDocument()
@@ -65,15 +66,11 @@ class UserDBClient {
 
 
     suspend fun getLanguage(): String {
-        Log.d("GET LANGUAGE", "1")
-        val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(docName)
+        val docRef = db.collection(TABLE).document(docName)
         val document = docRef.get().await()
         if (document != null) {
-            Log.d(TAG, "DocumentSnapshot data: ${document.data}")
             language = document.data!!.get("language").toString()
         } else {
-            Log.d(TAG, "No such document")
             createDocument()
         }
         return language
@@ -83,15 +80,11 @@ class UserDBClient {
     //Update separate settings
 
     suspend fun getCountry(): String {
-        Log.d("GET COUNTRY", "1")
-        val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(docName)
+        val docRef = db.collection(TABLE).document(docName)
         val document = docRef.get().await()
         if (document != null) {
-            Log.d(TAG, "DocumentSnapshot data: ${document.data}")
             country = document.data!!.get("country").toString()
         } else {
-            Log.d(TAG, "No such document")
             createDocument()
         }
         return country
@@ -99,16 +92,12 @@ class UserDBClient {
 
 
     suspend fun getAdultMode(): Boolean {
-        Log.d("ADULT MODE", "1")
-        val TAG = "INIT_USER"
-        val docRef = db.collection("users").document(docName)
+        val docRef = db.collection(TABLE).document(docName)
         val document = docRef.get().await()
 
         if (document != null) {
-            Log.d(TAG, "DocumentSnapshot data: ${document.data}")
             adultMode = document.data!!.get("adult") as Boolean
         } else {
-            Log.d(TAG, "No such document")
             createDocument()
         }
         return adultMode
@@ -117,7 +106,7 @@ class UserDBClient {
 
     suspend fun getWatchLists(): List<WatchList> {
         if(docName != ""){
-            val docRef = db.collection("users").document(docName)
+            val docRef = db.collection(TABLE).document(docName)
             val document = docRef.get().await()
             if(document != null){
                 try {
@@ -147,19 +136,19 @@ class UserDBClient {
     }
 
     fun removeWatchList(list: WatchList){
-        db.collection("users").document(docName)
-            .update(FieldPath.of("lists", list.name), FieldValue.delete())
+        db.collection(TABLE).document(docName)
+            .update(FieldPath.of(WATCHLIST_FIELD, list.name), FieldValue.delete())
     }
 
     fun addMediaItemToWatchlist(name: String, item: MediaItem) {
-        db.collection("users").document(docName).update(
-            FieldPath.of("lists", name), FieldValue.arrayUnion(item)
+        db.collection(TABLE).document(docName).update(
+            FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayUnion(item)
         )
     }
 
     fun removeMediaItemFromWatchlist(name: String, item: MediaItem) {
-        db.collection("users").document(docName).update(
-            FieldPath.of("lists", name), FieldValue.arrayRemove(item)
+        db.collection(TABLE).document(docName).update(
+            FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayRemove(item)
         )
     }
 
@@ -171,14 +160,14 @@ class UserDBClient {
         )
 
 
-        db.collection("users").document(user!!.uid)
-            .update("lists", update)
+        db.collection(TABLE).document(user!!.uid)
+            .update(WATCHLIST_FIELD, update)
     }
 
 
     suspend fun getSeenMediaItems(): List<String> {
         if(docName != "") {
-            val docRef = db.collection("users").document(user!!.uid)
+            val docRef = db.collection(TABLE).document(user!!.uid)
             val document = docRef.get().await()
             if (document != null) {
                 val list = document.data!!.get("seen")
@@ -200,13 +189,13 @@ class UserDBClient {
 
 
     fun addSeenItem(item: String){
-        db.collection("users").document(user!!.uid)
+        db.collection(TABLE).document(user!!.uid)
         .update("seen", FieldValue.arrayUnion(item))
 
     }
 
     fun removeSeenItem(item: String){
-        db.collection("users").document(docName)
+        db.collection(TABLE).document(docName)
             .update("seen", FieldValue.arrayRemove(item))
     }
 
@@ -215,7 +204,7 @@ class UserDBClient {
 
 
     fun setAdultMode(mode: Boolean) {
-        db.collection("users")
+        db.collection(TABLE)
             .document(docName)
             .update(mapOf(
                 "adult" to mode
@@ -223,7 +212,7 @@ class UserDBClient {
     }
 
     fun setLanguage(language: String) {
-        db.collection("users")
+        db.collection(TABLE)
             .document(docName)
             .update(mapOf(
                 "language" to language
@@ -231,7 +220,7 @@ class UserDBClient {
     }
 
     fun setCountry(country: String) {
-        db.collection("users")
+        db.collection(TABLE)
             .document(docName)
             .update(mapOf(
                 "country" to country
@@ -246,10 +235,10 @@ class UserDBClient {
             "language" to Locale.getDefault().getLanguage() ,
             "country" to "US",
             "seen" to emptyList<String>(),
-            "lists" to emptyMap<String, List<MediaItem>>()
+            WATCHLIST_FIELD to emptyMap<String, List<MediaItem>>()
         )
 
-        db.collection("users").document(docName)
+        db.collection(TABLE).document(docName)
             .set(newUser)
             .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w("", "Error writing document", e) }

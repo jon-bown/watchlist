@@ -22,18 +22,11 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
             init {
                 binding.root.setOnClickListener {
-
-
-                    //launch activity from result launcher
-                    //findNavController()
-
                     clickListener(watchListItems[adapterPosition])
                 }
 
                 binding.root.setOnDragListener { view, dragEvent ->
-                    Log.d("DRAG", "EVENT")
                     true
-
                 }
             }
 
@@ -52,9 +45,6 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
         watchListItems[holder.adapterPosition].let{
             binding.watchListName.text = it.title
-            //binding.quoteText.text = it.quote
-            //binding.charActText.text = it.characterActor
-            //binding.movieText.text = it.movie
             if(viewModel.checkInSeenMediaItems(it.id.toString())){
                 binding.seenClick.setImageResource(R.drawable.ic_baseline_check_box_24)
             }

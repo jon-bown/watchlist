@@ -34,9 +34,6 @@ class MediaWatchListItemAdapter(private val clickListener: (item: MediaItem)->Un
         val binding = holder.binding
         media[position].let{
             binding.mediaRow.text = it.title
-            //binding.quoteText.text = it.quote
-            //binding.charActText.text = it.characterActor
-            //binding.movieText.text = it.movie
         }
     }
 

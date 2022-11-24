@@ -29,11 +29,6 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val clickLi
         init {
 
             binding.root.setOnClickListener {
-
-
-                //launch activity from result launcher
-                //findNavController()
-
                 clickListener(media[adapterPosition])
             }
 
@@ -55,8 +50,6 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val clickLi
         val binding = holder.binding
 
         media[position].let{
-            //binding.TV.text = it.title
-            //set image
             if(it.imageURL != null){
                 viewModel.netFetchImage(binding.mediaImage, it.imageURL!!)
             }

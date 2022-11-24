@@ -34,15 +34,12 @@ class WatchListsFragment : Fragment() {
 
     private val viewModel: MainViewModel by activityViewModels()
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private lateinit var watchListAdapter: WatchListAdapter
 
     private fun initAdapter() {
-        //addListToAdapter()
-        //this.adapter = MediaAdapter()
+
         this.watchListAdapter = WatchListAdapter(viewModel, ::openWatchList)
     }
 
@@ -62,7 +59,6 @@ class WatchListsFragment : Fragment() {
 
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)
@@ -83,6 +79,7 @@ class WatchListsFragment : Fragment() {
         binding.floatingActionButton.setOnClickListener {
             showDialog()
         }
+
         initAdapter()
         initWatchLists()
 
@@ -102,11 +99,6 @@ class WatchListsFragment : Fragment() {
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         input.layoutParams = lp
-
-//        val param = input.layoutParams as ViewGroup.MarginLayoutParams
-//        param.setMargins(10,3,5,3)
-//        input.layoutParams = param
-//        //input.setPadding(6)
 
         val title = TextView(binding.root.context)
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -168,12 +160,6 @@ class WatchListsFragment : Fragment() {
 
             })
 
-    }
-
-    //passed to adapter
-    private fun onWatchListClickListener() {
-        //open singlewatchlistview fragment
-        TODO("Open single watchlist view")
     }
 
     override fun onDestroyView() {

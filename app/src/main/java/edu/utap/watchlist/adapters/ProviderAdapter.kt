@@ -33,8 +33,6 @@ class ProviderAdapter(private val viewModel: MainViewModel): RecyclerView.Adapte
         val binding = holder.binding
 
         providers[position].let{
-            //binding.TV.text = it.title
-            //set image
             if(it.logoURL != null){
                 viewModel.netFetchImage(binding.streamImage, it.logoURL!!)
             }
