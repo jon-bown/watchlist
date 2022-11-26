@@ -157,22 +157,18 @@ class MainViewModel : ViewModel() {
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
         ) {
-
-            watchLists.postValue(userDB.getWatchLists())
+            val currentLists = userDB.getWatchLists()
+            currentLists.sortedByDescending { it.name }
+            watchLists.postValue(currentLists)
         }
     }
 
 
     fun addNewWatchList(name: String){
-        val currentLists = mutableListOf<WatchList>()
-        if(watchLists.value != null) {
-            currentLists.addAll(watchLists.value!!)
-        }
         //error if list already exists
         val newList = WatchList(name, mutableListOf())
-        currentLists.add(WatchList(name, mutableListOf()))
         userDB.addWatchList(newList)
-        watchLists.postValue(currentLists)
+        fetchWatchLists()
     }
 
     fun removeWatchList(name: String){
@@ -198,6 +194,7 @@ class MainViewModel : ViewModel() {
         val mutableWatchLists = currentWatchLists!!.toMutableList()
         mutableWatchLists.remove(listWithName)
         mutableWatchLists.add(WatchList(name, newList))
+        mutableWatchLists.sortBy { it.name }
         watchLists.postValue(mutableWatchLists)
     }
 
@@ -229,6 +226,7 @@ class MainViewModel : ViewModel() {
                 val mutableWatchLists = currentWatchLists!!.toMutableList()
                 mutableWatchLists.remove(listWithName)
                 mutableWatchLists.add(WatchList(listWithName.name, newList))
+                mutableWatchLists.sortBy { it.name }
                 watchLists.postValue(mutableWatchLists)
             }
         }

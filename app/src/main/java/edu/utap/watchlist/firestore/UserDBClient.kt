@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.utap.watchlist.api.MediaItem
@@ -155,11 +156,8 @@ class UserDBClient {
 
     fun addWatchList(list: WatchList){
 
-        val update = mapOf(
-            list.name to list.items
-        )
-
-
+        val update = userLists.toMutableList().map { it.name to it.items }.toMap().toMutableMap()
+        update[list.name] = list.items
         db.collection(TABLE).document(user!!.uid)
             .update(WATCHLIST_FIELD, update)
     }

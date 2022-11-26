@@ -42,14 +42,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun showKeyboard(view: View){
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-
-        //imm.showInputMethodAndSubtypeEnabler(window.decorView.rootView.windowToken)
-        //imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
