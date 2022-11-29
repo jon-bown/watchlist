@@ -107,9 +107,9 @@ class ProfileFragment : Fragment() {
 
         }
 
-        viewModel.observeAdultMode().observe(viewLifecycleOwner){
-            binding.adultSelector.isChecked = it
-        }
+//        viewModel.observeAdultMode().observe(viewLifecycleOwner){
+//            binding.adultSelector.isChecked = it
+//        }
 
         binding.logoutBut.setOnClickListener {
             viewModel.signOut()
@@ -117,17 +117,15 @@ class ProfileFragment : Fragment() {
         }
 
         binding.setDisplayName.setOnClickListener {
-            // XXX Write me.
             showDialog()
-            //
         }
 
-        binding.adultSelector.isChecked = viewModel.observeAdultMode().value as Boolean
-
-        binding.adultSelector.setOnCheckedChangeListener { compoundButton, b ->
-            Log.d("Change Adult", b.toString())
-            viewModel.changeAdultMode(b)
-        }
+//        binding.adultSelector.isChecked = viewModel.observeAdultMode().value as Boolean
+//
+//        binding.adultSelector.setOnCheckedChangeListener { compoundButton, b ->
+//            Log.d("Change Adult", b.toString())
+//            viewModel.changeAdultMode(b)
+//        }
 
 
         return root
