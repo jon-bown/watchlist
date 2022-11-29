@@ -88,14 +88,12 @@ class SearchFragment : Fragment() {
         manager.orientation = LinearLayoutManager.VERTICAL
         binding.searchResults.layoutManager = LinearLayoutManager(activity)
 
-        //val manager = StaggeredGridLayoutManager(-1,StaggeredGridLayoutManager.HORIZONTAL)
-        //manager.orientation =
         binding.searchResults.layoutManager = manager
         binding.searchResults.adapter = adapter
         initRecyclerViewDividers(binding.searchResults)
 
-        // Live data lets us display the latest list, whatever it is
-        // NB: owner is viewLifecycleOwner
+        viewModel.updateSearchMovieMode(true)
+
         viewModel.observeMedia().observe(viewLifecycleOwner,
             Observer { movieList ->
                 adapter.submitMediaList(movieList)
@@ -116,7 +114,6 @@ class SearchFragment : Fragment() {
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-                    Log.d("NEWTEXT", newText)
                     if(newText != ""){
                         queryText = newText
                         viewModel.fetchSearchResults(newText, 1)
@@ -148,7 +145,7 @@ class SearchFragment : Fragment() {
 
     private fun initMainSelector() {
         binding.searchMovies.setOnClickListener {
-            viewModel.updateMovieMode(true)
+            viewModel.updateSearchMovieMode(true)
             binding.searchTv.setBackgroundColor(Color.TRANSPARENT)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             if(queryText != ""){
@@ -161,7 +158,7 @@ class SearchFragment : Fragment() {
 
         }
         binding.searchTv.setOnClickListener {
-            viewModel.updateMovieMode(false)
+            viewModel.updateSearchMovieMode(false)
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             binding.searchMovies.setBackgroundColor(Color.TRANSPARENT)
             if(queryText != ""){

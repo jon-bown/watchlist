@@ -405,8 +405,8 @@ class MediaItemViewFragment : Fragment() {
         val million = 1000000L
 
         val result = (dollars / million).toInt()
-        if(result < 0){
-            return " < 1M"
+        if(result == 0){
+            return " < 1m"
         }
         else {
           return result.toString()

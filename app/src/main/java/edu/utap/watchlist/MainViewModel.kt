@@ -34,6 +34,19 @@ class MainViewModel : ViewModel() {
     private var email = MutableLiveData("")
     private var uid = MutableLiveData("")
     private var movieMode = MutableLiveData(true)
+    private var searchMovieMode = MutableLiveData(true)
+
+    fun observeSearchMovieMode(): LiveData<Boolean> {
+        return searchMovieMode
+    }
+
+    fun updateSearchMovieMode(value: Boolean){
+        searchMovieMode.value = value
+    }
+
+    private fun getSearchMovieMode(): Boolean {
+        return searchMovieMode.value!!
+    }
 
     fun observeMovieMode(): LiveData<Boolean> {
         return movieMode
@@ -439,7 +452,7 @@ class MainViewModel : ViewModel() {
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
                 if(page == 1){
-                    if(getMovieMode()){
+                    if(currentMediaItem.value!!.type == "MOVIE"){
                         similarMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
                     else {
@@ -447,7 +460,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
                 else {
-                    if(getMovieMode()){
+                    if(currentMediaItem.value!!.type == "MOVIE"){
                         val popList = (similarMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                         similarMediaItems.postValue(popList)
                     }
@@ -488,7 +501,7 @@ class MainViewModel : ViewModel() {
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
                 if(page == 1){
-                    if(getMovieMode()){
+                    if(currentMediaItem.value!!.type == "MOVIE"){
                         recommendedMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
                     else {
@@ -496,7 +509,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
                 else {
-                    if(getMovieMode()){
+                    if(currentMediaItem.value!!.type == "MOVIE"){
                         val popList = (recommendedMediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                         recommendedMediaItems.postValue(popList)
                     }
@@ -832,7 +845,7 @@ class MainViewModel : ViewModel() {
         ) {
             // Update LiveData from IO dispatcher, use postValue
             var list: List<Any>
-            if(getMovieMode()){
+            if(getSearchMovieMode()){
                 list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
             }
             else {
@@ -841,7 +854,7 @@ class MainViewModel : ViewModel() {
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
                 if(page == 1){
-                    if(getMovieMode()){
+                    if(getSearchMovieMode()){
                         mediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
                     else {
@@ -849,7 +862,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
                 else {
-                    if(getMovieMode()){
+                    if(getSearchMovieMode()){
                         val mergedList = (mediaItems.value!!.toMutableList() + MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                         mediaItems.postValue(mergedList)
                     }
