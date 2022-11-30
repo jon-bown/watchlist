@@ -1,6 +1,7 @@
 package edu.utap.watchlist.adapters
 
 import android.provider.MediaStore.Audio.Media
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -58,6 +59,7 @@ class StringListAdapter(private val clickListener: (selectedLists: List<String>,
     }
 
     fun submitList(items: List<String>, selectedItems: List<String>) {
+        Log.d("SELECTED ITEMS", selectedItems.toString())
         if(selectedItems != null) {
             this.selectedItems.clear()
             this.selectedItems.addAll(selectedItems)

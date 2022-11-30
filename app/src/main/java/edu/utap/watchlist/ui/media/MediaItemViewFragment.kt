@@ -247,9 +247,9 @@ class MediaItemViewFragment : Fragment() {
                 }
                 else {
                     binding.streamContainer.visibility = View.GONE
+                    binding.howToWatchText.visibility = View.GONE
                 }
                 streamProvidersAdapter.submitProviderList(providerList)
-                streamProvidersAdapter.notifyDataSetChanged()
             })
 
 
@@ -264,7 +264,6 @@ class MediaItemViewFragment : Fragment() {
                     binding.buyContainer.visibility = View.GONE
                 }
                 buyProviderAdapter.submitProviderList(providerList)
-                buyProviderAdapter.notifyDataSetChanged()
             })
 
         viewModel.observeRentProviders().observe(viewLifecycleOwner,
@@ -278,7 +277,6 @@ class MediaItemViewFragment : Fragment() {
                     binding.rentContainer.visibility = View.GONE
                 }
                 rentProviderAdapter.submitProviderList(providerList)
-                rentProviderAdapter.notifyDataSetChanged()
             })
 
     }
@@ -404,7 +402,7 @@ class MediaItemViewFragment : Fragment() {
 
         val result = (dollars / million).toInt()
         if(result == 0){
-            return " < 1m"
+            return " < 1"
         }
         else {
           return result.toString()

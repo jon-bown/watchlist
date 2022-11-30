@@ -193,22 +193,24 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun addToWatchList(name: String) {
+    fun addToWatchList(names: List<String>) {
         //possibly need some error handling here
-        val listWithName = watchLists.value!!.filter { it.name == name }.first()
-        val newList = mutableListOf<MediaItem>()
-        if(listWithName.items != null){
-            newList.addAll(listWithName.items!!.toList())
+        val mutableWatchLists = watchLists.value!!.toMutableList()
+        for(name in names){
+            val listWithName = watchLists.value!!.filter { it.name == name }.first()
+            val newList = mutableListOf<MediaItem>()
+            if(listWithName.items != null){
+                newList.addAll(listWithName.items!!.toList())
+                newList.add(currentMediaItem.value!!)
+                userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!)
+                mutableWatchLists.remove(listWithName)
+                mutableWatchLists.add(WatchList(name, newList))
+                mutableWatchLists.sortBy { it.name }
+            }
         }
 
-        newList.add(currentMediaItem.value!!)
-        userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!)
-        val currentWatchLists = watchLists.value
-        val mutableWatchLists = currentWatchLists!!.toMutableList()
-        mutableWatchLists.remove(listWithName)
-        mutableWatchLists.add(WatchList(name, newList))
-        mutableWatchLists.sortBy { it.name }
         watchLists.postValue(mutableWatchLists)
+
     }
 
 
@@ -225,8 +227,11 @@ class MainViewModel : ViewModel() {
 
     fun removeFromLists(addedLists: List<String>){
 
+
+        Log.d("NEW LIST ITEMS", addedLists.toString())
+        val mutableWatchLists = watchLists.value!!.toMutableList()
         for(list in watchLists.value!!){
-            if(!(list.name in addedLists)){
+            if(list.name !in addedLists){
                 val listWithName = watchLists.value!!.filter { it.name == list.name }.first()
                 val newList = mutableListOf<MediaItem>()
                 if(listWithName.items != null){
@@ -234,15 +239,16 @@ class MainViewModel : ViewModel() {
                 }
 
                 newList.remove(currentMediaItem.value!!)
+                userDB.removeMediaItemFromWatchlist(listWithName.name!!, currentMediaItem.value!!)
 
-                val currentWatchLists = watchLists.value
-                val mutableWatchLists = currentWatchLists!!.toMutableList()
                 mutableWatchLists.remove(listWithName)
                 mutableWatchLists.add(WatchList(listWithName.name, newList))
                 mutableWatchLists.sortBy { it.name }
-                watchLists.postValue(mutableWatchLists)
+
             }
         }
+
+        watchLists.postValue(mutableWatchLists)
 
     }
 

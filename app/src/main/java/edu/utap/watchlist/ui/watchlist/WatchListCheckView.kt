@@ -29,26 +29,11 @@ import edu.utap.watchlist.databinding.FragmentWatchListCheckViewBinding
 import edu.utap.watchlist.ui.profile.SelectionListArgs
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [WatchListCheckView.newInstance] factory method to
- * create an instance of this fragment.
- */
 class WatchListCheckView : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var _binding: FragmentWatchListCheckViewBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: StringListAdapter
-
-    private val args: SelectionListArgs by navArgs()
 
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -59,15 +44,6 @@ class WatchListCheckView : Fragment() {
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -81,43 +57,31 @@ class WatchListCheckView : Fragment() {
         val root: View = binding.root
 
         this.adapter = StringListAdapter(::toggleLists, true)
-
+        this.adapter.submitList(viewModel.observeWatchLists().value!!.map { it.name!! }, viewModel.getWatchlistNamesThatContain())
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
-        binding.selectionList.layoutManager = LinearLayoutManager(activity)
-
         binding.selectionList.layoutManager = manager
         binding.selectionList.adapter = adapter
         initRecyclerViewDividers(binding.selectionList)
 
 
         viewModel.observeWatchLists().observe(viewLifecycleOwner) { lists ->
-
                 if(!lists.isEmpty()){
                     binding.watchlistEditDoneButton.isEnabled = true
                     binding.noListText.text = "Select Watchlists"
                 }
+                val newList = lists.sortedBy { it.name }.map{ it.name!!}
                 //Need all lists where this current item belongs
-                adapter.submitList(lists.map{ it.name!!}, viewModel.getWatchlistNamesThatContain())
-                adapter.notifyDataSetChanged()
-
+                adapter.submitList(newList, viewModel.getWatchlistNamesThatContain())
         }
-
-
 
 
         binding.watchlistEditDoneButton.setOnClickListener {
             //save items
             collectSelectedLists()
 
-
-            //Show Toast
-
-
             popBackToFragment()
             val act = activity as MainActivity
-            act.showNavBar()
-            act.showActionBar()
 
 
             Snackbar.make(
@@ -136,11 +100,6 @@ class WatchListCheckView : Fragment() {
         binding.watchlistCancelButton.setOnClickListener {
 
             popBackToFragment()
-
-
-            val act = activity as MainActivity
-            act.showNavBar()
-            act.showActionBar()
         }
 
 
@@ -153,9 +112,8 @@ class WatchListCheckView : Fragment() {
     }
 
     private fun collectSelectedLists() {
-        for(list in listsToAdd) {
-            viewModel.addToWatchList(list)
-        }
+        Log.d("COLLECT SELECTED LISTS", listsToAdd.toString())
+        viewModel.addToWatchList(listsToAdd)
         viewModel.removeFromLists(listsToAdd)
 
     }
@@ -168,21 +126,9 @@ class WatchListCheckView : Fragment() {
     private fun popBackToFragment() {
         val manager: FragmentManager? = parentFragmentManager
         manager!!.popBackStack()
-//        val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
-//        manager.popBackStack(backStackId,
-//            FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment WatchListCheckView.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =
             WatchListCheckView().apply {

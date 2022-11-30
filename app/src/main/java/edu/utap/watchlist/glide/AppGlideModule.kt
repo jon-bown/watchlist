@@ -42,7 +42,7 @@ object Glide {
         // If we can't fetch, give the user an indication  maybe it should
         // say "network error"
         .error(ColorDrawable(Color.RED))
-        .skipMemoryCache( true )
+        //.skipMemoryCache( true )
         .diskCacheStrategy(DiskCacheStrategy.NONE)
 
     fun fetch(
