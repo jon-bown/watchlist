@@ -167,9 +167,10 @@ class WatchListCheckView : Fragment() {
 
     private fun popBackToFragment() {
         val manager: FragmentManager? = parentFragmentManager
-        val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
-        manager.popBackStack(backStackId,
-            FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        manager!!.popBackStack()
+//        val backStackId = manager?.getBackStackEntryAt(0)!!.getId();
+//        manager.popBackStack(backStackId,
+//            FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     companion object {

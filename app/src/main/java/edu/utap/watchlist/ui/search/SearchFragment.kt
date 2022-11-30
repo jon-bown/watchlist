@@ -92,7 +92,7 @@ class SearchFragment : Fragment() {
         binding.searchResults.adapter = adapter
         initRecyclerViewDividers(binding.searchResults)
 
-        viewModel.updateSearchMovieMode(true)
+
 
         viewModel.observeMedia().observe(viewLifecycleOwner,
             Observer { movieList ->
@@ -132,6 +132,16 @@ class SearchFragment : Fragment() {
                 }
             })
 
+        viewModel.observeSearchMovieMode().observe(viewLifecycleOwner,
+            Observer { movie ->
+                if(movie){
+                    binding.searchMovies.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
+                }
+                else {
+                    binding.searchTv.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
+                }
+            })
+
 
 
         setLoadingListener()
@@ -154,7 +164,7 @@ class SearchFragment : Fragment() {
             else{
                 viewModel.clearMediaItems()
             }
-
+            binding.moviesTvSearchControl.check(R.id.opt_1)
 
         }
         binding.searchTv.setOnClickListener {
@@ -167,10 +177,8 @@ class SearchFragment : Fragment() {
             else{
                 viewModel.clearMediaItems()
             }
-
+            binding.moviesTvSearchControl.check(R.id.opt_2)
         }
-        binding.moviesTvSearchControl.check(R.id.opt_1)
-        binding.searchMovies.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
     }
 
 

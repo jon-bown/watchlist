@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Testing a very long title so that it makes the constraint view"
             android:id="@+id/watchListName"
@@ -24,7 +24,6 @@
             android:layout_marginRight="2dp"
             android:textSize="25sp"
             android:textColor="@color/black"
-            android:gravity="center_vertical"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/poster"
@@ -34,6 +33,7 @@
             android:scrollHorizontally="false"
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="1"
+            android:textAlignment="viewStart"
             />
         <ImageView
             android:layout_width="40dp"
