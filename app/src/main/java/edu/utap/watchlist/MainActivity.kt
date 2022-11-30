@@ -125,9 +125,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == android.R.id.home) {
-            //findNavController().popBackStack()
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
-            //if backstack is zero
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
             showActionBar()
             showNavBar()
@@ -144,7 +142,6 @@ class MainActivity : AppCompatActivity() {
 
 
                 item.isChecked = !item.isChecked
-                Log.d("MENU SELECTED", "ALL")
                 viewModel.restoreWatchList()
             }
 
@@ -162,7 +159,6 @@ class MainActivity : AppCompatActivity() {
 
 
                 item.isChecked = !item.isChecked
-                Log.d("MENU SELECTED", "ALL")
                 viewModel.setWatchListOnlySeen()
             }
 
@@ -178,7 +174,6 @@ class MainActivity : AppCompatActivity() {
 
                 item.isChecked = !item.isChecked
 
-                Log.d("MENU SELECTED", "ALL")
                 viewModel.setWatchListOnlyNotSeen()
             }
 
@@ -189,8 +184,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //menuInflater.inflate(R.menu.main, menu)
-        //  store the menu to var when creating options menu
         optionsMenu = menu
         return true
     }

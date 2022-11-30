@@ -442,11 +442,11 @@ class MainViewModel : ViewModel() {
             val list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
                 list = repository.fetchSimilarMovies(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
                 list = repository.fetchSimilarTV(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page, countrySetting.value!!)
             }
 
             if(list.isNotEmpty()){
@@ -491,11 +491,11 @@ class MainViewModel : ViewModel() {
             val list: List<Any>
             if(currentMediaItem.value!!.type == "MOVIE"){
                 list = repository.fetchRecommendedMovies(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
                 list = repository.fetchRecommendedTV(currentMediaItem.value!!.id.toString(),
-                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page)
+                    "${languageSetting.value}-${countrySetting.value}", adultMode.value!!, page, countrySetting.value!!)
             }
 
             if(list.isNotEmpty()){
@@ -597,11 +597,11 @@ class MainViewModel : ViewModel() {
             // Update LiveData from IO dispatcher, use postValue
             var list: List<Any>
             if(getMovieMode()){
-                list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 list = list.sortedByDescending { it.popularity }
             }
             else {
-                list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 list = list.sortedByDescending { it.popularity }
 
             }
@@ -641,13 +641,13 @@ class MainViewModel : ViewModel() {
             var list: List<Any>
             val sdf = SimpleDateFormat("yyyy-MM-dd")
             if(getMovieMode()){
-                list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
 
                 list = list.sortedByDescending { sdf.parse(it.releaseDate) }
 
             }
             else {
-                list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 //list = list.sortedByDescending { sdf.parse(it.lastAirDate) }
             }
             if(list.isNotEmpty()){
@@ -686,10 +686,10 @@ class MainViewModel : ViewModel() {
             // Update LiveData from IO dispatcher, use postValue
             var list: List<Any>
             if(getMovieMode()){
-                list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchTopRatedMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
-                list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchTopRatedTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -726,10 +726,10 @@ class MainViewModel : ViewModel() {
         ) {
             var list: List<Any>
             if(getMovieMode()){
-                list = repository.fetchMoviesTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchMoviesTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
-                list = repository.fetchTVTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchTVTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -764,10 +764,10 @@ class MainViewModel : ViewModel() {
         ) {
             var list: List<Any>
             if(getMovieMode()){
-                list = repository.fetchMoviesTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchMoviesTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
-                list = repository.fetchTVTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchTVTrendingWeek("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -805,11 +805,11 @@ class MainViewModel : ViewModel() {
             var list: List<Any>
             val sdf = SimpleDateFormat("yyyy-MM-dd")
             if(getMovieMode()){
-                list = repository.fetchUpcomingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchUpcomingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 list = list.filter { sdf.parse(it.releaseDate) >= Date()}
             }
             else {
-                list = repository.fetchUpcomingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchUpcomingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -846,10 +846,10 @@ class MainViewModel : ViewModel() {
             // Update LiveData from IO dispatcher, use postValue
             var list: List<Any>
             if(getSearchMovieMode()){
-                list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchSearchMovies(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             else {
-                list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page)
+                list = repository.fetchSearchTV(query, "${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
@@ -998,15 +998,17 @@ class MainViewModel : ViewModel() {
                     + Dispatchers.IO
         ) {
 
+            val user = userDB.getUserData()
             email.postValue(userDB.getEmail())
             displayName.postValue(userDB.getUserName())
-            val user = userDB.getUserData()
+
 
             languageSetting.postValue(user.language)
             countrySetting.postValue(user.country)
             watchLists.postValue(userDB.getWatchLists())
             adultMode.postValue(user.adult)
             seenMediaItems.postValue(user.seen)
+            netRefresh()
             fetchDone.postValue(true)
         }
 

@@ -150,12 +150,10 @@ class MediaItemViewFragment : Fragment() {
         binding.seenButton.setOnClickListener {
             if(viewModel.checkInSeenMediaItems(item)){
                 //item is seen
-                Log.d("Contains", item)
                 viewModel.removeSeenMedia(item)
             }
             else {
                 viewModel.addSeenMedia(item)
-
             }
 
         }

@@ -111,7 +111,7 @@ class WatchListsFragment : Fragment() {
         MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog_rounded)
             //.setCustomTitle(title)
             .setView(input)
-            .setTitle("New List")
+            .setTitle("New Watch List")
             .setPositiveButton("Add", DialogInterface.OnClickListener { dialog, which ->
                 // Here you get get input text from the Edittext
                 var listName = input.text.toString()
@@ -152,12 +152,14 @@ class WatchListsFragment : Fragment() {
 
         viewModel.observeWatchLists().observe(viewLifecycleOwner,
             Observer { watchList ->
-                val listNames = watchList.map{
-                    it.name!!
-                }
-                watchListAdapter.submitWatchListNames(listNames)
+                watchListAdapter.submitWatchListNames(watchList.sortedBy{ it.name })
                 watchListAdapter.notifyDataSetChanged()
 
+            })
+
+        viewModel.observeSeenMediaItems().observe(viewLifecycleOwner,
+            Observer { _ ->
+                watchListAdapter.notifyDataSetChanged()
             })
 
     }

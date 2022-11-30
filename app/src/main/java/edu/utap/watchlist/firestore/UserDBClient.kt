@@ -34,13 +34,8 @@ class UserDBClient {
 
 
     init {
-        val user = FirebaseAuth.getInstance().currentUser
-        if(user != null){
-            docName = user!!.uid
-            email = user!!.email!!
-            displayName = user!!.displayName!!
-        }
-
+        user = FirebaseAuth.getInstance().currentUser
+        populateUser()
     }
 
     fun getEmail(): String {
@@ -52,16 +47,22 @@ class UserDBClient {
 
 
     suspend fun getUserData(): User {
-        val docRef = db.collection(TABLE).document(docName)
+        if(docName != "") {
+            val docRef = db.collection(TABLE).document(docName)
 
-        val document = docRef.get().await()
-        if(document.data != null){
+            val document = docRef.get().await()
+            if(document.data != null){
 
-            userData = document!!.toObject(User::class.java)!!
+                userData = document!!.toObject(User::class.java)!!
+            }
+            else {
+                createDocument()
+            }
         }
         else {
             createDocument()
         }
+
         return userData
     }
 
@@ -197,10 +198,6 @@ class UserDBClient {
             .update("seen", FieldValue.arrayRemove(item))
     }
 
-
-
-
-
     fun setAdultMode(mode: Boolean) {
         db.collection(TABLE)
             .document(docName)
@@ -225,6 +222,15 @@ class UserDBClient {
             ))
     }
 
+    private fun populateUser() {
+        user = FirebaseAuth.getInstance().currentUser
+        if(user != null){
+            docName = user!!.uid
+            email = user!!.email!!
+            displayName = user!!.displayName!!
+        }
+    }
+
 
     //Creates default document for new user
     private fun createDocument() {
@@ -235,6 +241,8 @@ class UserDBClient {
             "seen" to emptyList<String>(),
             WATCHLIST_FIELD to emptyMap<String, List<MediaItem>>()
         )
+
+        populateUser()
 
         db.collection(TABLE).document(docName)
             .set(newUser)

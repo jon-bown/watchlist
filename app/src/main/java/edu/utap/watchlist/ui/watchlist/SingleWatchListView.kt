@@ -127,16 +127,12 @@ class SingleWatchListView : Fragment() {
                         true
                     }
                     R.id.action_not_seen -> {
-                        // loadTasks(true)
 
-                        //call viewmodel only not seen
                         viewModel.setWatchListOnlyNotSeen()
                         true
                     }
                     R.id.action_all -> {
 
-                        //call viewmodel only  seen
-                        Log.d("MENU SELECTED", "ALL")
                         viewModel.restoreWatchList()
                         true
                     }
