@@ -11,15 +11,6 @@
         android:name="edu.utap.watchlist.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_home_to_media"
-            app:destination="@id/navigation_media"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/navigation_media"
-            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -40,14 +31,15 @@
         android:name="edu.utap.watchlist.ui.watchlist.SingleWatchListView"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_single_watch_list_view">
-        <action android:id="@+id/action_watchlist_to_watchlists"
+        <action
+            android:id="@+id/action_watchlist_to_watchlists"
             app:destination="@id/navigation_dashboard"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@+id/navigation_dashboard"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -55,15 +47,6 @@
         android:name="edu.utap.watchlist.ui.search.SearchFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_search">
-        <action
-            android:id="@+id/action_search_to_media"
-            app:destination="@id/navigation_media"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/navigation_media"
-            app:popUpToInclusive="true"/>
     </fragment>
 
 
@@ -72,14 +55,6 @@
         android:name="edu.utap.watchlist.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile">
-        <action android:id="@+id/action_setting_to_stringlist"
-            app:destination="@id/navigation_stringList"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim">
-
-        </action>
     </fragment>
 
 
@@ -111,15 +86,6 @@
         android:id="@+id/navigation_media"
         android:name="edu.utap.watchlist.ui.media.MediaItemViewFragment"
         tools:layout="@layout/fragment_media_item_view">
-        <action
-            android:id="@+id/action_media_to_watchlist"
-            app:destination="@id/navigation_selectionList"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim">
-
-        </action>
     </fragment>
 
 
@@ -128,17 +94,6 @@
         android:name="edu.utap.watchlist.ui.watchlist.WatchListCheckView"
         android:label="@string/watchlist_selection"
         tools:layout="@layout/fragment_watch_list_check_view">
-        <action
-            android:id="@+id/action_watchlist_to_media"
-            app:destination="@id/navigation_media"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@+id/navigation_media"
-            app:popUpToInclusive="true"/>
-
-
     </fragment>
 
 </navigation>

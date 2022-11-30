@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        ...
+        <item name="android:itemBackground">@color/back_gray</item>
+        ...
+    </style>
 
     <style name="Button.Blue" parent="ThemeOverlay.AppCompat">
         <item name="backgroundTint">@color/button_pressed</item>

@@ -33,14 +33,8 @@ class SearchFragment : Fragment() {
 
     private var isLoading = false
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
     private var currentSearchPage = 1
-
-    // https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-    // https://stackoverflow.com/questions/7789514/how-to-get-activitys-windowtoken-without-view
-
     private var queryText: String = ""
 
     private fun setLoadingListener() {
@@ -50,7 +44,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)
@@ -58,7 +51,6 @@ class SearchFragment : Fragment() {
 
     fun openMediaView(item: MediaItem) {
         viewModel.setUpCurrentMediaData(item)
-        //findNavController().navigate(R.id.navigation_media)
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
         transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("none"), null)
@@ -141,8 +133,6 @@ class SearchFragment : Fragment() {
                     binding.searchTv.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
                 }
             })
-
-
 
         setLoadingListener()
         initMainSelector()

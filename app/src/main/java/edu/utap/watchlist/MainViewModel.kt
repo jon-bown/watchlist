@@ -574,7 +574,7 @@ class MainViewModel : ViewModel() {
     private var fetchDone : MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
-        netRefresh()
+        //netRefresh()
     }
 
     fun netRefresh() {
@@ -599,15 +599,15 @@ class MainViewModel : ViewModel() {
             if(getMovieMode()){
                 list = repository.fetchPopularMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 list = list.sortedByDescending { it.popularity }
+                fetchDone.postValue(true)
             }
             else {
                 list = repository.fetchPopularTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 list = list.sortedByDescending { it.popularity }
-
+                fetchDone.postValue(true)
             }
 
             if(list.isNotEmpty()){
-                fetchDone.postValue(true)
                 if(page == 1){
                     if(getMovieMode()){
                         popularMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
@@ -644,14 +644,16 @@ class MainViewModel : ViewModel() {
                 list = repository.fetchPlayingMovies("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
 
                 list = list.sortedByDescending { sdf.parse(it.releaseDate) }
+                fetchDone.postValue(true)
 
             }
             else {
                 list = repository.fetchNowPlayingTV("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
                 //list = list.sortedByDescending { sdf.parse(it.lastAirDate) }
+                fetchDone.postValue(true)
             }
             if(list.isNotEmpty()){
-                fetchDone.postValue(true)
+
                 if(page == 1){
                     if(getMovieMode()){
                         nowPlayingMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
@@ -731,8 +733,8 @@ class MainViewModel : ViewModel() {
             else {
                 list = repository.fetchTVTrendingToday("${languageSetting}-${countrySetting}", adultMode.value!!, page, countrySetting.value!!)
             }
+            fetchDone.postValue(true)
             if(list.isNotEmpty()){
-                fetchDone.postValue(true)
                 if(page == 1){
                     if(getMovieMode()){
                         trendingTodayMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
@@ -1005,12 +1007,14 @@ class MainViewModel : ViewModel() {
 
             languageSetting.postValue(user.language)
             countrySetting.postValue(user.country)
+            netRefresh()
             watchLists.postValue(userDB.getWatchLists())
             adultMode.postValue(user.adult)
             seenMediaItems.postValue(user.seen)
-            netRefresh()
+
             fetchDone.postValue(true)
         }
+
 
     }
 

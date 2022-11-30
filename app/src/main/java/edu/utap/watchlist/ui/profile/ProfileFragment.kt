@@ -103,7 +103,6 @@ class ProfileFragment : Fragment() {
 //        viewModel.observeAdultMode().observe(viewLifecycleOwner){
 //            binding.adultSelector.isChecked = it
 //        }
-
         binding.logoutBut.setOnClickListener {
             viewModel.signOut()
             AuthInit(viewModel, signInLauncher)

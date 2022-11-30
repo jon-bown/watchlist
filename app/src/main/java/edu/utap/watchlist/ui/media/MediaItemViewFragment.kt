@@ -399,7 +399,7 @@ class MediaItemViewFragment : Fragment() {
     }
 
 
-    private fun convertToMillions(dollars: Int): String {
+    private fun convertToMillions(dollars: Long): String {
         val million = 1000000L
 
         val result = (dollars / million).toInt()

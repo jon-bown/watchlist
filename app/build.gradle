@@ -5,9 +5,12 @@ plugins {
     id("androidx.navigation.safeargs")
 }
 
+
 android {
     namespace 'edu.utap.watchlist'
     compileSdk 32
+
+
 
     defaultConfig {
         applicationId "edu.utap.watchlist"
@@ -64,7 +67,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 
-
+    implementation 'com.google.android.material:material:1.5.0'
 
     // Import the FirebaseUI
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'

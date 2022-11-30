@@ -16,8 +16,9 @@
         android:progress="0"
         android:visibility="visible"
         android:layout_gravity="center_horizontal"
-        app:trackColor="@color/back_gray"
-        app:indicatorColor="@color/main_green"/>
+        app:trackColor="@color/gray"
+        app:indicatorColor="@color/main_green"
+        app:trackThickness="8dp"/>
 
     <TextView
         android:layout_width="wrap_content"

@@ -185,12 +185,15 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
         >
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
             android:id="@+id/setDisplayName"
+            style="@style/Button.Blue"
             android:text="Change Username"
-            />
+            app:cornerRadius="10dp" />
 
 
     </LinearLayout>
@@ -205,15 +208,14 @@
         android:layout_margin="8dp"
         >
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
             android:id="@+id/logoutBut"
-            android:layout_gravity="center_horizontal"
+            style="@style/Button.Blue"
             android:text="Logout"
-            />
-
-
+            app:cornerRadius="10dp" />
     </LinearLayout>
     <Space
         android:layout_width="match_parent"
