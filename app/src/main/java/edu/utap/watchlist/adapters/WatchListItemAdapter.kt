@@ -87,6 +87,6 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
     fun removeAt(position: Int){
         viewModel.removeFromCurrentWatchList(watchListItems[position])
-        notifyItemChanged(position)
+        notifyDataSetChanged()
     }
 }

@@ -258,7 +258,7 @@ class MainViewModel : ViewModel() {
         newList.items!!.remove(mediaItem)
         userDB.removeMediaItemFromWatchlist(newList.name!!, mediaItem)
         currentWatchList.postValue(WatchList(newList.name, newList.items))
-        fetchWatchLists()
+        //fetchWatchLists()
     }
 
 
@@ -388,13 +388,13 @@ class MainViewModel : ViewModel() {
 
 
 
-    private val currentMovie = MutableLiveData<Movie>()
-    fun observeCurrentMovie(): LiveData<Movie> {
+    private val currentMovie = MutableLiveData<Movie?>()
+    fun observeCurrentMovie(): LiveData<Movie?> {
         return currentMovie
     }
 
-    private val currentTV = MutableLiveData<TVShow>()
-    fun observeCurrentTV(): LiveData<TVShow> {
+    private val currentTV = MutableLiveData<TVShow?>()
+    fun observeCurrentTV(): LiveData<TVShow?> {
         return currentTV
     }
 
@@ -413,13 +413,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun refreshCurrentMedia(){
+        refreshCurrentMediaInfo(currentMediaItem.value!!)
+    }
+
     private fun refreshCurrentMediaInfo(item: MediaItem){
         currentMediaItem.value = item
         if(item.type == "MOVIE"){
             fetchCurrentMovie()
+            currentTV.value = null
         }
         else {
             fetchCurrentTV()
+            currentMovie.value == null
         }
         fetchSimilar(1)
         fetchRecommended(1)

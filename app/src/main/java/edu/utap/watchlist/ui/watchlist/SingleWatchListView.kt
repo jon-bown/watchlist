@@ -152,7 +152,7 @@ class SingleWatchListView : Fragment() {
 
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("one"), null)
+        transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("none"), null)
         transaction.addToBackStack(null)
         transaction.commit()
 

@@ -88,39 +88,45 @@ class MediaItemViewFragment : Fragment() {
 
 
             viewModel.observeCurrentMovie().observe(viewLifecycleOwner) {
-                binding.movieTitleText.text = it.title
-                binding.overviewText.text = it.overview
-                binding.taglineText.text = it.tagline
-                binding.performanceContainer.visibility = View.VISIBLE
-                binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
-                binding.infoText.text = setMovieInfo(it)
-                viewModel.fetchProviders()
-                initSeenButton(it.id.toString())
+                if(it != null) {
+                    binding.movieTitleText.text = it.title
+                    binding.overviewText.text = it.overview
+                    binding.taglineText.text = it.tagline
+                    binding.performanceContainer.visibility = View.VISIBLE
+                    binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
+                    binding.infoText.text = setMovieInfo(it)
+                    viewModel.fetchProviders()
+                    initSeenButton(it.id.toString())
 
-                if(it.backdropPath != null){
-                    viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                    if(it.backdropPath != null){
+                        viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                    }
+                    else{
+                        binding.backdrop.setImageResource(R.drawable.movie_back_wide)
+                    }
                 }
-                else{
-                    binding.backdrop.setImageResource(R.drawable.movie_back_wide)
-                }
+
             }
 
 
             viewModel.observeCurrentTV().observe(viewLifecycleOwner) {
-                binding.movieTitleText.text = it.title
-                binding.overviewText.text = it.overview
-                if(it.backdropPath != null){
-                    viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
-                }
-                else{
-                    binding.backdrop.setImageResource(R.drawable.movie_back_wide)
-                }
-                binding.taglineText.text = it.tagline
-                binding.performanceContainer.visibility = View.GONE
-                binding.infoText.text = setTVInfo(it)
-                initSeenButton(it.id.toString())
+                if(it != null){
+                    binding.movieTitleText.text = it.title
+                    binding.overviewText.text = it.overview
+                    if(it?.backdropPath != null){
+                        viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                    }
+                    else{
+                        binding.backdrop.setImageResource(R.drawable.movie_back_wide)
+                    }
+                    binding.taglineText.text = it.tagline
+                    binding.performanceContainer.visibility = View.GONE
+                    binding.infoText.text = setTVInfo(it)
+                    initSeenButton(it.id.toString())
 
-                viewModel.fetchProviders()
+                    viewModel.fetchProviders()
+                }
+
             }
 
 
@@ -333,7 +339,6 @@ class MediaItemViewFragment : Fragment() {
                 viewModel.popToLastMediaData()
                 val act = activity as MainActivity
                 if(viewModel.observeCurrentWatchListName().value == ""){
-
                     act.showNavBar()
                     act.showActionBar()
                 }

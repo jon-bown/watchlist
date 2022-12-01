@@ -77,7 +77,6 @@ class WatchListCheckView : Fragment() {
 
 
         binding.watchlistEditDoneButton.setOnClickListener {
-            //save items
             collectSelectedLists()
 
             popBackToFragment()
@@ -87,7 +86,7 @@ class WatchListCheckView : Fragment() {
             Snackbar.make(
                 act.findViewById(R.id.nav_host_fragment_activity_main),
                 "Added To Your Lists!",
-                Snackbar.LENGTH_SHORT
+                1000
             ).show()
 
         }
@@ -105,7 +104,6 @@ class WatchListCheckView : Fragment() {
         val bottomNav = view?.findViewById<BottomNavigationView>(R.id.nav_host_fragment_activity_main)
         bottomNav?.visibility = View.INVISIBLE
         (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
-        //hide bottom navigation view
 
         return root
     }
@@ -123,13 +121,9 @@ class WatchListCheckView : Fragment() {
             }
 
         }
-
-
-
     }
 
     private fun toggleLists(items: List<String>, selection: String) {
-        Log.d("TOGGLE", items.toString())
         listsToAdd.clear()
         listsToAdd.addAll(items)
     }
