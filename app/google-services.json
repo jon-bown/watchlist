@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "501913402041",
+    "project_id": "watchlist-85041",
+    "storage_bucket": "watchlist-85041.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501913402041:android:c884d87fb89cf633ebb968",
+        "android_client_info": {
+          "package_name": "edu.utap.watchlist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "501913402041-dm2ri43k4ogirsecq3ideep73e2ulu00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn4a-6UM-r8qSuyF8ZxGWFb9PBTraZl2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "501913402041-dm2ri43k4ogirsecq3ideep73e2ulu00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
