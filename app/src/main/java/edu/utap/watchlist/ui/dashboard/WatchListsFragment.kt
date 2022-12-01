@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
@@ -115,7 +116,18 @@ class WatchListsFragment : Fragment() {
                 // Here you get get input text from the Edittext
                 var listName = input.text.toString()
                 //save watchlist
-                viewModel.addNewWatchList(listName)
+
+                if(viewModel.checkWatchListName(listName)){
+                    Snackbar.make(
+                        requireActivity().findViewById(R.id.nav_host_fragment_activity_main),
+                        "Watch list ${listName} already exists!",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+                else {
+                    viewModel.addNewWatchList(listName)
+                }
+
 
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->

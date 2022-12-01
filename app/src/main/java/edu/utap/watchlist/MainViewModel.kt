@@ -199,6 +199,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun checkWatchListName(name: String): Boolean{
+        return name in watchLists.value!!.map { it.name }
+    }
+
 
     fun addNewWatchList(name: String){
         //error if list already exists
