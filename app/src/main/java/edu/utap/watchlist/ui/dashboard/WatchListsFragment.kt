@@ -127,8 +127,6 @@ class WatchListsFragment : Fragment() {
                 else {
                     viewModel.addNewWatchList(listName)
                 }
-
-
             })
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
                 dialog.cancel() })
