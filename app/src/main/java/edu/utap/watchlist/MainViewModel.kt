@@ -186,8 +186,8 @@ class MainViewModel : ViewModel() {
             val currentLists = userDB.getWatchLists()
             currentLists.sortedByDescending { it.name }
             if(currentWatchListName.value != ""){
-                val listWithName = watchLists.value!!.filter { it.name == currentWatchList.value?.name }.first()
-                Log.d("POSTING VALUE", listWithName.toString())
+                val listWithName =
+                    watchLists.value!!.first { it.name == currentWatchList.value?.name }
                 currentWatchList.postValue(listWithName)
             }
 
@@ -209,7 +209,7 @@ class MainViewModel : ViewModel() {
 
     fun removeWatchList(name: String){
 
-        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        val listWithName = watchLists.value!!.first { it.name == name }
         userDB.removeWatchList(listWithName)
         fetchWatchLists()
 
@@ -228,14 +228,14 @@ class MainViewModel : ViewModel() {
     }
 
     fun addToWatchList(name: String){
-        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        val listWithName = watchLists.value!!.first { it.name == name }
         userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!, listWithName.items!!.size)
     }
 
 
     fun removeFromWatchList(name: String, mediaItem: MediaItem) {
 
-        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        val listWithName = watchLists.value!!.first { it.name == name }
         val newList = mutableListOf<MediaItem>()
         if(listWithName.items != null){
             newList.addAll(listWithName.items!!.toList())
@@ -1006,7 +1006,6 @@ class MainViewModel : ViewModel() {
             .appendPath("original")
             .appendPath(path)
         val url = builder.build().toString()
-        Log.d(javaClass.simpleName, "Built: $url")
         return url
     }
 
@@ -1019,7 +1018,6 @@ class MainViewModel : ViewModel() {
             .appendPath("wp-content")
             .appendPath("uploads/2016/06/default-movie.jpg")
         val url = builder.build().toString()
-        Log.d(javaClass.simpleName, "Built: $url")
         return url
     }
 
@@ -1035,7 +1033,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun netFetchBackdropImage(imageView: ImageView, imagePath: String?) {
-        Log.d("IMAGE", "${imagePath}")
         if(imagePath != null){
             Glide.fetchBackdrop(safePiscumURL(imagePath), randomPiscumURL(), imageView)
         }

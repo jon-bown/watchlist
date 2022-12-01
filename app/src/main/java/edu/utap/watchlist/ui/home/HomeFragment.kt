@@ -186,7 +186,6 @@ class HomeFragment : Fragment() {
 
         viewModel.observeUpcomingMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
-                Log.d("UPCOMING ITEMS", movieList.toString())
                 upcomingAdapter.submitMediaList(movieList)
             })
         initUpcomingScrollListener()

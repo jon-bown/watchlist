@@ -29,7 +29,6 @@ class SelectionList : Fragment() {
 
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)

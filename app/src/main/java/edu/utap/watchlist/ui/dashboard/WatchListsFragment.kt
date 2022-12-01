@@ -25,12 +25,12 @@ import edu.utap.watchlist.MainActivity
 import edu.utap.watchlist.R
 import edu.utap.watchlist.adapters.WatchListAdapter
 import edu.utap.watchlist.components.SwipeToDeleteCallback
-import edu.utap.watchlist.databinding.FragmentDashboardBinding
+import edu.utap.watchlist.databinding.FragmentExploreBinding
 
 
 class WatchListsFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentExploreBinding? = null
 
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -70,7 +70,7 @@ class WatchListsFragment : Fragment() {
     ): View {
 
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentExploreBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
 
@@ -137,8 +137,6 @@ class WatchListsFragment : Fragment() {
         val swipeToDeleteCallback = object : SwipeToDeleteCallback() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-
-
 
                 watchListAdapter.removeAt(position)
             }

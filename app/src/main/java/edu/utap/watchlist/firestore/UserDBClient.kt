@@ -158,7 +158,7 @@ class UserDBClient {
                 FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayUnion(item)
             ).addOnSuccessListener {
 
-            }.addOnFailureListener { e -> Log.w("FAILURE", "Error updating document", e) }
+            }.addOnFailureListener { }
         }
 
 
@@ -177,7 +177,6 @@ class UserDBClient {
             for (list in watchLists) {
                 if (list.name in newNames) {
                     //add
-                    Log.d("ADD HERE", "${list.name}:${item}")
                     if (list.items!!.size == 0) {
                         transaction.update(
                             doc,
@@ -200,7 +199,6 @@ class UserDBClient {
 
                     }
                 }
-                //callback(getWatchListsMainThread())
 
                 val item = snapshot.toObject(User::class.java)
                 var watchLists = mutableListOf<WatchList>()
@@ -215,8 +213,7 @@ class UserDBClient {
 
         }.addOnCompleteListener { task ->
 
-        }.addOnFailureListener { e ->
-            Log.w("TRANSACTION", "Transaction failure.", e)
+        }.addOnFailureListener {
         }
 
         return mutableLiveData
@@ -323,8 +320,8 @@ class UserDBClient {
         if(user != null){
             db.collection(TABLE).document(docName)
                 .set(newUser)
-                .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
-                .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
+                .addOnSuccessListener { }
+                .addOnFailureListener { }
         }
 
 

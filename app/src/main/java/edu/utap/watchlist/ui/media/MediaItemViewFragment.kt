@@ -131,7 +131,6 @@ class MediaItemViewFragment : Fragment() {
 
 
         binding.addButton.setOnClickListener {
-            //open watchlist selecitonview fragment
 
             val manager: FragmentManager? = parentFragmentManager
             val transaction: FragmentTransaction = manager!!.beginTransaction()
@@ -169,7 +168,6 @@ class MediaItemViewFragment : Fragment() {
         }
 
         viewModel.observeSeenMediaItems().observe(viewLifecycleOwner) {
-            Log.d("Seen Items Changed", it.toString())
             if(it.contains(item)){
                 binding.seenButton.setImageResource(R.drawable.ic_baseline_check_box_24)
             }
@@ -194,7 +192,6 @@ class MediaItemViewFragment : Fragment() {
         viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 if(movieList.isEmpty()){
-                    Log.d("RECOMMENDED", "EMPTY")
                     binding.similarItemList.visibility = View.GONE
                     binding.similarItemText.visibility = View.GONE
                 }
@@ -318,8 +315,6 @@ class MediaItemViewFragment : Fragment() {
 
     fun openMediaView(item: MediaItem) {
         viewModel.setUpCurrentMediaData(item)
-        //findNavController().popBackStack()
-        //findNavController().navigate(R.id.navigation_media)
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
         transaction.replace(R.id.nav_host_fragment_activity_main, MediaItemViewFragment.newInstance("one"), null)

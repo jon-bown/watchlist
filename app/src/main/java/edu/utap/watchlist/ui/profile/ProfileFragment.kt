@@ -3,17 +3,13 @@ package edu.utap.watchlist.ui.profile
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -126,7 +122,6 @@ class ProfileFragment : Fragment() {
     fun showDialog(){
 
         val input = EditText(binding.root.context)
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setHint("Username")
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -137,7 +132,6 @@ class ProfileFragment : Fragment() {
         input.layoutParams = lp
 
         val title = TextView(binding.root.context)
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         title.text = "Change Username"
         title.textSize = 20F
         title.maxLines = 1

@@ -17,7 +17,7 @@
         android:id="@+id/navigation_dashboard"
         android:name="edu.utap.watchlist.ui.dashboard.WatchListsFragment"
         android:label="@string/title_watchlists"
-        tools:layout="@layout/fragment_dashboard">
+        tools:layout="@layout/fragment_explore">
         <action android:id="@+id/action_watchlists_to_watchlist"
             app:destination="@id/navigation_watchlist"
             app:enterAnim="@anim/nav_default_enter_anim"

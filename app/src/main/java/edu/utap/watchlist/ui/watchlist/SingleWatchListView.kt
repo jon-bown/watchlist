@@ -1,7 +1,6 @@
 package edu.utap.watchlist.ui.watchlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
