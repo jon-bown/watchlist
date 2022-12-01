@@ -74,7 +74,6 @@ class ProfileFragment : Fragment() {
             act.setActionBarTitle("Country")
         }
 
-        // XXX Write me. Set data to display in UI
         viewModel.observeDisplayName().observe(viewLifecycleOwner){
             binding.userName.text = it
         }

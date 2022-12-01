@@ -8,11 +8,9 @@ import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.databinding.MediaRowBinding
 
 class MediaWatchListItemAdapter(private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<MediaWatchListItemAdapter.VH>() {
-    // Adapter does not have its own copy of list, it just observes
+
     private var media = mutableListOf<MediaItem>()
 
-
-    // ViewHolder pattern minimizes calls to findViewById
     inner class VH(val binding: MediaRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
         init {

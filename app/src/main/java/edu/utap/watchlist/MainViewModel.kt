@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -253,12 +254,10 @@ class MainViewModel : ViewModel() {
 
 
     fun removeFromCurrentWatchList(mediaItem: MediaItem) {
-
         val newList = currentWatchList.value!!
         newList.items!!.remove(mediaItem)
         userDB.removeMediaItemFromWatchlist(newList.name!!, mediaItem)
         currentWatchList.postValue(WatchList(newList.name, newList.items))
-        //fetchWatchLists()
     }
 
 
@@ -975,7 +974,6 @@ class MainViewModel : ViewModel() {
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
         userLogout()
-        //userDB.signOut
     }
 
 
@@ -984,8 +982,6 @@ class MainViewModel : ViewModel() {
             // Successfully signed in
             populateUserData()
 
-        } else {
-            //Pop up toast
         }
     }
 

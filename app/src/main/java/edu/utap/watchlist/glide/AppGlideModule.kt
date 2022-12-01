@@ -51,7 +51,6 @@ object Glide {
         urlFallback: String,
         imageView: ImageView
     ) {
-        Log.d("URL", urlPrimary)
         GlideApp.with(imageView.context).clear(imageView)
 
             GlideApp.with(imageView.context)
@@ -70,7 +69,6 @@ object Glide {
         urlFallback: String,
         imageView: ImageView
     ) {
-        Log.d("URL", urlPrimary)
         GlideApp.with(imageView.context).clear(imageView)
             GlideApp.with(imageView.context)
                 .asBitmap()

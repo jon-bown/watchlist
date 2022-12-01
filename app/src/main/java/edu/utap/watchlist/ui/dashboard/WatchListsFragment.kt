@@ -45,7 +45,6 @@ class WatchListsFragment : Fragment() {
 
 
     private fun openWatchList(selection: String) {
-        //set current list in viewModel
         viewModel.setCurrentWatchList(selection)
         findNavController().navigate(
             WatchListsFragmentDirections.actionWatchlistsToWatchlist(),

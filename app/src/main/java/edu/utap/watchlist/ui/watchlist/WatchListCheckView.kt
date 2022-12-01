@@ -40,7 +40,6 @@ class WatchListCheckView : Fragment() {
     private val listsToAdd = mutableListOf<String>()
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)
@@ -50,8 +49,6 @@ class WatchListCheckView : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
 
         _binding = FragmentWatchListCheckViewBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -109,9 +106,6 @@ class WatchListCheckView : Fragment() {
     }
 
     private fun collectSelectedLists() {
-//        viewModel.addToWatchListLiveData(listsToAdd).observe(viewLifecycleOwner) {
-//            viewModel.postWatchList(it)
-//        }
         for(list in viewModel.observeWatchLists().value!!){
             if(list.name in listsToAdd){
                 viewModel.addToWatchList(list.name!!)

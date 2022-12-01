@@ -14,8 +14,6 @@ class WatchListAdapter(private val viewModel: MainViewModel, private val clickLi
 
     private var watchLists = mutableListOf<WatchList>()
 
-
-    // ViewHolder pattern minimizes calls to findViewById
     inner class VH(val binding: WatchlistListRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
             init {

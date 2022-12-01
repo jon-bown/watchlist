@@ -23,7 +23,6 @@ import edu.utap.watchlist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
-    //private lateinit var binding : ActivityMainBinding
     var optionsMenu: Menu? = null
 
     // See: https://developer.android.com/training/basics/intents/result
@@ -95,18 +94,15 @@ class MainActivity : AppCompatActivity() {
     fun showActionBar() {
         supportActionBar!!.show()
 
-
-//        groupDetails.visibility = View.GONE
     }
 
     fun showNavBar() {
         binding.navView.visibility = View.VISIBLE
-//        groupDetails.visibility = View.GONE
+
     }
 
     fun hideNavBar() {
         binding.navView.visibility = View.GONE
-//        groupDetails.visibility = View.GONE
     }
 
     fun openBrowser(view: View) {
@@ -133,7 +129,6 @@ class MainActivity : AppCompatActivity() {
         }
         if(id == R.id.action_all) {
 
-            //call viewmodel only  seen
             if(!item.isChecked){
                 val seen: MenuItem = optionsMenu!!.findItem(R.id.action_seen)
                 seen.isChecked = false

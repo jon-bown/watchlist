@@ -112,11 +112,6 @@ class SearchFragment : Fragment() {
                         //hide keyboard
                     }
                     else{
-                        //make toast
-                        //hide keyboard
-                        //val activity = activity as MainActivity
-                        //activity.hideKeyboard()
-                        //binding.mediaSearchView.isFocusable = false
                         queryText = ""
                         viewModel.clearMediaItems()
                     }
@@ -177,13 +172,18 @@ class SearchFragment : Fragment() {
         binding.searchResults.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                //binding.mediaSearchView.setVisibility(View.INVISIBLE);
-                //binding.mediaSearchView.setVisibility(View.VISIBLE);
                 if (!isLoading) {
                     if(currentSearchPage < 20) {
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
                             (viewModel.observeMedia().value!!.size - 10)) {
+                            val act = activity as MainActivity
+                            act.hideKeyboard()
+
+                            binding.mediaSearchView.clearFocus()
+
+
                             isLoading = true
                             currentSearchPage+=1
                             if(queryText != ""){

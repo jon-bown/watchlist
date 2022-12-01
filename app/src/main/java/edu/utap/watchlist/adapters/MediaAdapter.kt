@@ -35,9 +35,6 @@ class MediaAdapter(private val clickListener: (item: MediaItem)->Unit): Recycler
             val binding = holder.binding
             media[position].let{
                     binding.mediaRow.text = it.title
-                    //binding.quoteText.text = it.quote
-                    //binding.charActText.text = it.characterActor
-                    //binding.movieText.text = it.movie
                 }
             }
 

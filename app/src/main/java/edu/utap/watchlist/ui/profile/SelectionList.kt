@@ -16,19 +16,7 @@ import edu.utap.watchlist.api.Countries
 import edu.utap.watchlist.api.Languages
 import edu.utap.watchlist.databinding.FragmentSelectionListBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SelectionList.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SelectionList : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
 
     private var _binding: FragmentSelectionListBinding? = null
     private val binding get() = _binding!!
@@ -47,19 +35,10 @@ class SelectionList : Fragment() {
         rv.addItemDecoration(dividerItemDecoration)
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
         _binding = FragmentSelectionListBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -107,9 +86,6 @@ class SelectionList : Fragment() {
         return root
     }
 
-
-    //set on click listener for the adapter
-
     private fun onCountrySelectionMadeListener(selection: String) {
 
         this.viewModel.changeCountrySetting(Countries.countriesMap[selection]!!)
@@ -118,23 +94,4 @@ class SelectionList : Fragment() {
         this.viewModel.changeLanguageSetting(Languages.languageMap[selection]!!)
     }
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SelectionList.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String) =
-            SelectionList().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                }
-            }
-    }
 }

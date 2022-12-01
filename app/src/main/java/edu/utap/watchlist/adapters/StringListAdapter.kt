@@ -11,11 +11,9 @@ import edu.utap.watchlist.databinding.StringItemRowBinding
 
 class StringListAdapter(private val clickListener: (selectedLists: List<String>, selection: String) -> Unit, private val allowCheckMarks: Boolean): RecyclerView.Adapter<StringListAdapter.VH>() {
 
-    // Adapter does not have its own copy of list, it just observes
     private var items = mutableListOf<String>()
     private var selectedItems = mutableListOf<String>()
 
-    // ViewHolder pattern minimizes calls to findViewById
     inner class VH(val binding: StringItemRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
         init {
@@ -59,7 +57,6 @@ class StringListAdapter(private val clickListener: (selectedLists: List<String>,
     }
 
     fun submitList(items: List<String>, selectedItems: List<String>) {
-        Log.d("SELECTED ITEMS", selectedItems.toString())
         if(selectedItems != null) {
             this.selectedItems.clear()
             this.selectedItems.addAll(selectedItems)

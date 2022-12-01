@@ -22,7 +22,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
             user!!.updateProfile(profileUpdates)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d(TAG, "User profile updated.")
                         viewModel.updateUser()
                     }
                 }
@@ -43,7 +42,6 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
                 .build()
             signInLauncher.launch(signInIntent)
         } else {
-            Log.d("UPDATING USER", user.toString())
             viewModel.updateUser()
         }
     }

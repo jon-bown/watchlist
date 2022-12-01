@@ -63,7 +63,6 @@ class HomeFragment : Fragment() {
 
 
     fun openMediaView(item: MediaItem) {
-        //open single view with given media item
         viewModel.setUpCurrentMediaData(item)
 
         val manager: FragmentManager? = parentFragmentManager
@@ -105,14 +104,11 @@ class HomeFragment : Fragment() {
     }
 
     fun initPopularList() {
-        //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.popularList.layoutManager = manager
         binding.popularList.adapter = popularAdapter
 
-        // Live data lets us display the latest list, whatever it is
-        // NB: owner is viewLifecycleOwner
         viewModel.observePopularMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
                 popularAdapter.submitMediaList(movieList)
@@ -124,7 +120,6 @@ class HomeFragment : Fragment() {
 
     fun initNowPlayingList() {
 
-        //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.nowPlayingList.layoutManager = manager
@@ -136,13 +131,11 @@ class HomeFragment : Fragment() {
 
             })
 
-        //Scroll listener
         initNowPlayingScrollListener()
     }
 
     fun initTopRatedList() {
 
-        //Linear
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.topRatedList.layoutManager = manager
@@ -153,7 +146,6 @@ class HomeFragment : Fragment() {
                 topRatedAdapter.submitMediaList(movieList)
 
             })
-        //Scroll listener
         initTopRatedScrollListener()
     }
 

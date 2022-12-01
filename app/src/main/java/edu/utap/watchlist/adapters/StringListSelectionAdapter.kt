@@ -7,12 +7,9 @@ import edu.utap.watchlist.R
 import edu.utap.watchlist.databinding.StringItemRowBinding
 
 class StringListSelectionAdapter(private val clickListener: (selection: String)->Unit): RecyclerView.Adapter<StringListSelectionAdapter.VH>() {
-
-    // Adapter does not have its own copy of list, it just observes
     private var items = mutableListOf<String>()
     private var selectedItem = ""
 
-    // ViewHolder pattern minimizes calls to findViewById
     inner class VH(val binding: StringItemRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
             init {
@@ -39,7 +36,6 @@ class StringListSelectionAdapter(private val clickListener: (selection: String)-
                 binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_24_blue)
             }
             else {
-                //remove image resource
                 binding.checkMark.setImageResource(R.drawable.ic_baseline_check_box_outline_blank_24)
 
             }

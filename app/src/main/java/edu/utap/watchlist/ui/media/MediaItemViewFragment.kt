@@ -407,7 +407,7 @@ class MediaItemViewFragment : Fragment() {
     private fun setMovieInfo(movie: Movie): String{
         val infoStr = "Status: ${movie.status}\n" +
                 "Release Date: ${movie.releaseDate}\n" +
-                "Runtime: ${convertHHMM(movie.runtime)}"
+                "Runtime: ${convertHHMM(movie.runtime)}\n"
                 "User Score: ${movie.voteAverage.toDouble().format(1)}/10\n" +
                 "Original Language: ${movie.originalLanguage}\n"
         return infoStr
@@ -415,7 +415,7 @@ class MediaItemViewFragment : Fragment() {
 
     private fun setTVInfo(tv: TVShow): String {
         val infoStr = "Status: ${tv.status}\n" +
-                "User Score: ${tv.voteAverage.toDouble().format(1)}/10" +
+                "User Score: ${tv.voteAverage.toDouble().format(1)}/10\n" +
                 "First Air Date: ${tv.firstAirDate}\n" +
                 "Last Air Date: ${tv.lastAirDate}\n" +
                 "Original Language: ${tv.originalLanguage}\n"

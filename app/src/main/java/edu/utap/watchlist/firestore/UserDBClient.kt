@@ -139,59 +139,24 @@ class UserDBClient {
 
     }
 
-    fun getWatchListsMainThread(): List<WatchList> {
-        if(docName != ""){
-            val docRef = db.collection(TABLE).document(docName).get()
-            if(docRef.result != null){
-                try {
-                    val item = docRef.result!!.toObject(User::class.java)
-                    var watchLists = mutableListOf<WatchList>()
-                    for(list in item!!.lists!!.keys){
-                        watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
-                    }
-                    userLists = watchLists.toList()
-                }
-                catch (e: Exception) {
-                    userLists = emptyList()
-                    return userLists
-                }
-
-
-            }
-            else {
-                createDocument()
-            }
-            return userLists
-        }
-        else {
-            return emptyList()
-        }
-
-    }
-
-
     fun removeWatchList(list: WatchList){
         db.collection(TABLE).document(docName)
             .update(FieldPath.of(WATCHLIST_FIELD, list.name), FieldValue.delete())
     }
 
     fun addMediaItemToWatchlist(name: String, item: MediaItem, numItems: Int) {
-        Log.d("ADD HERE", "${name}:${item}")
-        Log.d("DOCNAME", docName)
         val doc = db.collection(TABLE).document(docName)
         if(numItems == 0){
             doc.update(
                 FieldPath.of(WATCHLIST_FIELD, name), listOf(item)
             ).addOnSuccessListener {
-                Log.d("COMPLETE", "SUCCESS")
 
-            }.addOnFailureListener { e -> Log.w("FAILURE", "Error updating document", e) }
+            }.addOnFailureListener { }
         }
         else {
             doc.update(
                 FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayUnion(item)
             ).addOnSuccessListener {
-                Log.d("COMPLETE", "SUCCESS")
 
             }.addOnFailureListener { e -> Log.w("FAILURE", "Error updating document", e) }
         }
@@ -203,7 +168,6 @@ class UserDBClient {
 
     fun refreshWatchLists(item: MediaItem, newNames: List<String>, watchLists: List<WatchList>): MutableLiveData<List<WatchList>> {
 
-        Log.d("DOCNAME", docName)
         val doc = db.collection(TABLE).document(docName)
 
         var mutableLiveData = MutableLiveData<List<WatchList>>()

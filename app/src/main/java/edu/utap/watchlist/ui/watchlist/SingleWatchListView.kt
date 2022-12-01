@@ -34,18 +34,9 @@ class SingleWatchListView : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
 
     private fun initRecyclerViewDividers(rv: RecyclerView) {
-        // Let's have dividers between list items
         val dividerItemDecoration = DividerItemDecoration(
             rv.context, LinearLayoutManager.VERTICAL )
         rv.addItemDecoration(dividerItemDecoration)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
-
-
     }
 
     override fun onCreateView(
@@ -107,10 +98,6 @@ class SingleWatchListView : Fragment() {
 
         val menuHost: MenuHost = requireActivity()
 
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 // Add menu items here
@@ -145,10 +132,8 @@ class SingleWatchListView : Fragment() {
 
 
     fun openMediaView(item: MediaItem) {
-        //open single view with given media item
-        viewModel.setUpCurrentMediaData(item)
-        //view?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.INVISIBLE
 
+        viewModel.setUpCurrentMediaData(item)
 
         val manager: FragmentManager? = parentFragmentManager
         val transaction: FragmentTransaction = manager!!.beginTransaction()
@@ -160,23 +145,5 @@ class SingleWatchListView : Fragment() {
         act.hideNavBar()
         act.hideActionBar()
 
-    }
-
-
-
-
-    private fun collectSelectedLists(item: MediaItem) {
-        //open single media item view
-    }
-
-
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance() =
-            SingleWatchListView().apply {
-                arguments = Bundle().apply {
-                }
-            }
     }
 }

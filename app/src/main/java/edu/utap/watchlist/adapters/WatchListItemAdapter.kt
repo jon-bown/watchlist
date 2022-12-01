@@ -1,10 +1,8 @@
 package edu.utap.watchlist.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import edu.utap.firebaseauth.MainViewModel
 import edu.utap.watchlist.R
 import edu.utap.watchlist.api.MediaItem
@@ -12,11 +10,8 @@ import edu.utap.watchlist.databinding.WatchlistItemRowBinding
 
 //displays each media item associated with a watchlist to the user
 class WatchListItemAdapter(private val viewModel: MainViewModel, private val clickListener: (item: MediaItem)->Unit): RecyclerView.Adapter<WatchListItemAdapter.VH>() {
-    // Adapter does not have its own copy of list, it just observes
     private var watchListItems = mutableListOf<MediaItem>()
 
-
-    // ViewHolder pattern minimizes calls to findViewById
     inner class VH(val binding: WatchlistItemRowBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
@@ -82,8 +77,6 @@ class WatchListItemAdapter(private val viewModel: MainViewModel, private val cli
 
 
     override fun getItemCount() = watchListItems.size
-
-
 
     fun removeAt(position: Int){
         viewModel.removeFromCurrentWatchList(watchListItems[position])

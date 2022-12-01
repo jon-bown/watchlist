@@ -16,7 +16,6 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val clickLi
         const val ID = "mediaID"
         const val LANG = "language"
         const val COUNTRY = "country"
-
     }
 
     private var media = mutableListOf<MediaItem>()
