@@ -163,9 +163,12 @@ class SingleWatchListView : Fragment() {
     }
 
 
+
+
     private fun collectSelectedLists(item: MediaItem) {
         //open single media item view
     }
+
 
     companion object {
         // TODO: Rename and change types and number of parameters

@@ -110,6 +110,7 @@ class HomeFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.popularList.layoutManager = manager
         binding.popularList.adapter = popularAdapter
+
         // Live data lets us display the latest list, whatever it is
         // NB: owner is viewLifecycleOwner
         viewModel.observePopularMediaItems().observe(viewLifecycleOwner,
@@ -193,6 +194,7 @@ class HomeFragment : Fragment() {
 
         viewModel.observeUpcomingMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
+                Log.d("UPCOMING ITEMS", movieList.toString())
                 upcomingAdapter.submitMediaList(movieList)
             })
         initUpcomingScrollListener()
@@ -272,6 +274,7 @@ class HomeFragment : Fragment() {
             it.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
             viewModel.updateMovieMode(true)
             viewModel.netRefresh()
+            resetScrollers()
 
 
         }
@@ -281,13 +284,22 @@ class HomeFragment : Fragment() {
             binding.opt1.setBackgroundColor(Color.TRANSPARENT)
             viewModel.updateMovieMode(false)
             viewModel.netRefresh()
-            popularAdapter.notifyDataSetChanged()
+            resetScrollers()
 
         }
 
         binding.opt1.setBackgroundColor(binding.root.context.getColor(R.color.button_checked))
 
 
+    }
+
+    private fun resetScrollers(){
+        binding.popularList.scrollToPosition(0)
+        binding.nowPlayingList.scrollToPosition(0)
+        binding.upcomingList.scrollToPosition(0)
+        binding.trendingTodayList.scrollToPosition(0)
+        binding.trendingWeekList.scrollToPosition(0)
+        binding.topRatedList.scrollToPosition(0)
     }
 
     //SCROLLING LISTENERS
@@ -399,7 +411,7 @@ class HomeFragment : Fragment() {
                 if (!isLoading) {
                     if(currentUpcomingPage < 10) {
                         if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() >=
-                            (viewModel.observeUpcomingMediaItems().value!!.size - 5)) {
+                            (viewModel.observeUpcomingMediaItems().value!!.size - 7)) {
                             isLoading = true
                             currentUpcomingPage+=1
                             viewModel.fetchUpcoming(currentUpcomingPage)

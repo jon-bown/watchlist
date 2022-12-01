@@ -98,7 +98,6 @@ class WatchListCheckView : Fragment() {
         }
 
         binding.watchlistCancelButton.setOnClickListener {
-
             popBackToFragment()
         }
 
@@ -112,13 +111,25 @@ class WatchListCheckView : Fragment() {
     }
 
     private fun collectSelectedLists() {
-        Log.d("COLLECT SELECTED LISTS", listsToAdd.toString())
-        viewModel.addToWatchList(listsToAdd)
-        viewModel.removeFromLists(listsToAdd)
+//        viewModel.addToWatchListLiveData(listsToAdd).observe(viewLifecycleOwner) {
+//            viewModel.postWatchList(it)
+//        }
+        for(list in viewModel.observeWatchLists().value!!){
+            if(list.name in listsToAdd){
+                viewModel.addToWatchList(list.name!!)
+            }
+            else {
+                viewModel.removeFromWatchList(list.name!!)
+            }
+
+        }
+
+
 
     }
 
     private fun toggleLists(items: List<String>, selection: String) {
+        Log.d("TOGGLE", items.toString())
         listsToAdd.clear()
         listsToAdd.addAll(items)
     }

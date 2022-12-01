@@ -43,6 +43,7 @@ class AuthInit(viewModel: MainViewModel, signInLauncher: ActivityResultLauncher<
                 .build()
             signInLauncher.launch(signInIntent)
         } else {
+            Log.d("UPDATING USER", user.toString())
             viewModel.updateUser()
         }
     }

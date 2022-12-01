@@ -1,6 +1,8 @@
 package edu.utap.watchlist.firestore
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.common.api.Response
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
@@ -11,6 +13,7 @@ import edu.utap.watchlist.api.MediaItem
 import edu.utap.watchlist.api.User
 import edu.utap.watchlist.api.WatchList
 import kotlinx.coroutines.tasks.await
+import okhttp3.internal.wait
 import java.util.*
 
 class UserDBClient {
@@ -35,7 +38,6 @@ class UserDBClient {
 
     init {
         user = FirebaseAuth.getInstance().currentUser
-        populateUser()
     }
 
     fun getEmail(): String {
@@ -137,15 +139,125 @@ class UserDBClient {
 
     }
 
+    fun getWatchListsMainThread(): List<WatchList> {
+        if(docName != ""){
+            val docRef = db.collection(TABLE).document(docName).get()
+            if(docRef.result != null){
+                try {
+                    val item = docRef.result!!.toObject(User::class.java)
+                    var watchLists = mutableListOf<WatchList>()
+                    for(list in item!!.lists!!.keys){
+                        watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+                    }
+                    userLists = watchLists.toList()
+                }
+                catch (e: Exception) {
+                    userLists = emptyList()
+                    return userLists
+                }
+
+
+            }
+            else {
+                createDocument()
+            }
+            return userLists
+        }
+        else {
+            return emptyList()
+        }
+
+    }
+
+
     fun removeWatchList(list: WatchList){
         db.collection(TABLE).document(docName)
             .update(FieldPath.of(WATCHLIST_FIELD, list.name), FieldValue.delete())
     }
 
-    fun addMediaItemToWatchlist(name: String, item: MediaItem) {
-        db.collection(TABLE).document(docName).update(
-            FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayUnion(item)
-        )
+    fun addMediaItemToWatchlist(name: String, item: MediaItem, numItems: Int) {
+        Log.d("ADD HERE", "${name}:${item}")
+        Log.d("DOCNAME", docName)
+        val doc = db.collection(TABLE).document(docName)
+        if(numItems == 0){
+            doc.update(
+                FieldPath.of(WATCHLIST_FIELD, name), listOf(item)
+            ).addOnSuccessListener {
+                Log.d("COMPLETE", "SUCCESS")
+
+            }.addOnFailureListener { e -> Log.w("FAILURE", "Error updating document", e) }
+        }
+        else {
+            doc.update(
+                FieldPath.of(WATCHLIST_FIELD, name), FieldValue.arrayUnion(item)
+            ).addOnSuccessListener {
+                Log.d("COMPLETE", "SUCCESS")
+
+            }.addOnFailureListener { e -> Log.w("FAILURE", "Error updating document", e) }
+        }
+
+
+    }
+
+
+
+    fun refreshWatchLists(item: MediaItem, newNames: List<String>, watchLists: List<WatchList>): MutableLiveData<List<WatchList>> {
+
+        Log.d("DOCNAME", docName)
+        val doc = db.collection(TABLE).document(docName)
+
+        var mutableLiveData = MutableLiveData<List<WatchList>>()
+
+        val transaction =  db.runTransaction { transaction ->
+            val snapshot = transaction.get(doc)
+            for (list in watchLists) {
+                if (list.name in newNames) {
+                    //add
+                    Log.d("ADD HERE", "${list.name}:${item}")
+                    if (list.items!!.size == 0) {
+                        transaction.update(
+                            doc,
+                            FieldPath.of(WATCHLIST_FIELD, list.name), listOf(item)
+                        )
+                    } else {
+                        transaction.update(
+                            doc,
+                            FieldPath.of(WATCHLIST_FIELD, list.name), FieldValue.arrayUnion(item)
+                        )
+                    }
+                } else {
+                    //remove
+                    if (item in list.items!!) {
+
+                        transaction.update(
+                            doc,
+                            FieldPath.of(WATCHLIST_FIELD, list.name), FieldValue.arrayRemove(item)
+                        )
+
+                    }
+                }
+                //callback(getWatchListsMainThread())
+
+                val item = snapshot.toObject(User::class.java)
+                var watchLists = mutableListOf<WatchList>()
+                for(list in item!!.lists!!.keys){
+                    watchLists.add(WatchList(list, item!!.lists!!.get(list)!!.toMutableList()))
+                }
+                userLists = watchLists
+                mutableLiveData.postValue(watchLists.toList())
+
+
+            }
+
+        }.addOnCompleteListener { task ->
+
+        }.addOnFailureListener { e ->
+            Log.w("TRANSACTION", "Transaction failure.", e)
+        }
+
+        return mutableLiveData
+
+
     }
 
     fun removeMediaItemFromWatchlist(name: String, item: MediaItem) {
@@ -222,7 +334,7 @@ class UserDBClient {
             ))
     }
 
-    private fun populateUser() {
+    fun populateUser() {
         user = FirebaseAuth.getInstance().currentUser
         if(user != null){
             docName = user!!.uid
@@ -244,10 +356,14 @@ class UserDBClient {
 
         populateUser()
 
-        db.collection(TABLE).document(docName)
-            .set(newUser)
-            .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
+        if(user != null){
+            db.collection(TABLE).document(docName)
+                .set(newUser)
+                .addOnSuccessListener { Log.d("", "DocumentSnapshot successfully written!") }
+                .addOnFailureListener { e -> Log.w("", "Error writing document", e) }
+        }
+
+
     }
 
 

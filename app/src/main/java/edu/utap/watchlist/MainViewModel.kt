@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
+import edu.utap.watchlist.R
 import edu.utap.watchlist.api.*
 import edu.utap.watchlist.firestore.UserDBClient
 import edu.utap.watchlist.glide.Glide
@@ -114,15 +115,26 @@ class MainViewModel : ViewModel() {
 
     //Current List
     private val currentWatchList = MutableLiveData<WatchList>()
-    private val currentWatchListName = MutableLiveData<String>()
+
+    private val currentWatchListName = MutableLiveData("")
+    fun observeCurrentWatchListName(): LiveData<String>{
+        return currentWatchListName
+    }
     fun setCurrentWatchList(name: String){
         //if name in watchlists throw a toast
-        val lists = watchLists.value!!.filter{
-            //name is unique
-            it.name == name
+        if(name != ""){
+            val lists = watchLists.value!!.filter{
+                //name is unique
+                it.name == name
+            }
+            currentWatchList.value = lists.first()
+            currentWatchListName.value = name
         }
-        currentWatchList.value = lists.first()
-        currentWatchListName.value = name
+        else {
+
+            currentWatchListName.postValue("")
+        }
+
     }
     fun setWatchListOnlySeen(){
         val lists = watchLists.value!!.filter{
@@ -172,7 +184,17 @@ class MainViewModel : ViewModel() {
         ) {
             val currentLists = userDB.getWatchLists()
             currentLists.sortedByDescending { it.name }
+            if(currentWatchListName.value != ""){
+                val listWithName = watchLists.value!!.filter { it.name == currentWatchList.value?.name }.first()
+                Log.d("POSTING VALUE", listWithName.toString())
+                currentWatchList.postValue(listWithName)
+            }
+
+
+
             watchLists.postValue(currentLists)
+
+
         }
     }
 
@@ -192,29 +214,45 @@ class MainViewModel : ViewModel() {
 
     }
 
+    private fun postValueToWatchLists(list: List<WatchList>){
+        this.watchLists.postValue(list)
+    }
 
-    fun addToWatchList(names: List<String>) {
-        //possibly need some error handling here
-        val mutableWatchLists = watchLists.value!!.toMutableList()
-        for(name in names){
-            val listWithName = watchLists.value!!.filter { it.name == name }.first()
-            val newList = mutableListOf<MediaItem>()
-            if(listWithName.items != null){
-                newList.addAll(listWithName.items!!.toList())
-                newList.add(currentMediaItem.value!!)
-                userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!)
-                mutableWatchLists.remove(listWithName)
-                mutableWatchLists.add(WatchList(name, newList))
-                mutableWatchLists.sortBy { it.name }
-            }
+    fun addToWatchListLiveData(names: List<String>) : LiveData<List<WatchList>> {
+        return userDB.refreshWatchLists(currentMediaItem.value!!, names, watchLists.value!!)
+    }
+
+    fun postWatchList(list: List<WatchList>) {
+        watchLists.postValue(list)
+    }
+
+    fun addToWatchList(name: String){
+        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        userDB.addMediaItemToWatchlist(name, currentMediaItem.value!!, listWithName.items!!.size)
+    }
+
+
+    fun removeFromWatchList(name: String, mediaItem: MediaItem) {
+
+        val listWithName = watchLists.value!!.filter { it.name == name }.first()
+        val newList = mutableListOf<MediaItem>()
+        if(listWithName.items != null){
+            newList.addAll(listWithName.items!!.toList())
         }
 
-        watchLists.postValue(mutableWatchLists)
+        newList.remove(mediaItem)
+        userDB.removeMediaItemFromWatchlist(listWithName.name!!, currentMediaItem.value!!)
+
+    }
+
+    fun removeFromWatchList(name: String) {
+
+        userDB.removeMediaItemFromWatchlist(name, currentMediaItem.value!!)
 
     }
 
 
-    fun removeFromWatchList(mediaItem: MediaItem) {
+    fun removeFromCurrentWatchList(mediaItem: MediaItem) {
 
         val newList = currentWatchList.value!!
         newList.items!!.remove(mediaItem)
@@ -226,30 +264,17 @@ class MainViewModel : ViewModel() {
 
 
     fun removeFromLists(addedLists: List<String>){
-
-
-        Log.d("NEW LIST ITEMS", addedLists.toString())
-        val mutableWatchLists = watchLists.value!!.toMutableList()
         for(list in watchLists.value!!){
-            if(list.name !in addedLists){
-                val listWithName = watchLists.value!!.filter { it.name == list.name }.first()
-                val newList = mutableListOf<MediaItem>()
-                if(listWithName.items != null){
-                    newList.addAll(listWithName.items!!.toList())
+            if(currentWatchListName.value != null){
+                if(currentWatchListName.value!! == list.name!!){
+                    removeFromCurrentWatchList(currentMediaItem.value!!)
                 }
-
-                newList.remove(currentMediaItem.value!!)
-                userDB.removeMediaItemFromWatchlist(listWithName.name!!, currentMediaItem.value!!)
-
-                mutableWatchLists.remove(listWithName)
-                mutableWatchLists.add(WatchList(listWithName.name, newList))
-                mutableWatchLists.sortBy { it.name }
-
+            }
+            else if(list.name !in addedLists){
+                removeFromWatchList(list.name!!, currentMediaItem.value!!)
             }
         }
-
-        watchLists.postValue(mutableWatchLists)
-
+        fetchWatchLists()
     }
 
     fun getWatchlistNamesThatContain(): List<String> {
@@ -383,6 +408,9 @@ class MainViewModel : ViewModel() {
         if(tempStack.isNotEmpty()){
             refreshCurrentMediaInfo(tempStack.peek())
         }
+        else {
+            currentMediaItem.value == null
+        }
     }
 
     private fun refreshCurrentMediaInfo(item: MediaItem){
@@ -401,9 +429,8 @@ class MainViewModel : ViewModel() {
 
 
     fun setUpCurrentMediaData(item: MediaItem) {
-
         var tempStack = currentMediaItems.value
-        if(tempStack == null){
+        if(tempStack == null || tempStack.isEmpty()){
             tempStack = Stack<MediaItem>()
         }
         tempStack!!.push(item)
@@ -458,6 +485,7 @@ class MainViewModel : ViewModel() {
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
                 if(page == 1){
+                    similarMediaItems.postValue(emptyList())
                     if(currentMediaItem.value!!.type == "MOVIE"){
                         similarMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
@@ -477,6 +505,9 @@ class MainViewModel : ViewModel() {
                 }
 
             }
+            else {
+                similarMediaItems.postValue(emptyList())
+            }
 
         }
     }
@@ -489,6 +520,7 @@ class MainViewModel : ViewModel() {
         return recommendedMediaItems
     }
     fun fetchRecommended(page: Int) {
+
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO
@@ -507,6 +539,7 @@ class MainViewModel : ViewModel() {
             if(list.isNotEmpty()){
                 fetchDone.postValue(true)
                 if(page == 1){
+                    recommendedMediaItems.postValue(emptyList())
                     if(currentMediaItem.value!!.type == "MOVIE"){
                         recommendedMediaItems.postValue(MediaItems(tvList = null, movieList = list as List<Movie>).mediaList)
                     }
@@ -525,6 +558,9 @@ class MainViewModel : ViewModel() {
                     }
                 }
 
+            }
+            else {
+                recommendedMediaItems.postValue(emptyList())
             }
 
         }
@@ -959,7 +995,7 @@ class MainViewModel : ViewModel() {
 
     ////////IMAGES//////////
 
-    private fun safePiscumURL(path: String): String {
+    private fun safePiscumURL(path: String?): String {
         val builder = Uri.Builder()
         builder.scheme("https")
             .authority("image.tmdb.org")
@@ -974,25 +1010,34 @@ class MainViewModel : ViewModel() {
 
     // Generates greater variety of images and we can control the randomness
     // But some numbers return error images, so have a backup.
-    private fun randomPiscumURL(path: String): String {
+    private fun randomPiscumURL(): String {
         val builder = Uri.Builder()
         builder.scheme("https")
-            .authority("image.tmdb.org")
-            .appendPath("t")
-            .appendPath("p")
-            .appendPath("w$width")
-            .appendPath(path)
+            .authority("motivatevalmorgan.com")
+            .appendPath("wp-content")
+            .appendPath("uploads/2016/06/default-movie.jpg")
         val url = builder.build().toString()
         Log.d(javaClass.simpleName, "Built: $url")
         return url
     }
 
-    fun netFetchImage(imageView: ImageView, imagePath: String) {
-        Glide.fetch(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
+    fun netFetchImage(imageView: ImageView, imagePath: String?) {
+        if(imagePath == null){
+
+            imageView.setImageResource(R.drawable.large_movie_poster)
+        }
+        else {
+            Glide.fetch(safePiscumURL(imagePath), randomPiscumURL(), imageView)
+        }
+
     }
 
-    fun netFetchBackdropImage(imageView: ImageView, imagePath: String) {
-        Glide.fetchBackdrop(safePiscumURL(imagePath), randomPiscumURL(imagePath), imageView)
+    fun netFetchBackdropImage(imageView: ImageView, imagePath: String?) {
+        Log.d("IMAGE", "${imagePath}")
+        if(imagePath != null){
+            Glide.fetchBackdrop(safePiscumURL(imagePath), randomPiscumURL(), imageView)
+        }
+
     }
 
 
@@ -1000,7 +1045,8 @@ class MainViewModel : ViewModel() {
     ///////USER DATA//////////
 
     fun populateUserData() {
-        userDB = UserDBClient()
+        userDB.populateUser()
+
         viewModelScope.launch(
             context = viewModelScope.coroutineContext
                     + Dispatchers.IO

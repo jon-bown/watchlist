@@ -95,11 +95,13 @@ class MediaItemViewFragment : Fragment() {
                 binding.PerformanceText.text = "Budget: $${convertToMillions(it.budget)}m      Revenue: $${convertToMillions(it.revenue)}m"
                 binding.infoText.text = setMovieInfo(it)
                 viewModel.fetchProviders()
-
                 initSeenButton(it.id.toString())
 
                 if(it.backdropPath != null){
                     viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                }
+                else{
+                    binding.backdrop.setImageResource(R.drawable.movie_back_wide)
                 }
             }
 
@@ -109,6 +111,9 @@ class MediaItemViewFragment : Fragment() {
                 binding.overviewText.text = it.overview
                 if(it.backdropPath != null){
                     viewModel.netFetchBackdropImage(binding.backdrop, it.backdropPath)
+                }
+                else{
+                    binding.backdrop.setImageResource(R.drawable.movie_back_wide)
                 }
                 binding.taglineText.text = it.tagline
                 binding.performanceContainer.visibility = View.GONE
@@ -134,10 +139,9 @@ class MediaItemViewFragment : Fragment() {
         }
 
         initSimilarList()
-        initSimilarScrollListener()
+
 
         initRecommendedList()
-        initRecommendedScrollListener()
 
         initProviderList()
 
@@ -178,11 +182,24 @@ class MediaItemViewFragment : Fragment() {
         binding.similarItemList.layoutManager = manager
         binding.similarItemList.adapter = similarAdapter
 
+        binding.similarItemList.visibility = View.GONE
+        binding.similarItemText.visibility = View.GONE
+
         viewModel.observeSimilarMediaItems().observe(viewLifecycleOwner,
             Observer { movieList ->
+                if(movieList.isEmpty()){
+                    Log.d("RECOMMENDED", "EMPTY")
+                    binding.similarItemList.visibility = View.GONE
+                    binding.similarItemText.visibility = View.GONE
+                }
+                else {
+                    binding.similarItemList.visibility = View.VISIBLE
+                    binding.similarItemText.visibility = View.VISIBLE
+                }
                 similarAdapter.submitMediaList(movieList)
 
             })
+        initSimilarScrollListener()
     }
 
 
@@ -192,6 +209,10 @@ class MediaItemViewFragment : Fragment() {
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.recommendedList.layoutManager = manager
         binding.recommendedList.adapter = recommendedAdapter
+
+
+        binding.recommendedList.visibility = View.GONE
+        binding.recommendedText.visibility = View.GONE
 
 
         viewModel.observeRecommendedMediaItems().observe(viewLifecycleOwner,
@@ -207,6 +228,8 @@ class MediaItemViewFragment : Fragment() {
                 }
 
             })
+
+        initRecommendedScrollListener()
     }
 
     fun initProviderList() {
@@ -303,17 +326,22 @@ class MediaItemViewFragment : Fragment() {
 
 
         binding.closeButton.setOnClickListener {
-
-
             if(viewModel.observeCurrentMediaItemsStack().value!!.size <= 1){
                 val manager: FragmentManager? = parentFragmentManager
                 manager?.popBackStack()
 
                 viewModel.popToLastMediaData()
-
                 val act = activity as MainActivity
-                act.showNavBar()
-                act.showActionBar()
+                if(viewModel.observeCurrentWatchListName().value == ""){
+
+                    act.showNavBar()
+                    act.showActionBar()
+                }
+                else {
+                    act.showActionBar()
+                }
+
+
             }
             else {
                 val manager: FragmentManager? = parentFragmentManager
@@ -412,6 +440,11 @@ class MediaItemViewFragment : Fragment() {
 
     fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchWatchLists()
+    }
 
     companion object {
 

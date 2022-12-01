@@ -50,9 +50,7 @@ class MediaCardAdapter(private val viewModel: MainViewModel, private val clickLi
         val binding = holder.binding
 
         media[position].let{
-            if(it.imageURL != null){
-                viewModel.netFetchImage(binding.mediaImage, it.imageURL!!)
-            }
+            viewModel.netFetchImage(binding.mediaImage, it.imageURL)
 
         }
     }

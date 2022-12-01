@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         if (id == android.R.id.home) {
             findNavController(R.id.nav_host_fragment_activity_main).popBackStack()
             findViewById<ImageView>(R.id.backdrop)?.setImageDrawable(null)
+            viewModel.setCurrentWatchList("")
             showActionBar()
             showNavBar()
         }

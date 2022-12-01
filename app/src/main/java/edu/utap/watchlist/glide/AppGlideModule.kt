@@ -31,7 +31,8 @@ object Glide {
         .transform(RoundedCorners(20))
         // If we can't fetch, give the user an indication  maybe it should
         // say "network error"
-        .error(ColorDrawable(Color.RED))
+
+        .error(R.drawable.large_movie_poster)
 
     private var glideBackdropOptions: RequestOptions = RequestOptions()
         .fitCenter()
@@ -41,8 +42,8 @@ object Glide {
         .transform(RoundedCorners(20))
         // If we can't fetch, give the user an indication  maybe it should
         // say "network error"
-        .error(ColorDrawable(Color.RED))
-        //.skipMemoryCache( true )
+        //.error(R.drawable.movie_back_wide)
+        .skipMemoryCache( true )
         .diskCacheStrategy(DiskCacheStrategy.NONE)
 
     fun fetch(
@@ -53,19 +54,13 @@ object Glide {
         Log.d("URL", urlPrimary)
         GlideApp.with(imageView.context).clear(imageView)
 
-        GlideApp.with(imageView.context)
-            .asBitmap()
-            .load(urlPrimary)
-            .apply(glideOptions)
-            .error(
-                GlideApp.with(imageView.context)
-                    .asBitmap()
-                    .load(urlFallback)
-                    .apply(glideOptions)
-                    .error(R.color.button_checked)
-            )
+            GlideApp.with(imageView.context)
+                .asBitmap()
+                .load(urlPrimary)
+                .apply(glideOptions)
+                .error(R.drawable.large_movie_poster)
+                .into(imageView)
 
-            .into(imageView)
     }
 
 
@@ -77,20 +72,13 @@ object Glide {
     ) {
         Log.d("URL", urlPrimary)
         GlideApp.with(imageView.context).clear(imageView)
+            GlideApp.with(imageView.context)
+                .asBitmap()
+                .load(urlPrimary)
+                .apply(glideBackdropOptions)
+                .error(R.drawable.movie_back_wide)
+                .into(imageView)
 
-        GlideApp.with(imageView.context)
-            .asBitmap()
-            .load(urlPrimary)
-            .apply(glideBackdropOptions)
-            .error(
-                GlideApp.with(imageView.context)
-                    .asBitmap()
-                    .load(urlFallback)
-                    .apply(glideOptions)
-                    .error(R.color.button_checked)
-            )
-
-            .into(imageView)
     }
 
 
