@@ -113,9 +113,7 @@ class WatchListsFragment : Fragment() {
             .setView(input)
             .setTitle("New Watch List")
             .setPositiveButton("Add", DialogInterface.OnClickListener { dialog, which ->
-                // Here you get get input text from the Edittext
                 var listName = input.text.toString()
-                //save watchlist
 
                 if(viewModel.checkWatchListName(listName)){
                     Snackbar.make(
@@ -131,7 +129,6 @@ class WatchListsFragment : Fragment() {
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
                 dialog.cancel() })
             .create().show()
-
     }
 
 
